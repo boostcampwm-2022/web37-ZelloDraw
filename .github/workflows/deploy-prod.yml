@@ -2,9 +2,9 @@ name: 'deploy when push'
 
 on:
   push:
-    branches: [develop]
+    branches: [feat_docker]
   pull_request:
-    branches: [develop]
+    branches: [feat_docker]
 
 jobs:
   build:
