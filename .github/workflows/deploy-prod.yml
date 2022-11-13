@@ -24,6 +24,6 @@ jobs:
           port: ${{ secrets.SERVER_PORT }}
           script: |
             cd ~/web37-ZelloDraw/ && git pull origin feat_docker
-            docker build -f Dockerfile -t bmtown .
-            docker ps -a -q --filter name=bmtown | grep -q . && docker rm -f bmtown
-            docker run -d -p 3000:3000 -p 19785:19785 --name bmtown bmtown
+            docker build -f Dockerfile -t zelloDraw .
+            docker ps -a -q --filter name=zelloDraw | grep -q . && docker rm -f zelloDraw
+            docker run -d -p 3000:3000 -p 19785:19785 --name zelloDraw zelloDraw
