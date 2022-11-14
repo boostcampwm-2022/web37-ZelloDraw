@@ -24,7 +24,7 @@ const CameraBtnSet = styled.div`
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    width: 80px;
+    width: 84px;
 `;
 
 const CameraBtn = styled.button`
