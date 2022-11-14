@@ -34,6 +34,15 @@ export class LobbyService {
         return lobby.players;
     }
 
+    async leaveLobby(client: Socket, lobbyId: string) {
+        const lobby = this.store[lobbyId];
+        if (lobby === undefined) {
+            return new Error('Lobby not found');
+        }
+        lobby.players = lobby.players.filter((player) => player !== client.id);
+        return lobby.players;
+    }
+
     getLobby(lobbyId: string): Lobby | undefined {
         return this.store[lobbyId];
     }
