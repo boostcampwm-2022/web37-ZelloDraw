@@ -35,6 +35,13 @@ export class LobbyService {
         const lobby = this.getLobby(lobbyId);
         lobby.players = lobby.players.filter((player) => player !== client.id);
         return lobby.players;
+
+    isLobbyOwner(client: Socket, lobbyId: string): boolean {
+        const lobby = this.getLobby(lobbyId);
+        if (lobby === undefined) {
+            return false;
+        }
+        return lobby.owner === client.id;
     }
 
     getLobby(lobbyId: string): Lobby | undefined {
