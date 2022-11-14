@@ -16,7 +16,7 @@ export class LobbyService {
     store: LobbyStore = {};
 
     createLobby(client: Socket): string {
-        const lobbyId = client.id + new Date().toString();
+        const lobbyId = `${client.id}${new Date().getTime()}`;
         this.store[lobbyId] = {
             id: lobbyId,
             owner: client.id,
