@@ -51,11 +51,11 @@ export const ZelloTheme = {
     },
 
     typo: {
-        h1: '2.75rem', // 44px
-        h2: '2.25rem', // 36px
-        h3: '1.875rem', // 30px
-        h4: '1.5rem', // 24px
-        h5: '1.25rem', // 20px
+        h1: '2.75rem',
+        h2: '2.25rem',
+        h3: '1.875rem',
+        h4: '1.5rem',
+        h5: '1.25rem',
     },
 
     shadow: {
