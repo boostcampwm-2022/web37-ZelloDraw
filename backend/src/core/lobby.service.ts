@@ -34,6 +34,14 @@ export class LobbyService {
         return lobby.players;
     }
 
+    isLobbyOwner(client: Socket, lobbyId: string): boolean {
+        const lobby = this.getLobby(lobbyId);
+        if (lobby === undefined) {
+            return false;
+        }
+        return lobby.owner === client.id;
+    }
+
     getLobby(lobbyId: string): Lobby | undefined {
         return this.store[lobbyId];
     }
