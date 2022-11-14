@@ -37,10 +37,6 @@ export class CoreGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
     @SubscribeMessage('join-lobby')
     async handleJoinLobby(@ConnectedSocket() client: Socket, @MessageBody() lobbyId: string) {
         const lobby = this.lobbyService.getLobby(lobbyId);
-        if (lobby === undefined) {
-            // TODO: 소켓 클라이언트에게 에러 전달 방법(에러 핸들링) 확인 필요.
-            throw new Error('Lobby not found');
-        }
         await this.lobbyService.joinLobby(client, lobbyId);
         await client.join(lobbyId);
         // TODO: 현재 클라이언트 이름 없이 socket 정보만 관리하고 있음. 나중에 클라이언트 정보 정해지면, 클라이언트 정보로 변경 필요
@@ -51,10 +47,6 @@ export class CoreGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
     @SubscribeMessage('leave-lobby')
     async handleLeaveLobby(@ConnectedSocket() client: Socket, @MessageBody() lobbyId: string) {
         const lobby = this.lobbyService.getLobby(lobbyId);
-        if (lobby === undefined) {
-            // TODO: 소켓 클라이언트에게 에러 전달 방법(에러 핸들링) 확인 필요.
-            throw new Error('Lobby not found');
-        }
         await this.lobbyService.leaveLobby(client, lobbyId);
         await client.leave(lobbyId);
         // TODO: 현재 클라이언트 이름 없이 socket 정보만 관리하고 있음. 나중에 클라이언트 정보 정해지면, 클라이언트 정보로 변경 필요
