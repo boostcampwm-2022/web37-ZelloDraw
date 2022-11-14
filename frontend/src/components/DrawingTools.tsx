@@ -59,6 +59,26 @@ const Tools = styled.div`
     grid-template-rows: repeat(2, 1fr);
     grid-gap: 8px;
     margin-bottom: 44px;
+
+    button {
+        //펜 및 리셋 아이콘 위치 수정
+        svg {
+            transform: translateY(1px);
+        }
+    }
+    button:nth-of-type(2) {
+        //페인트 아이콘 위치 수정
+        svg {
+            transform: translate(-1px, -1px);
+        }
+    }
+
+    button:nth-of-type(3) {
+        //지우개 아이콘 위치 수정
+        svg {
+            transform: translate(3px, 3px);
+        }
+    }
 `;
 
 const Tool = styled.button`
@@ -81,7 +101,7 @@ const ColorPicker = styled.div`
     grid-row-gap: 12px;
 `;
 
-const Color = styled.div<{ colorName: string }>`
+const Color = styled.button<{ colorName: string }>`
     width: 100%;
     height: 100%;
     border-radius: 50%;
