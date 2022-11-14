@@ -46,7 +46,7 @@ export const ZelloTheme = {
         primaryLightBrown: `linear-gradient(${colors.primaryLight}, ${colors.brown})`,
         whitePurple: `linear-gradient(${colors.white} 44.8%, ${colors.purple} 100%)`,
         gray1Red: `linear-gradient(${colors.gray1}, ${colors.red})`,
-        yellowPurple: `linear-gradient(${colors.yellow} 14%, ${colors.purple}) 100&`,
+        yellowPurple: `linear-gradient(${colors.yellow} -13.93%, ${colors.purple}) 100%`,
         rainbow: `linear-gradient(${colors.red}, ${colors.yellow}, ${colors.green}, ${colors.sky}, ${colors.purple})`,
     },
 
