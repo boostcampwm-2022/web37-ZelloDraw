@@ -7,8 +7,8 @@ export interface LobbyStore {
 
 export interface Lobby {
     id: string;
-    owner: Socket;
-    players: Socket[];
+    owner: string;
+    players: string[];
 }
 
 @Injectable()
@@ -19,7 +19,7 @@ export class LobbyService {
         const lobbyId = client.id + new Date().toString();
         this.store[lobbyId] = {
             id: lobbyId,
-            owner: client,
+            owner: client.id,
             players: [],
         };
         return lobbyId;
@@ -30,7 +30,7 @@ export class LobbyService {
         if (lobby === undefined) {
             return new Error('Lobby not found');
         }
-        lobby.players.push(client);
+        lobby.players.push(client.id);
         return lobby.players;
     }
 
