@@ -46,16 +46,16 @@ export const ZelloTheme = {
         primaryLightBrown: `linear-gradient(${colors.primaryLight}, ${colors.brown})`,
         whitePurple: `linear-gradient(${colors.white} 44.8%, ${colors.purple} 100%)`,
         gray1Red: `linear-gradient(${colors.gray1}, ${colors.red})`,
-        yellowPurple: `linear-gradient(${colors.yellow} 14%, ${colors.purple}) 100&`,
+        yellowPurple: `linear-gradient(${colors.yellow} -13.93%, ${colors.purple}) 100%`,
         rainbow: `linear-gradient(${colors.red}, ${colors.yellow}, ${colors.green}, ${colors.sky}, ${colors.purple})`,
     },
 
     typo: {
-        h1: '2.75rem', //44px
-        h2: '2.25rem', //36px
-        h3: '1.875rem', //30px
-        h4: '1.5rem', //24px
-        h5: '1.25rem', //20px
+        h1: '2.75rem', // 44px
+        h2: '2.25rem', // 36px
+        h3: '1.875rem', // 30px
+        h4: '1.5rem', // 24px
+        h5: '1.25rem', // 20px
     },
 
     shadow: {
