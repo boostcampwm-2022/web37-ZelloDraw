@@ -2,6 +2,6 @@ import { Module } from '@nestjs/common';
 import { CoreGateway } from './core.gateway';
 
 @Module({
-  providers: [CoreGateway]
+    providers: [CoreGateway],
 })
 export class CoreModule {}
