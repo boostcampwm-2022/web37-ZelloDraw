@@ -6,7 +6,7 @@ import { ReactComponent as ResetIcon } from '@assets/icons/reset-icon.svg';
 import styled from 'styled-components';
 import { Center } from '@styles/styled';
 
-function DrawingTools() {
+function DrawingTools({ onDraw }: { onDraw: boolean }) {
     const colorName = [
         'brown',
         'green',
@@ -23,7 +23,7 @@ function DrawingTools() {
     ];
 
     return (
-        <Container>
+        <Container onDraw={onDraw}>
             <Tools>
                 <Tool>
                     <PenIcon />
@@ -49,8 +49,9 @@ function DrawingTools() {
 
 export default DrawingTools;
 
-const Container = styled(Center)`
+const Container = styled(Center)<{ onDraw: boolean }>`
     flex-direction: column;
+    opacity: ${({ onDraw }) => (onDraw ? 1 : 0)};
 `;
 
 const Tools = styled.div`
