@@ -7,44 +7,46 @@ import {
     OnGatewayInit,
     SubscribeMessage,
     WebSocketGateway,
-    WebSocketServer,
 } from '@nestjs/websockets';
-import { Socket, Server } from 'socket.io';
+import { Socket } from 'socket.io';
 
-const lobbyList = {};
+const lobbyStore = {};
 
-@WebSocketGateway()
+@WebSocketGateway(8180, { namespace: 'core' })
 export class CoreGateway implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect {
     handleDisconnect(client: any) {
         console.log('disconnect');
     }
+
     handleConnection(client: any, ...args: any[]) {
         console.log('connect');
     }
+
     afterInit(server: any) {
         console.log('afterInit');
     }
+
     @SubscribeMessage('message')
     handleMessage(client: any, payload: any): string {
         return 'Hello world!';
     }
+
     @SubscribeMessage('create-lobby')
     handleCreateLobby(@ConnectedSocket() client: Socket, @MessageBody() payload: any) {
-        const lobbyKey = stringToInteger(new Date().toString());
-        const lobbyInfo = {
+        const lobbyId = stringToInteger(new Date().toString());
+        const newLobby = {
+            id: lobbyId,
             owner: client,
-            key: lobbyKey,
         };
-        lobbyList[lobbyKey] = lobbyInfo;
-        console.log(lobbyList);
-        return lobbyInfo;
+        lobbyStore[lobbyId] = newLobby;
+        return newLobby;
     }
 }
 
 function stringToInteger(str) {
-    var hash = 0,
-        i,
-        chr;
+    let hash = 0;
+    let i;
+    let chr;
     if (str.length === 0) return hash;
     for (i = 0; i < str.length; i++) {
         chr = str.charCodeAt(i);
