@@ -24,4 +24,17 @@ export class LobbyService {
         };
         return lobbyId;
     }
+
+    async joinLobby(client: Socket, lobbyId: string) {
+        const lobby = this.store[lobbyId];
+        if (lobby === undefined) {
+            return new Error('Lobby not found');
+        }
+        lobby.players.push(client);
+        return lobby.players;
+    }
+
+    getLobby(lobbyId: string): Lobby | undefined {
+        return this.store[lobbyId];
+    }
 }
