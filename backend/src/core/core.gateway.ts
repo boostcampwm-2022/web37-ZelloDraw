@@ -27,8 +27,9 @@ export class CoreGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
     }
 
     @SubscribeMessage('create-lobby')
-    handleCreateLobby(@ConnectedSocket() client: Socket) {
+    async handleCreateLobby(@ConnectedSocket() client: Socket) {
         const lobbyId = this.lobbyService.createLobby(client);
+        await client.join(lobbyId);
         return lobbyId;
     }
 }
