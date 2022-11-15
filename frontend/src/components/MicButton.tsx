@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
-import micOffImg from '../assets/buttons/mic-off-btn.svg';
-import micOnImg from '../assets/buttons/mic-on-btn.svg';
+import micOffImg from '@assets/buttons/mic-off-btn.svg';
+import micOnImg from '@assets/buttons/mic-on-btn.svg';
 import styled from 'styled-components';
 
 function MicButton() {
-    const [isOn, setIsOn] = useState(true);
+    const [isOn, setIsOn] = useState<boolean>(true);
     const onBtnClick = () => setIsOn(!isOn);
 
     return (
@@ -24,7 +24,7 @@ const MicBtnSet = styled.div`
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    width: 80px;
+    width: 85px;
 `;
 
 const MicBtn = styled.button`

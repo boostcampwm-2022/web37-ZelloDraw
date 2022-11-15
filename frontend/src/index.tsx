@@ -4,7 +4,7 @@ import './index.css';
 import App from './App';
 import { BrowserRouter } from 'react-router-dom';
 import { ThemeProvider } from 'styled-components';
-import { ZelloTheme } from './styles/ZelloTheme';
+import { ZelloTheme } from '@styles/ZelloTheme';
 import { GlobalStyle } from '@styles/GlobalStyle';
 
 const root = ReactDOM.createRoot(document.getElementById('root') as HTMLElement);

@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
-import cameraOffImg from '../assets/buttons/camera-off-btn.svg';
-import cameraOnImg from '../assets/buttons/camera-on-btn.svg';
+import cameraOffImg from '@assets/buttons/camera-off-btn.svg';
+import cameraOnImg from '@assets/buttons/camera-on-btn.svg';
 import styled from 'styled-components';
 
 function CameraButton() {
-    const [isOn, setIsOn] = useState(true);
+    const [isOn, setIsOn] = useState<boolean>(true);
     const onBtnClick = () => setIsOn(!isOn);
 
     return (
@@ -24,7 +24,7 @@ const CameraBtnSet = styled.div`
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    width: 84px;
+    width: 85px;
 `;
 
 const CameraBtn = styled.button`
