@@ -2,8 +2,8 @@ import React, { useState } from 'react';
 import styled from 'styled-components';
 import Card from '@components/Card';
 import VideoCallUser from '@components/VideoCallUser';
-import CameraButton from './CameraButton';
-import MicButton from './MicButton';
+import CameraButton from '@components/CameraButton';
+import MicButton from '@components/MicButton';
 
 function UserCard() {
     const [micState, setMicState] = useState<boolean>(true);

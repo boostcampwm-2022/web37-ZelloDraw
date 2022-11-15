@@ -19,7 +19,7 @@ const TextBox = styled.div`
     margin: 0 28px 24px auto;
 `;
 
-const Title = styled.text`
+const Title = styled.span`
     font-family: Sniglet;
     font-weight: 800;
     line-height: 30px;

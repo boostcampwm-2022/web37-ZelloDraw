@@ -5,13 +5,16 @@ import UserList from '@components/UserList';
 import CameraButton from '@components/CameraButton';
 import MicButton from '@components/MicButton';
 import { ReactComponent as SmallLogo } from '@assets/logo-s.svg';
+import useMovePage from '@hooks/useMovePage';
 
 function Lobby() {
+    const [setPage] = useMovePage();
+
     return (
         <>
             <LobbyContainer>
                 <LogoWrapper>
-                    <SmallLogo style={{ cursor: 'pointer' }} />
+                    <SmallLogo style={{ cursor: 'pointer' }} onClick={() => setPage('/')} />
                 </LogoWrapper>
                 <FlexBox>
                     <UserList />

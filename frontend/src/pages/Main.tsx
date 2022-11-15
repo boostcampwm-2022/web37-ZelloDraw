@@ -5,11 +5,14 @@ import { ReactComponent as MainLogo } from '@assets/logo-l.svg';
 import InfoCard from '@components/InfoCard';
 import GuestEntranceMessage from '@components/GuestMessageBox';
 import MadeByText from '@components/MadeByText';
+import useMovePage from '@hooks/useMovePage';
 
 function Main() {
+    const [setPage] = useMovePage();
+
     return (
         <MainContainer>
-            <MainLogo style={{ cursor: 'pointer' }} />
+            <MainLogo style={{ cursor: 'pointer' }} onClick={() => setPage('/')} />
             <CardContainer>
                 <UserCard />
                 <InfoCard />

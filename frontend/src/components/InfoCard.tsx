@@ -1,10 +1,13 @@
 import React from 'react';
 import styled from 'styled-components';
 import Card from '@components/Card';
-import PrimaryButton from './PrimaryButton';
+import PrimaryButton from '@components/PrimaryButton';
 import Carousel from '@components/Carousel';
+import useMovePage from '@hooks/useMovePage';
 
 function InfoCard() {
+    const [setPage] = useMovePage();
+
     return (
         <Card>
             <CardInner>
@@ -12,7 +15,7 @@ function InfoCard() {
                 <InfoDiv>
                     <Carousel />
                 </InfoDiv>
-                <ButtonWrapper>
+                <ButtonWrapper onClick={() => setPage('/lobby')}>
                     <PrimaryButton topText='ENTER ROOM' bottomText='입장하기' />
                 </ButtonWrapper>
             </CardInner>

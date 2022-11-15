@@ -2,8 +2,8 @@ import React from 'react';
 import styled from 'styled-components';
 import Card from '@components/Card';
 import InviteButton from '@components/InviteButton';
-import EmptyVideoCall from './EmptyVideoCall';
-import VideoCallUser from './VideoCallUser';
+import EmptyVideoCall from '@components/EmptyVideoCall';
+import VideoCallUser from '@components/VideoCallUser';
 
 function UserList() {
     const userList: string[] = ['젤로조아13579', '젤로조아13578', '젤로조아13577'];

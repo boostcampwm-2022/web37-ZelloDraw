@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import cameraOffImg from '../assets/buttons/camera-off-btn.svg';
-import cameraOnImg from '../assets/buttons/camera-on-btn.svg';
+import cameraOffImg from '@assets/buttons/camera-off-btn.svg';
+import cameraOnImg from '@assets/buttons/camera-on-btn.svg';
 import styled from 'styled-components';
 
 function CameraButton() {

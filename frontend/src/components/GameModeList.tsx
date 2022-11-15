@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import Card from '@components/Card';
 import GameModeItem from '@components/GameModeItem';
 import { ReactComponent as GirlWithPencilChar } from '@assets/girl-with-pencil 1.svg';
-import PrimaryButton from './PrimaryButton';
+import PrimaryButton from '@components/PrimaryButton';
 
 function GameModeList() {
     const [selected, setSelected] = useState<number>(0);
