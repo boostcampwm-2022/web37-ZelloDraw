@@ -14,7 +14,7 @@ import { UsePipes, ValidationPipe } from '@nestjs/common';
 import { JoinLobbyRequest, CreateLobbyRequest } from './user.dto';
 import { UserService } from './user.service';
 
-@UsePipes(new ValidationPipe())
+// @UsePipes(new ValidationPipe())
 @WebSocketGateway(8180, { namespace: 'core' })
 export class CoreGateway implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect {
     constructor(
@@ -41,7 +41,7 @@ export class CoreGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
         @MessageBody() body: CreateLobbyRequest,
     ) {
         // TODO: socket connection 라이프 사이클에 user 생성, 삭제 로직 할당
-        const user = this.userService.createUser(body.userName, client.id);
+        const user = this.userService.createUser(client.id, body.userName);
         const lobbyId = this.lobbyService.createLobby(user);
         await client.join(lobbyId);
         return lobbyId;
