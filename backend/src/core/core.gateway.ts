@@ -44,7 +44,6 @@ export class CoreGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
         return lobby.players;
     }
 
-
     @SubscribeMessage('leave-lobby')
     async handleLeaveLobby(@ConnectedSocket() client: Socket, @MessageBody() lobbyId: string) {
         const lobby = this.lobbyService.getLobby(lobbyId);
@@ -53,6 +52,7 @@ export class CoreGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
         // TODO: 현재 클라이언트 이름 없이 socket 정보만 관리하고 있음. 나중에 클라이언트 정보 정해지면, 클라이언트 정보로 변경 필요
         client.broadcast.to(lobbyId).emit('leave-lobby', client.id);
         return null;
+    }
 
     @SubscribeMessage('game-start')
     async handleGameStart(@ConnectedSocket() client: Socket, @MessageBody() lobbyId: string) {
@@ -69,6 +69,5 @@ export class CoreGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
             players: lobby.players,
         };
         client.nsp.to(lobbyId).emit('game-start', gameMock);
-      
     }
 }
