@@ -19,7 +19,7 @@ export class LobbyService {
         this.store[lobbyId] = {
             id: lobbyId,
             host: user,
-            users: [user],
+            users: [],
         };
         return lobbyId;
     }

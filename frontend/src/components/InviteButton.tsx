@@ -1,9 +1,13 @@
 import React from 'react';
 import styled from 'styled-components';
+import { getParam } from '@utils/common';
 
 function InviteButton() {
+    const onClickInviteBtn = () => {
+        console.log(getParam('id'));
+    };
     return (
-        <InviteBtn>
+        <InviteBtn onClick={onClickInviteBtn}>
             INVITE<h3>초대하기</h3>
         </InviteBtn>
     );

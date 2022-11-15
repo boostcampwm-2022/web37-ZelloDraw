@@ -11,10 +11,16 @@ import {
 import { Socket } from 'socket.io';
 import { LobbyService } from './lobby.service';
 import { UsePipes, ValidationPipe } from '@nestjs/common';
-import { JoinLobbyRequest, CreateLobbyRequest } from './user.dto';
+import {
+    JoinLobbyRequest,
+    CreateLobbyRequest,
+    JoinLobbyResponse,
+    JoinLobbyReEmitRequest,
+} from './user.dto';
 import { UserService } from './user.service';
 
-@UsePipes(new ValidationPipe())
+// TODO: Validation Pipe 관련 내용 학습 + 소켓에서 에러 처리 어케할건지 학습 하고 적용하기
+// @UsePipes(new ValidationPipe())
 @WebSocketGateway(8180, { namespace: 'core' })
 export class CoreGateway implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect {
     constructor(
@@ -41,7 +47,7 @@ export class CoreGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
         @MessageBody() body: CreateLobbyRequest,
     ) {
         // TODO: socket connection 라이프 사이클에 user 생성, 삭제 로직 할당
-        const user = this.userService.createUser(body.userName, client.id);
+        const user = this.userService.createUser(client.id, body.userName);
         const lobbyId = this.lobbyService.createLobby(user);
         await client.join(lobbyId);
         return lobbyId;
@@ -58,9 +64,14 @@ export class CoreGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 
         await this.lobbyService.joinLobby(user, lobby.id);
         await client.join(body.lobbyId);
-        // TODO: 현재 클라이언트 이름 없이 socket 정보만 관리하고 있음. 나중에 클라이언트 정보 정해지면, 클라이언트 정보로 변경 필요
-        client.broadcast.to(lobby.id).emit('join-lobby', client);
-        return lobby.users;
+        client
+            .to(lobby.id)
+            // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
+            .emit('join-lobby', { userName: body.userName } as JoinLobbyReEmitRequest);
+
+        return lobby.users.map((user) => {
+            return { userName: user.name };
+        }) as JoinLobbyResponse;
     }
 
     @SubscribeMessage('leave-lobby')
