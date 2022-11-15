@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { Player } from './player.dto';
+import { User } from './user.model';
 
 export interface LobbyStore {
     [key: string]: Lobby;
@@ -7,33 +7,33 @@ export interface LobbyStore {
 
 export interface Lobby {
     id: string;
-    owner: Player;
-    players: Player[];
+    host: User;
+    users: User[];
 }
 @Injectable()
 export class LobbyService {
     store: LobbyStore = {};
 
-    createLobby(clientPlayer: Player): string {
-        const lobbyId = `${clientPlayer.socketId}${new Date().getTime()}`;
+    createLobby(user: User): string {
+        const lobbyId = `${user.socketId}${new Date().getTime()}`;
         this.store[lobbyId] = {
             id: lobbyId,
-            owner: clientPlayer,
-            players: [clientPlayer],
+            host: user,
+            users: [user],
         };
         return lobbyId;
     }
 
-    async joinLobby(clientPlayer: Player, lobbyId: string) {
+    async joinLobby(user: User, lobbyId: string) {
         const lobby = this.getLobby(lobbyId);
-        lobby.players.push(clientPlayer);
-        return lobby.players;
+        lobby.users.push(user);
+        return lobby.users;
     }
 
-    async leaveLobby(clientPlayer: Player, lobbyId: string) {
+    async leaveLobby(user: User, lobbyId: string) {
         const lobby = this.getLobby(lobbyId);
-        lobby.players = lobby.players.filter((player) => player.socketId !== clientPlayer.socketId);
-        return lobby.players;
+        lobby.users = lobby.users.filter((iUser) => iUser.socketId !== user.socketId);
+        return lobby.users;
     }
 
     validateLobby(lobbyId: string): void {
@@ -42,9 +42,9 @@ export class LobbyService {
         }
     }
 
-    isLobbyOwner(clientPlayer: Player, lobbyId: string): boolean {
+    isLobbyOwner(user: User, lobbyId: string): boolean {
         const lobby = this.getLobby(lobbyId);
-        return lobby.owner.socketId === clientPlayer.socketId;
+        return lobby.host.socketId === user.socketId;
     }
 
     getLobby(lobbyId: string): Lobby | undefined {

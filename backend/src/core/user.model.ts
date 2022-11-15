@@ -1,6 +1,6 @@
 import { IsNotEmpty } from 'class-validator';
 
-export class Player {
+export class User {
     @IsNotEmpty()
     socketId: string;
 

@@ -1,11 +1,11 @@
 import { Injectable } from '@nestjs/common';
 
-import { Player } from './player.dto';
+import { User } from './user.model';
 
 @Injectable()
 export class UserService {
     // TODO: 고민해보고 Map으로 변경할지 확인
-    store: { [key: string]: Player } = {};
+    store: { [key: string]: User } = {};
 
     validateUser(socketId: string): void {
         if (this.store[socketId] === undefined) {
@@ -13,15 +13,15 @@ export class UserService {
         }
     }
 
-    getUser(socketId: string): Player {
+    getUser(socketId: string): User {
         this.validateUser(socketId);
         return this.store[socketId];
     }
 
-    createUser(socketId: string, name: string): Player {
-        const player = new Player(socketId, name);
-        this.store[socketId] = player;
-        return player;
+    createUser(socketId: string, name: string): User {
+        const user = new User(socketId, name);
+        this.store[socketId] = user;
+        return user;
     }
 
     deleteUser(socketId: string): void {

@@ -1,8 +1,8 @@
 import { IsNotEmpty } from 'class-validator';
 
-export class Request {
+export class CreateLobbyRequest {
     @IsNotEmpty()
-    public name: string;
+    public userName: string;
 }
 
 export class JoinLobbyRequest {
