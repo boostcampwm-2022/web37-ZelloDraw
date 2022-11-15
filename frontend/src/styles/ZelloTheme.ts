@@ -1,9 +1,9 @@
-const colors = {
+export const colors = {
     primary: '#012CAE',
     primaryLight: '#5C81F0',
     primaryDark: '#102B7B',
-    black: '#102B7B',
-    blackT1: '#001D2E',
+    black: '#001D2E',
+    blackT1: 'rgba(0,29,46,0.7)',
     white: '#F6F5F8',
     whiteT1: 'rgba(246,245,248,0.25)',
     whiteT2: 'rgba(246,245,248,0.6)',
@@ -16,6 +16,8 @@ const colors = {
     pink: '#FF65AB',
     purple: '#8073EC',
     brown: '#DC8D7C',
+    rainbow:
+        'linear-gradient(#FC5D4C 0%, #FDBF22 27.08%, #05B98F 52.6%, #24B8F2 73.96%, #8073EC 100%)',
 };
 
 export const ZelloTheme = {
