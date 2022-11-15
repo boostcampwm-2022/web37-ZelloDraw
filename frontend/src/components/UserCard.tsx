@@ -4,15 +4,15 @@ import Card from '@components/Card';
 import CameraButton from '@components/CameraButton';
 import MicButton from '@components/MicButton';
 import { userState } from '../atoms/user';
-import { useSetRecoilState } from 'recoil';
+import { useRecoilState } from 'recoil';
 
 function UserCard() {
-    const setUserState = useSetRecoilState(userState);
+    const [user, setUserState] = useRecoilState(userState);
     const [micState, setMicState] = useState<boolean>(true);
     const [cameraState, setCameraState] = useState<boolean>(true);
 
     const setUserNickname = (e: React.ChangeEvent<HTMLInputElement>) => {
-        setUserState(e.target.value);
+        setUserState({ ...user, name: e.target.value });
     };
 
     return (
