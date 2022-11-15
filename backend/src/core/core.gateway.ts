@@ -46,7 +46,7 @@ export class CoreGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 
     @SubscribeMessage('leave-lobby')
     async handleLeaveLobby(@ConnectedSocket() client: Socket, @MessageBody() lobbyId: string) {
-        const lobby = this.lobbyService.getLobby(lobbyId);
+        this.lobbyService.validateLobby(lobbyId);
         await this.lobbyService.leaveLobby(client, lobbyId);
         await client.leave(lobbyId);
         // TODO: 현재 클라이언트 이름 없이 socket 정보만 관리하고 있음. 나중에 클라이언트 정보 정해지면, 클라이언트 정보로 변경 필요
@@ -56,14 +56,11 @@ export class CoreGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 
     @SubscribeMessage('game-start')
     async handleGameStart(@ConnectedSocket() client: Socket, @MessageBody() lobbyId: string) {
-        const lobby = this.lobbyService.getLobby(lobbyId);
-        if (lobby === undefined)
-            // TODO: 소켓 클라이언트에게 에러 전달 방법(에러 핸들링) 확인 필요.
-            throw new Error('Lobby not found');
         if (this.lobbyService.isLobbyOwner(client, lobbyId))
             throw new Error('Only owner can start game');
         // TODO: GameStart 로직 처리 (게임 시작시 게임의 상태 정보 변경)
         // TODO: gameMock 데이터 대신 실제 게임 데이터로 변경 필요
+        const lobby = this.lobbyService.getLobby(lobbyId);
         const gameMock = {
             id: lobbyId,
             players: lobby.players,

@@ -37,20 +37,19 @@ export class LobbyService {
         return lobby.players;
     }
 
+    validateLobby(lobbyId: string): void {
+        if (this.store[lobbyId] === undefined) {
+            throw Error('Lobby is not exists');
+        }
+    }
+
     isLobbyOwner(client: Socket, lobbyId: string): boolean {
         const lobby = this.getLobby(lobbyId);
-        if (lobby === undefined) {
-            return false;
-        }
         return lobby.owner === client.id;
     }
 
     getLobby(lobbyId: string): Lobby | undefined {
-        const lobby = this.store[lobbyId];
-        if (lobby === undefined) {
-            // TODO: 소켓 클라이언트에게 에러 전달 방법(에러 핸들링) 확인 필요.
-            throw new Error('Lobby not found');
-        }
-        return lobby;
+        this.validateLobby(lobbyId);
+        return this.store[lobbyId];
     }
 }
