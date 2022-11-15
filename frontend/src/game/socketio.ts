@@ -7,11 +7,11 @@ export const emitStartGameToSocket = () => {
     socket.emit('start-game', { lobbyId: '1234' });
 };
 
-export const getRandomWordFromSocket = () => {
-    let randomWord = '';
-    socket.on('start-game', (payload) => {
-        randomWord = payload.randomWord;
-        console.log('randomWord', randomWord);
+export const getRandomWordFromSocket = async () => {
+    const randomWord = await new Promise<string>((resolve) => {
+        socket.on('start-game', (payload: { randomWord: string }) => {
+            resolve(payload.randomWord);
+        });
     });
 
     return randomWord;

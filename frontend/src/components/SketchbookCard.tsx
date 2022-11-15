@@ -11,8 +11,11 @@ function SketchbookCard({ onDraw }: { onDraw: boolean }) {
     const [word, setWord] = useState('');
 
     useEffect(() => {
-        const randomWord = getRandomWordFromSocket();
-        setWord(randomWord);
+        getRandomWordFromSocket()
+            .then((randomWord: string) => {
+                setWord(randomWord);
+            })
+            .catch((err) => console.error(err));
     }, []);
 
     return (
