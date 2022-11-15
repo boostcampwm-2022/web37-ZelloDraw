@@ -1,6 +1,6 @@
 import { io, Socket } from 'socket.io-client';
 
-const socket: Socket = io('ws://localhost:8180', { transports: ['websocket'] });
+const socket: Socket = io('ws://localhost:8180/core', { transports: ['websocket'] });
 
 export const emitStartGameToSocket = () => {
     console.log('socket', socket);

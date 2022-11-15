@@ -15,7 +15,7 @@ import { JoinLobbyRequest, CreateLobbyRequest } from './user.dto';
 import { UserService } from './user.service';
 
 @UsePipes(new ValidationPipe())
-@WebSocketGateway(8180, { namespace: 'core' })
+@WebSocketGateway(8180, { namespace: 'core', cors: true })
 export class CoreGateway implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect {
     constructor(
         private readonly lobbyService: LobbyService,
@@ -26,11 +26,13 @@ export class CoreGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
         console.log('disconnect');
     }
 
+    @SubscribeMessage('connection')
     handleConnection(client: any, ...args: any[]) {
         console.log('connect');
     }
 
     afterInit(server: any) {
+        console.log(server);
         console.log('afterInit');
     }
 
@@ -78,24 +80,26 @@ export class CoreGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 
     @SubscribeMessage('start-game')
     async handleGameStart(@ConnectedSocket() client: Socket, @MessageBody() lobbyId: string) {
-        const user = this.userService.getUser(client.id);
+        console.log('start-game');
+        // const user = this.userService.getUser(client.id);
 
-        // if (!this.lobbyService.isLobbyHost(user, lobbyId)) {
-        //     throw new Error('Only host can start game');
-        // }
-        console.log('start-game-server');
+        // if (!this.lobbyService.isLobbyHost(user, lobbyId))
+        // throw new Error('Only host can start game');
         // TODO: GameStart 로직 처리 (게임 시작시 게임의 상태 정보 변경)
         // TODO: gameMock 데이터 대신 실제 게임 데이터로 변경 필요
-        const lobby = this.lobbyService.getLobby(lobbyId);
+        // const lobby = this.lobbyService.getLobby(lobbyId);
+
+        // gateway에는 어떤 코드들이 있어야 하는가?
+        // 이 코드는 gateway에 어울리는 코드인가?
 
         const gameMock = {
             id: lobbyId,
-            users: lobby.users,
+            users: 'test',
             randomWord: '',
         };
-        lobby.users.forEach((user) => {
-            gameMock.randomWord = this.lobbyService.getRandomWord();
-            client.nsp.to(user.socketId).emit('start-game', gameMock);
-        });
+        // lobby.users.forEach((user) => {
+        gameMock.randomWord = this.lobbyService.getRandomWord();
+        client.nsp.to(client.id).emit('start-game', gameMock);
+        // });
     }
 }
