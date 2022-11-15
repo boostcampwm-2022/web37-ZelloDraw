@@ -9,21 +9,18 @@ import { useRecoilValue } from 'recoil';
 import { networkServiceInstance as NetworkService } from '../services/socketService';
 
 function InfoCard() {
-    const userName = useRecoilValue(userState);
+    const user = useRecoilValue(userState);
     const [setPage] = useMovePage();
-    // const [host, setHost] = useState<boolean>(false);
-    const host = false;
     const params = new URLSearchParams(location.search);
 
     const onClickEnterBtn = () => {
         let lobbyId = params.get('id') ?? '';
-        if (host) {
-            NetworkService.emit('create-lobby', { name: userName }, (res: string) => {
-                console.log(res);
+        if (user.isHost) {
+            NetworkService.emit('create-lobby', { userName: user.name }, (res: string) => {
                 lobbyId = res;
+                setPage(`/lobby?id=${lobbyId}`);
             });
         }
-        setPage(`/lobby?id=${lobbyId}`);
     };
 
     return (
@@ -34,7 +31,7 @@ function InfoCard() {
                     <Carousel />
                 </InfoDiv>
                 <ButtonWrapper onClick={onClickEnterBtn}>
-                    {host ? (
+                    {user.isHost ? (
                         <PrimaryButton topText='NEW ROOM' bottomText='방만들기' />
                     ) : (
                         <PrimaryButton topText='ENTER ROOM' bottomText='입장하기' />

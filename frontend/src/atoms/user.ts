@@ -1,6 +1,9 @@
 import { atom } from 'recoil';
 
 export const userState = atom({
-    key: 'name',
-    default: '',
+    key: 'userState',
+    default: {
+        name: 'test',
+        isHost: true,
+    },
 });
