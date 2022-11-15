@@ -80,8 +80,10 @@ export class CoreGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
     async handleGameStart(@ConnectedSocket() client: Socket, @MessageBody() lobbyId: string) {
         const user = this.userService.getUser(client.id);
 
-        if (!this.lobbyService.isLobbyHost(user, lobbyId))
-            throw new Error('Only host can start game');
+        // if (!this.lobbyService.isLobbyHost(user, lobbyId)) {
+        //     throw new Error('Only host can start game');
+        // }
+        console.log('start-game-server');
         // TODO: GameStart 로직 처리 (게임 시작시 게임의 상태 정보 변경)
         // TODO: gameMock 데이터 대신 실제 게임 데이터로 변경 필요
         const lobby = this.lobbyService.getLobby(lobbyId);

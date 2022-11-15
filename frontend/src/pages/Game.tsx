@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Center } from '@styles/styled';
 import SketchbookCard from '@components/SketchbookCard';
 import GameUsers from '@components/GameUsers';
@@ -7,9 +7,19 @@ import PrimaryButton from '@components/PrimaryButton';
 import MicButton from '@components/MicButton';
 import CameraButton from '@components/CameraButton';
 import Logo from '@assets/logo-s.png';
+import { emitStartGameToSocket } from '@game/socketio';
 
 function Game() {
-    const [onDraw, setOnDraw] = useState(true);
+    const [onDraw, setOnDraw] = useState(false);
+
+    // todo: 소켓 이벤트 start-game emit, useEffect
+    // 서버에서 다시 reemit 한 값을 받아서 제시어 콘솔에 찍어보기 => 스케치북 카드
+    // 소켓 부분을 socketio.ts로 빼서 import 해서 사용하기
+    useEffect(() => {
+        console.log('emit start game');
+        emitStartGameToSocket();
+    }, []);
+
     return (
         <Container>
             <GameUsers />
@@ -56,6 +66,7 @@ const SketchbookSection = styled.div`
 const SubmitSection = styled(Center)`
     width: 1120px;
     margin-top: 26px;
+
     > div {
         width: 100%;
     }
@@ -77,6 +88,7 @@ const AnswerInput = styled.input`
         color: ${({ theme }) => theme.color.gray1};
         font-weight: 500;
     }
+
     &:focus {
         border-color: ${({ theme }) => theme.color.green};
     }
@@ -87,6 +99,7 @@ const CamAndMicWrapper = styled.div`
     position: absolute;
     bottom: 24px;
     left: 26px;
+
     > button {
         margin-right: 16px;
     }

@@ -1,11 +1,20 @@
+import { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import Card from '@components/Card';
 import Timer from '@components/Timer';
-import { ReactComponent as Sketchbook } from '@assets/sketchbook.svg';
 import DrawingTools from '@components/DrawingTools';
 import { Center } from '@styles/styled';
+import { ReactComponent as Sketchbook } from '@assets/sketchbook.svg';
+import { getRandomWordFromSocket } from '@game/socketio';
 
 function SketchbookCard({ onDraw }: { onDraw: boolean }) {
+    const [word, setWord] = useState('');
+
+    useEffect(() => {
+        const randomWord = getRandomWordFromSocket();
+        setWord(randomWord);
+    }, []);
+
     return (
         <Card>
             <Container>
@@ -18,7 +27,7 @@ function SketchbookCard({ onDraw }: { onDraw: boolean }) {
                     <Canvas />
                     {onDraw && (
                         <Keyword>
-                            <span>초코파이</span>
+                            <span>{word}</span>
                         </Keyword>
                     )}
                 </SketchbookWrapper>
