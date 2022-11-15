@@ -4,6 +4,7 @@ import { ReactComponent as MicOffIcon } from '@assets/icons/mic-off-video-icon.s
 import { ReactComponent as MicOnIcon } from '@assets/icons/mic-on-video-icon.svg';
 import { ReactComponent as HostIconS } from '@assets/icons/host-icon-s.svg';
 import { ReactComponent as HostIconL } from '@assets/icons/host-icon-l.svg';
+import { Center } from '@styles/styled';
 
 function VideoCallUser({ userName }: { userName: string }) {
     const [videoStream, setVideoStream] = useState<boolean>(false);
@@ -36,12 +37,6 @@ function VideoCallUser({ userName }: { userName: string }) {
 }
 
 export default VideoCallUser;
-
-const Center = styled.div`
-    display: flex;
-    align-items: center;
-    justify-content: center;
-`;
 
 const Container = styled(Center)`
     flex-direction: column;

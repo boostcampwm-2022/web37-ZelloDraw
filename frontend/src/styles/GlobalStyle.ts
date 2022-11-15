@@ -20,7 +20,8 @@ export const GlobalStyle = createGlobalStyle`
     -moz-osx-font-smoothing: grayscale;
     letter-spacing: -0.05rem;
     background: url(${BackgroundImage});
-    background-position: center;
+    background-repeat : no-repeat;
+    background-size : cover;
   }
 
   #root {
