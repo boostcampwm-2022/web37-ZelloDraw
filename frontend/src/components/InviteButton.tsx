@@ -2,8 +2,13 @@ import React from 'react';
 import styled from 'styled-components';
 
 function InviteButton() {
+    const params = new URLSearchParams(location.search);
+
+    const onClickInviteBtn = () => {
+        console.log(params.get('id'));
+    };
     return (
-        <InviteBtn>
+        <InviteBtn onClick={onClickInviteBtn}>
             INVITE<h3>초대하기</h3>
         </InviteBtn>
     );

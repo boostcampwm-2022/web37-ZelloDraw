@@ -1,13 +1,19 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import Card from '@components/Card';
-import VideoCallUser from '@components/VideoCallUser';
 import CameraButton from '@components/CameraButton';
 import MicButton from '@components/MicButton';
+import { userState } from '../atoms/user';
+import { useSetRecoilState } from 'recoil';
 
 function UserCard() {
+    const setUserState = useSetRecoilState(userState);
     const [micState, setMicState] = useState<boolean>(true);
     const [cameraState, setCameraState] = useState<boolean>(true);
+
+    const setUserNickname = (e: React.ChangeEvent<HTMLInputElement>) => {
+        setUserState(e.target.value);
+    };
 
     return (
         <Card>
@@ -15,7 +21,13 @@ function UserCard() {
                 <UserVideo></UserVideo>
                 <UserName>
                     <span>&#123;</span>
-                    <span>젤루조아13579</span>
+                    <span>
+                        <NameInput
+                            type='text'
+                            defaultValue={'젤루조아13579'}
+                            onChange={setUserNickname}
+                        />
+                    </span>
                     <span>&#125;</span>
                 </UserName>
                 <ButtonWrapper>
@@ -78,4 +90,9 @@ const ButtonWrapper = styled.div`
     gap: 20px;
     margin-bottom: 0;
     margin-top: 77px;
+`;
+
+const NameInput = styled.input`
+    width: 201px;
+    // input 최대값 설정하기
 `;

@@ -4,9 +4,27 @@ import Card from '@components/Card';
 import PrimaryButton from '@components/PrimaryButton';
 import Carousel from '@components/Carousel';
 import useMovePage from '@hooks/useMovePage';
+import { userState } from '../atoms/user';
+import { useRecoilValue } from 'recoil';
+import { networkServiceInstance as NetworkService } from '../services/socketService';
 
 function InfoCard() {
+    const userName = useRecoilValue(userState);
     const [setPage] = useMovePage();
+    // const [host, setHost] = useState<boolean>(false);
+    const host = false;
+    const params = new URLSearchParams(location.search);
+
+    const onClickEnterBtn = () => {
+        let lobbyId = params.get('id') ?? '';
+        if (host) {
+            NetworkService.emit('create-lobby', { name: userName }, (res: string) => {
+                console.log(res);
+                lobbyId = res;
+            });
+        }
+        setPage(`/lobby?id=${lobbyId}`);
+    };
 
     return (
         <Card>
@@ -15,8 +33,12 @@ function InfoCard() {
                 <InfoDiv>
                     <Carousel />
                 </InfoDiv>
-                <ButtonWrapper onClick={() => setPage('/lobby')}>
-                    <PrimaryButton topText='ENTER ROOM' bottomText='입장하기' />
+                <ButtonWrapper onClick={onClickEnterBtn}>
+                    {host ? (
+                        <PrimaryButton topText='NEW ROOM' bottomText='방만들기' />
+                    ) : (
+                        <PrimaryButton topText='ENTER ROOM' bottomText='입장하기' />
+                    )}
                 </ButtonWrapper>
             </CardInner>
         </Card>

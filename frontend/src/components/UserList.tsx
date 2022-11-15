@@ -1,12 +1,26 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import Card from '@components/Card';
 import InviteButton from '@components/InviteButton';
 import EmptyVideoCall from '@components/EmptyVideoCall';
 import VideoCallUser from '@components/VideoCallUser';
+import { networkServiceInstance as NetworkService } from '../services/socketService';
 
 function UserList() {
-    const userList: string[] = ['젤로조아13579', '젤로조아13578', '젤로조아13577'];
+    const [userList, setUserList] = useState<string[]>([]);
+    const params = new URLSearchParams(location.search);
+
+    useEffect(() => {
+        NetworkService.emit('join-lobby', params.get('id') ?? '', (res: any[]) => {
+            console.log(res);
+            setUserList(res);
+        });
+        NetworkService.on('join-lobby', (user) => {
+            console.log(user);
+            setUserList([...userList, user]);
+        });
+    }, []);
+
     return (
         <Card>
             <CardInner>
