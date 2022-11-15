@@ -42,7 +42,7 @@ export class LobbyService {
         }
     }
 
-    isLobbyOwner(user: User, lobbyId: string): boolean {
+    isLobbyHost(user: User, lobbyId: string): boolean {
         const lobby = this.getLobby(lobbyId);
         return lobby.host.socketId === user.socketId;
     }
@@ -50,5 +50,13 @@ export class LobbyService {
     getLobby(lobbyId: string): Lobby | undefined {
         this.validateLobby(lobbyId);
         return this.store[lobbyId];
+    }
+
+    getRandomWord(): string {
+        return this.getRandomInt(100);
+    }
+
+    getRandomInt(max) {
+        return Math.floor(Math.random() * max).toString();
     }
 }
