@@ -4,14 +4,14 @@ import GameModeList from '@components/GameModeList';
 import UserList from '@components/UserList';
 import CameraButton from '@components/CameraButton';
 import MicButton from '@components/MicButton';
-import SmallLogo from '@components/logo/SmallLogo';
+import { ReactComponent as SmallLogo } from '@assets/logo-s.svg';
 
 function Lobby() {
     return (
         <>
             <LobbyContainer>
                 <LogoWrapper>
-                    <SmallLogo />
+                    <SmallLogo style={{ cursor: 'pointer' }} />
                 </LogoWrapper>
                 <FlexBox>
                     <UserList />

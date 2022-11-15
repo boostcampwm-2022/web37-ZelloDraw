@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
-import MainLogo from '@components/logo/MainLogo';
 import UserCard from '@components/UserCard';
+import { ReactComponent as MainLogo } from '@assets/logo-l.svg';
 import InfoCard from '@components/InfoCard';
 import GuestEntranceMessage from '@components/GuestMessageBox';
 import MadeByText from '@components/MadeByText';
@@ -9,6 +9,7 @@ import MadeByText from '@components/MadeByText';
 function Main() {
     return (
         <MainContainer>
+            <MainLogo style={{ cursor: 'pointer' }} />
             <CardContainer>
                 <UserCard />
                 <InfoCard />
