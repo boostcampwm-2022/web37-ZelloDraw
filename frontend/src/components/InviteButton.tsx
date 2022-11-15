@@ -17,6 +17,7 @@ function InviteButton() {
     return (
         <InviteBtn onClick={onClickInviteBtn}>
             INVITE<h3>초대하기</h3>
+            {toast && <ToastMessage setToast={setToast} text='🖇 클립보드에 복사되었습니다.' />}
         </InviteBtn>
     );
 }
