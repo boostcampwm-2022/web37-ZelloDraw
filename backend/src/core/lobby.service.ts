@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { Socket } from 'socket.io';
+import { Player } from './player.dto';
 
 export interface LobbyStore {
     [key: string]: Lobby;
@@ -7,33 +7,32 @@ export interface LobbyStore {
 
 export interface Lobby {
     id: string;
-    owner: string;
-    players: string[];
+    owner: Player;
+    players: Player[];
 }
-
 @Injectable()
 export class LobbyService {
     store: LobbyStore = {};
 
-    createLobby(client: Socket): string {
-        const lobbyId = `${client.id}${new Date().getTime()}`;
+    createLobby(clientPlayer: Player): string {
+        const lobbyId = `${clientPlayer.socketId}${new Date().getTime()}`;
         this.store[lobbyId] = {
             id: lobbyId,
-            owner: client.id,
-            players: [],
+            owner: clientPlayer,
+            players: [clientPlayer],
         };
         return lobbyId;
     }
 
-    async joinLobby(client: Socket, lobbyId: string) {
+    async joinLobby(clientPlayer: Player, lobbyId: string) {
         const lobby = this.getLobby(lobbyId);
-        lobby.players.push(client.id);
+        lobby.players.push(clientPlayer);
         return lobby.players;
     }
 
-    async leaveLobby(client: Socket, lobbyId: string) {
+    async leaveLobby(clientPlayer: Player, lobbyId: string) {
         const lobby = this.getLobby(lobbyId);
-        lobby.players = lobby.players.filter((player) => player !== client.id);
+        lobby.players = lobby.players.filter((player) => player.socketId !== clientPlayer.socketId);
         return lobby.players;
     }
 
@@ -43,9 +42,9 @@ export class LobbyService {
         }
     }
 
-    isLobbyOwner(client: Socket, lobbyId: string): boolean {
+    isLobbyOwner(clientPlayer: Player, lobbyId: string): boolean {
         const lobby = this.getLobby(lobbyId);
-        return lobby.owner === client.id;
+        return lobby.owner.socketId === clientPlayer.socketId;
     }
 
     getLobby(lobbyId: string): Lobby | undefined {
