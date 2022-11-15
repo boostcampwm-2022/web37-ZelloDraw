@@ -1,27 +1,33 @@
-import React from 'react';
+import { useEffect } from 'react';
 import styled from 'styled-components';
 import Card from '@components/Card';
 import PrimaryButton from '@components/PrimaryButton';
 import Carousel from '@components/Carousel';
 import useMovePage from '@hooks/useMovePage';
-import { userState } from '../atoms/user';
-import { useRecoilValue } from 'recoil';
+import { userState } from '@atoms/user';
+import { useRecoilState } from 'recoil';
 import { networkServiceInstance as NetworkService } from '../services/socketService';
+import { getParam } from '@utils/common';
 
 function InfoCard() {
-    const user = useRecoilValue(userState);
+    const [user, setUser] = useRecoilState(userState);
     const [setPage] = useMovePage();
-    const params = new URLSearchParams(location.search);
+    const lobbyId = getParam('id');
 
     const onClickEnterBtn = () => {
-        let lobbyId = params.get('id') ?? '';
         if (user.isHost) {
             NetworkService.emit('create-lobby', { userName: user.name }, (res: string) => {
-                lobbyId = res;
-                setPage(`/lobby?id=${lobbyId}`);
+                setPage(`/lobby?id=${res}`);
             });
+        } else {
+            setPage(`/lobby?id=${lobbyId}`);
         }
     };
+
+    useEffect(() => {
+        if (user.isHost) return;
+        setUser({ ...user, isHost: lobbyId === '' });
+    }, []);
 
     return (
         <Card>
@@ -73,7 +79,7 @@ const InfoDiv = styled.div`
     letter-spacing: -0.05em;
     color: ${({ theme }) => theme.color.white};
     display: flex;
-    justify-contents: center;
+    justify-content: center;
 
     h3 {
         width: 403px;

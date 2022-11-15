@@ -1,9 +1,17 @@
 import { atom } from 'recoil';
 
-export const userState = atom({
+interface userStateType {
+    name: string;
+    isHost: boolean | null;
+}
+
+/**
+ * 사용자 정보 (name, host 여부)
+ */
+export const userState = atom<userStateType>({
     key: 'userState',
     default: {
         name: 'test',
-        isHost: true,
+        isHost: null,
     },
 });

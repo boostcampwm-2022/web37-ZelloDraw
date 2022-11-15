@@ -1,4 +1,4 @@
-import React from 'react';
+import { useEffect } from 'react';
 import styled from 'styled-components';
 import GameModeList from '@components/GameModeList';
 import UserList from '@components/UserList';
@@ -6,9 +6,37 @@ import CameraButton from '@components/CameraButton';
 import MicButton from '@components/MicButton';
 import { ReactComponent as SmallLogo } from '@assets/logo-s.svg';
 import useMovePage from '@hooks/useMovePage';
+import { networkServiceInstance as NetworkService } from '../services/socketService';
+import { useRecoilState, useRecoilValue } from 'recoil';
+import { userState } from '@atoms/user';
+import { userListState } from '@atoms/game';
+import { getParam } from '@utils/common';
 
 function Lobby() {
+    const [userList, setUserList] = useRecoilState(userListState);
+    const user = useRecoilValue(userState);
     const [setPage] = useMovePage();
+
+    useEffect(() => {
+        const lobbyId = getParam('id');
+        NetworkService.emit(
+            'join-lobby',
+            { userName: user.name, lobbyId },
+            (res: Array<{ userName: string }>) => {
+                const data = res.map((user) => user.userName);
+                setUserList(data);
+            },
+        );
+    }, []);
+
+    useEffect(() => {
+        NetworkService.on('join-lobby', (user: { userName: string }) => {
+            setUserList([...userList, user.userName]);
+        });
+        return () => {
+            NetworkService.off('join-lobby');
+        };
+    }, [userList]);
 
     return (
         <>

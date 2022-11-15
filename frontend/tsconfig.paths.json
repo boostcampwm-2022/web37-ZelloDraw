@@ -6,7 +6,9 @@
             "@assets/*": ["./assets/*"],
             "@pages/*": ["./pages/*"],
             "@styles/*": ["./styles/*"],
-            "@hooks/*": ["./hooks/*"]
+            "@hooks/*": ["./hooks/*"],
+            "@atoms/*": ["./atoms/*"],
+            "@utils/*": ["./utils/*"]
         }
     }
 }

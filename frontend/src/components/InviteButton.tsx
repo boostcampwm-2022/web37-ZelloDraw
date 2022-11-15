@@ -1,11 +1,10 @@
 import React from 'react';
 import styled from 'styled-components';
+import { getParam } from '@utils/common';
 
 function InviteButton() {
-    const params = new URLSearchParams(location.search);
-
     const onClickInviteBtn = () => {
-        console.log(params.get('id'));
+        console.log(getParam('id'));
     };
     return (
         <InviteBtn onClick={onClickInviteBtn}>

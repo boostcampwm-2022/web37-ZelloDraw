@@ -6,9 +6,12 @@ import InfoCard from '@components/InfoCard';
 import GuestEntranceMessage from '@components/GuestMessageBox';
 import MadeByText from '@components/MadeByText';
 import useMovePage from '@hooks/useMovePage';
+import { useRecoilValue } from 'recoil';
+import { userState } from '@atoms/user';
 
 function Main() {
     const [setPage] = useMovePage();
+    const user = useRecoilValue(userState);
 
     return (
         <MainContainer>
@@ -17,7 +20,7 @@ function Main() {
                 <UserCard />
                 <InfoCard />
             </CardContainer>
-            <GuestEntranceMessage />
+            {!user.isHost && <GuestEntranceMessage />}
             <LogoWrapper>
                 <MadeByText />
             </LogoWrapper>

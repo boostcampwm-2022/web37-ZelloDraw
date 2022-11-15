@@ -4,35 +4,11 @@ import Card from '@components/Card';
 import InviteButton from '@components/InviteButton';
 import EmptyVideoCall from '@components/EmptyVideoCall';
 import VideoCallUser from '@components/VideoCallUser';
-import { networkServiceInstance as NetworkService } from '../services/socketService';
 import { useRecoilValue } from 'recoil';
-import { userState } from '../atoms/user';
+import { userListState } from '@atoms/game';
 
 function UserList() {
-    const [userList, setUserList] = useState<string[]>([]);
-    const user = useRecoilValue(userState);
-    const params = new URLSearchParams(location.search);
-
-    useEffect(() => {
-        const lobbyId = params.get('id') ?? '';
-        NetworkService.emit(
-            'join-lobby',
-            { userName: user.name, lobbyId },
-            (res: Array<{ userName: string }>) => {
-                const data = res.map((user) => user.userName);
-                setUserList(data);
-            },
-        );
-    }, []);
-
-    useEffect(() => {
-        NetworkService.on('join-lobby', (user: { userName: string }) => {
-            setUserList([...userList, user.userName]);
-        });
-        return () => {
-            NetworkService.off('join-lobby');
-        };
-    }, [userList]);
+    const userList = useRecoilValue(userListState);
 
     return (
         <Card>
