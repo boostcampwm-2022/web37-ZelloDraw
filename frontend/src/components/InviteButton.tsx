@@ -1,11 +1,19 @@
-import React from 'react';
+import { useState } from 'react';
 import styled from 'styled-components';
 import { getParam } from '@utils/common';
+import useCopyClipBoard from '@hooks/useCopyClipboard';
+import ToastMessage from '@components/ToastMessage';
 
 function InviteButton() {
+    const [isCopied, onCopy] = useCopyClipBoard();
+    const [toast, setToast] = useState<boolean>(false);
+
     const onClickInviteBtn = () => {
-        console.log(getParam('id'));
+        const invitationLink = `${window.location.origin}?id=${getParam('id')}`;
+        void onCopy(invitationLink);
+        isCopied && setToast(true);
     };
+
     return (
         <InviteBtn onClick={onClickInviteBtn}>
             INVITE<h3>초대하기</h3>
