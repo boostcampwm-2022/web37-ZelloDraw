@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { Socket } from 'socket.io';
+import { User } from './user.model';
 
 export interface LobbyStore {
     [key: string]: Lobby;
@@ -7,49 +7,48 @@ export interface LobbyStore {
 
 export interface Lobby {
     id: string;
-    owner: string;
-    players: string[];
+    host: User;
+    users: User[];
 }
-
 @Injectable()
 export class LobbyService {
     store: LobbyStore = {};
 
-    createLobby(client: Socket): string {
-        const lobbyId = `${client.id}${new Date().getTime()}`;
+    createLobby(user: User): string {
+        const lobbyId = `${user.socketId}${new Date().getTime()}`;
         this.store[lobbyId] = {
             id: lobbyId,
-            owner: client.id,
-            players: [],
+            host: user,
+            users: [user],
         };
         return lobbyId;
     }
 
-    async joinLobby(client: Socket, lobbyId: string) {
+    async joinLobby(user: User, lobbyId: string) {
         const lobby = this.getLobby(lobbyId);
-        lobby.players.push(client.id);
-        return lobby.players;
+        lobby.users.push(user);
+        return lobby.users;
     }
 
-    async leaveLobby(client: Socket, lobbyId: string) {
+    async leaveLobby(user: User, lobbyId: string) {
         const lobby = this.getLobby(lobbyId);
-        lobby.players = lobby.players.filter((player) => player !== client.id);
-        return lobby.players;
+        lobby.users = lobby.users.filter((iUser) => iUser.socketId !== user.socketId);
+        return lobby.users;
+    }
 
-    isLobbyOwner(client: Socket, lobbyId: string): boolean {
-        const lobby = this.getLobby(lobbyId);
-        if (lobby === undefined) {
-            return false;
+    validateLobby(lobbyId: string): void {
+        if (this.store[lobbyId] === undefined) {
+            throw Error('Lobby is not exists');
         }
-        return lobby.owner === client.id;
+    }
+
+    isLobbyOwner(user: User, lobbyId: string): boolean {
+        const lobby = this.getLobby(lobbyId);
+        return lobby.host.socketId === user.socketId;
     }
 
     getLobby(lobbyId: string): Lobby | undefined {
-        const lobby = this.store[lobbyId];
-        if (lobby === undefined) {
-            // TODO: 소켓 클라이언트에게 에러 전달 방법(에러 핸들링) 확인 필요.
-            throw new Error('Lobby not found');
-        }
-        return lobby;
+        this.validateLobby(lobbyId);
+        return this.store[lobbyId];
     }
 }
