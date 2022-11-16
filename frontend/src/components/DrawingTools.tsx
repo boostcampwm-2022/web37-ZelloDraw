@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { colors } from '@styles/ZelloTheme';
 import { ReactComponent as PenIcon } from '@assets/icons/pen-icon.svg';
 import { ReactComponent as PaintIcon } from '@assets/icons/paint-icon.svg';
@@ -5,8 +6,11 @@ import { ReactComponent as EraserIcon } from '@assets/icons/eraser-icon.svg';
 import { ReactComponent as ResetIcon } from '@assets/icons/reset-icon.svg';
 import styled from 'styled-components';
 import { Center } from '@styles/styled';
+import { useRecoilState } from 'recoil';
+import { colorState } from '@atoms/game';
 
 function DrawingTools({ onDraw }: { onDraw: boolean }) {
+    const [selectedColor, setSelectedColor] = useRecoilState<string>(colorState);
     const colorName = [
         'brown',
         'green',
@@ -40,7 +44,13 @@ function DrawingTools({ onDraw }: { onDraw: boolean }) {
             </Tools>
             <ColorPicker>
                 {colorName.map((colorName, index) => (
-                    <Color key={`${colorName} ${index}`} colorName={colorName} />
+                    <Color
+                        type={'button'}
+                        key={`${colorName} ${index}`}
+                        colorName={colorName}
+                        isSelected={colorName === selectedColor}
+                        onClick={() => setSelectedColor(colorName)}
+                    />
                 ))}
             </ColorPicker>
         </Container>
@@ -102,10 +112,11 @@ const ColorPicker = styled.div`
     grid-row-gap: 12px;
 `;
 
-const Color = styled.button<{ colorName: string }>`
+const Color = styled.input<{ colorName: string; isSelected: boolean }>`
     width: 100%;
     height: 100%;
     border-radius: 50%;
     background: ${({ colorName }) => colors[colorName as keyof typeof colors]};
     box-shadow: ${({ theme }) => theme.shadow.btn};
+    border: ${({ isSelected }) => (isSelected ? `3px solid rgba(246, 245, 248, 0.6)` : ``)};
 `;

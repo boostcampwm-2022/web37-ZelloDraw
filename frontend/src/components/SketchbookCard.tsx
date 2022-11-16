@@ -5,9 +5,9 @@ import { ReactComponent as Sketchbook } from '@assets/sketchbook.svg';
 import DrawingTools from '@components/DrawingTools';
 import { Center } from '@styles/styled';
 import useCanvas from '@hooks/useCanvas';
-
 function SketchbookCard({ onDraw }: { onDraw: boolean }) {
     const canvasRef = useCanvas();
+
     return (
         <Card>
             <Container>
