@@ -8,7 +8,8 @@
             "@styles/*": ["./styles/*"],
             "@hooks/*": ["./hooks/*"],
             "@atoms/*": ["./atoms/*"],
-            "@utils/*": ["./utils/*"]
+            "@utils/*": ["./utils/*"],
+            "@backend/*": ["../../backend/src/*"]
         }
     }
 }
