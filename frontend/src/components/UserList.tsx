@@ -1,12 +1,15 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import Card from '@components/Card';
 import InviteButton from '@components/InviteButton';
 import EmptyVideoCall from '@components/EmptyVideoCall';
 import VideoCallUser from '@components/VideoCallUser';
+import { useRecoilValue } from 'recoil';
+import { userListState } from '@atoms/game';
 
 function UserList() {
-    const userList: string[] = ['젤로조아13579', '젤로조아13578', '젤로조아13577'];
+    const userList = useRecoilValue(userListState);
+
     return (
         <Card>
             <CardInner>

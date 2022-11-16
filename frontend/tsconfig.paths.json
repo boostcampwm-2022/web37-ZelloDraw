@@ -7,6 +7,8 @@
             "@pages/*": ["./pages/*"],
             "@styles/*": ["./styles/*"],
             "@hooks/*": ["./hooks/*"],
+            "@atoms/*": ["./atoms/*"],
+            "@utils/*": ["./utils/*"],
             "@game/*": ["./game/*"]
         }
     }

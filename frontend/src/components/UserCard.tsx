@@ -1,13 +1,17 @@
-import React, { useState } from 'react';
+import React from 'react';
 import styled from 'styled-components';
 import Card from '@components/Card';
-import VideoCallUser from '@components/VideoCallUser';
 import CameraButton from '@components/CameraButton';
 import MicButton from '@components/MicButton';
+import { userState } from '@atoms/user';
+import { useRecoilState } from 'recoil';
 
 function UserCard() {
-    const [micState, setMicState] = useState<boolean>(true);
-    const [cameraState, setCameraState] = useState<boolean>(true);
+    const [user, setUserState] = useRecoilState(userState);
+
+    const setUserNickname = (e: React.ChangeEvent<HTMLInputElement>) => {
+        setUserState({ ...user, name: e.target.value });
+    };
 
     return (
         <Card>
@@ -15,7 +19,12 @@ function UserCard() {
                 <UserVideo></UserVideo>
                 <UserName>
                     <span>&#123;</span>
-                    <span>젤루조아13579</span>
+                    <NameInput
+                        type='text'
+                        placeholder={user.name}
+                        onChange={setUserNickname}
+                        maxLength={7}
+                    />
                     <span>&#125;</span>
                 </UserName>
                 <ButtonWrapper>
@@ -45,29 +54,13 @@ const UserVideo = styled.div`
 
 const UserName = styled.div`
     text-align: center;
-
     span {
-        &:not(:nth-of-type(2)) {
-            // 중괄호
-            color: ${({ theme }) => theme.color.whiteT2};
-            font-family: 'Sniglet', cursive;
-            font-weight: 800;
-            font-size: 2rem;
-            padding: 4px;
-        }
-
-        :nth-child(2) {
-            // 유저 이름
-            margin: 0 2px;
-            transform: translateY(-2px);
-            font-style: normal;
-            font-weight: 600;
-            font-size: ${({ theme }) => theme.typo.h3};
-            line-height: 160%;
-            letter-spacing: -0.05em;
-            color: ${({ theme }) => theme.color.yellow};
-            -webkit-text-stroke: 1px ${({ theme }) => theme.color.blackT1};
-        }
+        // 중괄호
+        color: ${({ theme }) => theme.color.whiteT2};
+        font-family: 'Sniglet', cursive;
+        font-weight: 800;
+        font-size: 2rem;
+        padding: 4px;
     }
 `;
 
@@ -78,4 +71,19 @@ const ButtonWrapper = styled.div`
     gap: 20px;
     margin-bottom: 0;
     margin-top: 77px;
+`;
+
+const NameInput = styled.input`
+    width: 201px;
+    background: transparent;
+    text-align: center;
+    margin: 0 2px;
+    transform: translateY(-2px);
+    font-style: normal;
+    font-weight: 600;
+    font-size: ${({ theme }) => theme.typo.h3};
+    line-height: 160%;
+    letter-spacing: -0.05em;
+    color: ${({ theme }) => theme.color.yellow};
+    -webkit-text-stroke: 1px ${({ theme }) => theme.color.blackT1};
 `;
