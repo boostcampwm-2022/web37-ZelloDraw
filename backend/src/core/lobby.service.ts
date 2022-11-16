@@ -1,5 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { User } from './user.model';
+import { UserService } from './user.service';
+import { Round } from './round.model';
 
 export interface LobbyStore {
     [key: string]: Lobby;
@@ -9,9 +11,13 @@ export interface Lobby {
     id: string;
     host: User;
     users: User[];
+    isPlaying: boolean;
+    rounds: Round[];
 }
 @Injectable()
 export class LobbyService {
+    constructor(private readonly userService: UserService) {}
+
     store: LobbyStore = {};
 
     createLobby(user: User): string {
@@ -20,6 +26,8 @@ export class LobbyService {
             id: lobbyId,
             host: user,
             users: [],
+            isPlaying: false,
+            rounds: [],
         };
         return lobbyId;
     }
@@ -27,12 +35,14 @@ export class LobbyService {
     async joinLobby(user: User, lobbyId: string) {
         const lobby = this.getLobby(lobbyId);
         lobby.users.push(user);
+        this.userService.updateUser(user.socketId, { lobbyId });
         return lobby.users;
     }
 
-    async leaveLobby(user: User, lobbyId: string) {
+    leaveLobby(user: User, lobbyId: string) {
         const lobby = this.getLobby(lobbyId);
         lobby.users = lobby.users.filter((iUser) => iUser.socketId !== user.socketId);
+        this.userService.updateUser(user.socketId, { lobbyId: undefined });
         return lobby.users;
     }
 

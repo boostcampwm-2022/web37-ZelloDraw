@@ -3,26 +3,13 @@ import styled from 'styled-components';
 import Card from '@components/Card';
 import PrimaryButton from '@components/PrimaryButton';
 import Carousel from '@components/Carousel';
-import useMovePage from '@hooks/useMovePage';
 import { userState } from '@atoms/user';
 import { useRecoilState } from 'recoil';
-import { networkServiceInstance as NetworkService } from '../services/socketService';
 import { getParam } from '@utils/common';
 
-function InfoCard() {
+function InfoCard({ onHandleEnterLobby }: { onHandleEnterLobby: () => void }) {
     const [user, setUser] = useRecoilState(userState);
-    const [setPage] = useMovePage();
     const lobbyId = getParam('id');
-
-    const onClickEnterBtn = () => {
-        if (user.isHost) {
-            NetworkService.emit('create-lobby', { userName: user.name }, (res: string) => {
-                setPage(`/lobby?id=${res}`);
-            });
-        } else {
-            setPage(`/lobby?id=${lobbyId}`);
-        }
-    };
 
     useEffect(() => {
         if (user.isHost) return;
@@ -37,7 +24,7 @@ function InfoCard() {
                 <InfoDiv>
                     <Carousel />
                 </InfoDiv>
-                <ButtonWrapper onClick={onClickEnterBtn}>
+                <ButtonWrapper onClick={onHandleEnterLobby}>
                     {user.isHost ? (
                         <PrimaryButton topText='NEW ROOM' bottomText='방만들기' />
                     ) : (

@@ -29,4 +29,9 @@ export class UserService {
         // eslint-disable-next-line @typescript-eslint/no-dynamic-delete
         delete this.store[socketId];
     }
+
+    updateUser(socketId: string, param: Partial<User>) {
+        this.store[socketId] = { ...this.store[socketId], ...param };
+        return this.store[socketId];
+    }
 }
