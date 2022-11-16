@@ -7,18 +7,9 @@ import PrimaryButton from '@components/PrimaryButton';
 import MicButton from '@components/MicButton';
 import CameraButton from '@components/CameraButton';
 import SmallLogo from '@assets/logo-s.png';
-import { emitStartGameToSocket } from '@game/socketio';
 
 function Game() {
     const [onDraw, setOnDraw] = useState(true);
-
-    // todo: 소켓 이벤트 start-game emit, useEffect
-    // 서버에서 다시 reemit 한 값을 받아서 제시어 콘솔에 찍어보기 => 스케치북 카드
-    // 소켓 부분을 socketio.ts로 빼서 import 해서 사용하기
-    useEffect(() => {
-        console.log('emit start game');
-        emitStartGameToSocket();
-    }, []);
 
     return (
         <Container>
