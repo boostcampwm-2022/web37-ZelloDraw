@@ -27,6 +27,13 @@ function Lobby() {
                 setUserList(data);
             },
         );
+        NetworkService.on('leave-lobby', (users: Array<{ userName: string }>) => {
+            setUserList(users.map((user) => user.userName));
+        });
+
+        return () => {
+            NetworkService.off('leave-lobby');
+        };
     }, []);
 
     useEffect(() => {
