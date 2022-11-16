@@ -4,7 +4,7 @@ import GameModeList from '@components/GameModeList';
 import UserList from '@components/UserList';
 import CameraButton from '@components/CameraButton';
 import MicButton from '@components/MicButton';
-import { ReactComponent as SmallLogo } from '@assets/logo-s.svg';
+import SmallLogo from '@assets/logo-s.png';
 import useMovePage from '@hooks/useMovePage';
 import { networkServiceInstance as NetworkService } from '../services/socketService';
 import { useRecoilState, useRecoilValue } from 'recoil';
@@ -42,7 +42,7 @@ function Lobby() {
         <>
             <LobbyContainer>
                 <LogoWrapper>
-                    <SmallLogo style={{ cursor: 'pointer' }} onClick={() => setPage('/')} />
+                    <img src={SmallLogo} onClick={() => setPage('/')} />
                 </LogoWrapper>
                 <FlexBox>
                     <UserList />
@@ -63,6 +63,10 @@ const LogoWrapper = styled.div`
     position: absolute;
     top: 12px;
     left: 24px;
+
+    img {
+        cursor: pointer;
+    }
 `;
 
 const LobbyContainer = styled.section`
