@@ -4,8 +4,10 @@ import Timer from '@components/Timer';
 import { ReactComponent as Sketchbook } from '@assets/sketchbook.svg';
 import DrawingTools from '@components/DrawingTools';
 import { Center } from '@styles/styled';
+import useCanvas from '@hooks/useCanvas';
 
 function SketchbookCard({ onDraw }: { onDraw: boolean }) {
+    const canvasRef = useCanvas();
     return (
         <Card>
             <Container>
@@ -15,7 +17,7 @@ function SketchbookCard({ onDraw }: { onDraw: boolean }) {
                 </GameStateSection>
                 <SketchbookWrapper>
                     <Sketchbook />
-                    <Canvas />
+                    <Canvas ref={canvasRef} />
                     {onDraw && (
                         <Keyword>
                             <span>초코파이</span>
