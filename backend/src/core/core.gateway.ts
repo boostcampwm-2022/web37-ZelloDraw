@@ -31,12 +31,13 @@ export class CoreGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
         private readonly roundService: RoundService,
     ) {}
 
-    handleDisconnect(client: any) {
-        console.log('disconnect');
+    handleConnection(client: any) {
+        this.userService.createUser(client.id, 'noname');
     }
 
-    handleConnection(client: any, ...args: any[]) {
-        console.log('connect');
+    async handleDisconnect(@ConnectedSocket() client: Socket) {
+        await this.handleLeaveLobby(client);
+        this.userService.deleteUser(client.id);
     }
 
     afterInit(server: any) {
@@ -44,14 +45,16 @@ export class CoreGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
         console.log('afterInit');
     }
 
+    @SubscribeMessage('update-user-name')
+    async handleCreateUser(@ConnectedSocket() client: Socket, @MessageBody() userName: string) {
+        return this.userService.updateUser(client.id, { name: userName });
+    }
+
     @SubscribeMessage('create-lobby')
     // TODO: return type WsResponse 로 바꿔야함. + 학습 필요.
-    async handleCreateLobby(
-        @ConnectedSocket() client: Socket,
-        @MessageBody() body: CreateLobbyRequest,
-    ) {
+    async handleCreateLobby(@ConnectedSocket() client: Socket) {
         // TODO: socket connection 라이프 사이클에 user 생성, 삭제 로직 할당
-        const user = this.userService.createUser(client.id, body.userName);
+        const user = this.userService.getUser(client.id);
         const lobbyId = this.lobbyService.createLobby(user);
         await client.join(lobbyId);
         return lobbyId;
@@ -64,14 +67,14 @@ export class CoreGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
     ) {
         const lobby = this.lobbyService.getLobby(body.lobbyId);
         // TODO: socket connection 라이프 사이클에 user 생성, 삭제 로직 할당
-        const user = this.userService.createUser(client.id, body.userName);
+        const user = this.userService.getUser(client.id);
 
         await this.lobbyService.joinLobby(user, lobby.id);
         await client.join(body.lobbyId);
         client
             .to(lobby.id)
             // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
-            .emit('join-lobby', { userName: body.userName } as JoinLobbyReEmitRequest);
+            .emit('join-lobby', { userName: user.name } as JoinLobbyReEmitRequest);
 
         return lobby.users.map((user) => {
             return { userName: user.name };
@@ -79,16 +82,18 @@ export class CoreGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
     }
 
     @SubscribeMessage('leave-lobby')
-    async handleLeaveLobby(@ConnectedSocket() client: Socket, @MessageBody() lobbyId: string) {
-        this.lobbyService.validateLobby(lobbyId);
-        this.userService.validateUser(client.id);
-
+    async handleLeaveLobby(@ConnectedSocket() client: Socket) {
         const user = this.userService.getUser(client.id);
-        await this.lobbyService.leaveLobby(user, lobbyId);
-        await client.leave(lobbyId);
-        // TODO: 현재 클라이언트 이름 없이 socket 정보만 관리하고 있음. 나중에 클라이언트 정보 정해지면, 클라이언트 정보로 변경 필요
-        client.broadcast.to(lobbyId).emit('leave-lobby', client.id);
-        return null;
+        if (user.lobbyId === undefined) return;
+
+        const leftUsers = this.lobbyService.leaveLobby(user, user.lobbyId);
+        client.broadcast
+            .to(user.lobbyId)
+            .emit(
+                'leave-lobby',
+                leftUsers.map((user) => ({ userName: user.name })) as JoinLobbyResponse,
+            );
+        await client.leave(user.lobbyId);
     }
 
     @SubscribeMessage('start-game')
