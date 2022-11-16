@@ -127,7 +127,7 @@ export class CoreGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
         // for test
         console.log(lobby);
 
-        const round = this.roundService.startRound(body);
+        const round = this.roundService.startRound(lobby);
         lobby.rounds.push(round);
         client.broadcast.to(body.lobbyId).emit('start-round', round);
         return null;
