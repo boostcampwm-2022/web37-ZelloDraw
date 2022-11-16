@@ -26,6 +26,7 @@ function InfoCard() {
 
     useEffect(() => {
         if (user.isHost) return;
+        // 호스트는 주소 복사로 들어오지 않고 가장 먼저 들어온 사람이기 때문에 lobbyId는 ''이다. isHost가 true가 된다.
         setUser({ ...user, isHost: lobbyId === '' });
     }, []);
 
