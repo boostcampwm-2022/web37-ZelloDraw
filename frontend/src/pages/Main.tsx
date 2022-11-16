@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import styled from 'styled-components';
 import UserCard from '@components/UserCard';
 import { ReactComponent as MainLogo } from '@assets/logo-l.svg';
@@ -7,14 +7,18 @@ import GuestEntranceMessage from '@components/GuestMessageBox';
 import MadeByText from '@components/MadeByText';
 import useMovePage from '@hooks/useMovePage';
 import { useRecoilValue } from 'recoil';
-import { userState } from '@atoms/user';
+import { userState, userStateType } from '@atoms/user';
 import { networkServiceInstance as NetworkService } from '../services/socketService';
 import { getParam } from '@utils/common';
 
 function Main() {
     const [setPage] = useMovePage();
-    const user = useRecoilValue(userState);
+    const user = useRecoilValue<userStateType>(userState);
     const lobbyId = getParam('id');
+
+    useEffect(() => {
+        NetworkService.emit('update-user-name', user.name);
+    }, []);
 
     const onClickEnterBtn = () => {
         if (user.isHost) {

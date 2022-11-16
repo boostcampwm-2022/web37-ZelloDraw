@@ -36,6 +36,11 @@ export class CoreGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
         console.log('afterInit');
     }
 
+    @SubscribeMessage('update-user-name')
+    async handleCreateUser(@ConnectedSocket() client: Socket, @MessageBody() userName: string) {
+        return this.userService.updateUser(client.id, { name: userName });
+    }
+
     @SubscribeMessage('create-lobby')
     // TODO: return type WsResponse 로 바꿔야함. + 학습 필요.
     async handleCreateLobby(@ConnectedSocket() client: Socket) {
