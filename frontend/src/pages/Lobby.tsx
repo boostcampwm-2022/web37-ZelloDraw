@@ -1,10 +1,10 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import GameModeList from '@components/GameModeList';
 import UserList from '@components/UserList';
 import CameraButton from '@components/CameraButton';
 import MicButton from '@components/MicButton';
-import { ReactComponent as SmallLogo } from '@assets/logo-s.svg';
+import SmallLogo from '@assets/logo-s.png';
 import useMovePage from '@hooks/useMovePage';
 import { networkServiceInstance as NetworkService } from '../services/socketService';
 import { useRecoilState, useRecoilValue } from 'recoil';
@@ -16,9 +16,9 @@ function Lobby() {
     const [userList, setUserList] = useRecoilState(userListState);
     const user = useRecoilValue(userState);
     const [setPage] = useMovePage();
+    const lobbyId = getParam('id');
 
     useEffect(() => {
-        const lobbyId = getParam('id');
         NetworkService.emit(
             'join-lobby',
             { userName: user.name, lobbyId },
@@ -49,11 +49,11 @@ function Lobby() {
         <>
             <LobbyContainer>
                 <LogoWrapper>
-                    <SmallLogo style={{ cursor: 'pointer' }} onClick={() => setPage('/')} />
+                    <img src={SmallLogo} onClick={() => setPage('/')} />
                 </LogoWrapper>
                 <FlexBox>
                     <UserList />
-                    <GameModeList />
+                    <GameModeList lobbyId={lobbyId} />
                 </FlexBox>
                 <ButtonWrapper>
                     <CameraButton />
@@ -70,6 +70,10 @@ const LogoWrapper = styled.div`
     position: absolute;
     top: 12px;
     left: 24px;
+
+    img {
+        cursor: pointer;
+    }
 `;
 
 const LobbyContainer = styled.section`

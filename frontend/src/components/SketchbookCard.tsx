@@ -5,17 +5,19 @@ import Timer from '@components/Timer';
 import DrawingTools from '@components/DrawingTools';
 import { Center } from '@styles/styled';
 import { ReactComponent as Sketchbook } from '@assets/sketchbook.svg';
-import { getRandomWordFromSocket } from '@game/socketio';
+import { getRoundInfo } from '@game/NetworkServiceUtils';
+import { roundInfoType } from '@atoms/game';
 
 function SketchbookCard({ onDraw }: { onDraw: boolean }) {
     const [word, setWord] = useState('');
 
     useEffect(() => {
-        getRandomWordFromSocket()
-            .then((randomWord: string) => {
-                setWord(randomWord);
-            })
-            .catch((err) => console.error(err));
+        // getRoundInfo()
+        //     .then((roundInfo: roundInfoType) => {
+        //         if(roundInfo.word !== undefined)
+        //         setWord(roundInfo.word);
+        //     })
+        //     .catch((err) => console.error(err));
     }, []);
 
     return (

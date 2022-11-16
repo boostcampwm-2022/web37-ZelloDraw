@@ -9,7 +9,8 @@
             "@hooks/*": ["./hooks/*"],
             "@atoms/*": ["./atoms/*"],
             "@utils/*": ["./utils/*"],
-            "@game/*": ["./game/*"]
+            "@game/*": ["./game/*"],
+            "@services/*": ["./services/*"]
         }
     }
 }

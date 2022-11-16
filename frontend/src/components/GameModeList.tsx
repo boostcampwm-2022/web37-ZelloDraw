@@ -1,12 +1,15 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import Card from '@components/Card';
 import GameModeItem from '@components/GameModeItem';
 import { ReactComponent as GirlWithPencilChar } from '@assets/girl-with-pencil 1.svg';
 import PrimaryButton from '@components/PrimaryButton';
+import { emitStartGame, onStartGame } from '@game/NetworkServiceUtils';
+import useMovePage from '@hooks/useMovePage';
 
-function GameModeList() {
+function GameModeList({ lobbyId }: { lobbyId: string }) {
     const [selected, setSelected] = useState<number>(0);
+    const [setPage] = useMovePage();
 
     const modes = [
         {
@@ -16,13 +19,23 @@ function GameModeList() {
         },
     ];
 
+    const onClickStartBtn = () => {
+        // 게임시작 이벤트 발생
+        emitStartGame(lobbyId);
+        console.log('게임시작');
+    };
+
+    useEffect(() => {
+        onStartGame(setPage);
+    }, []);
+
     return (
         <Card>
             <CardInner>
                 {modes.map((mode, idx) => (
                     <GameModeItem mode={mode} key={mode.title} isSelected={selected === idx} />
                 ))}
-                <ButtonWrapper>
+                <ButtonWrapper onClick={onClickStartBtn}>
                     <PrimaryButton topText='START GAME' bottomText='시작하기' />
                 </ButtonWrapper>
             </CardInner>
