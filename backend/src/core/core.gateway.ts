@@ -13,7 +13,6 @@ import { LobbyService } from './lobby.service';
 import { RoundService } from './round.service';
 import { UsePipes, ValidationPipe } from '@nestjs/common';
 import { JoinLobbyRequest, JoinLobbyResponse, JoinLobbyReEmitRequest } from './user.dto';
-import { StartRoundRequest, CompleteRoundRequest } from './round.dto';
 import { UserService } from './user.service';
 
 // TODO: Validation Pipe 관련 내용 학습 + 소켓에서 에러 처리 어케할건지 학습 하고 적용하기
@@ -111,25 +110,24 @@ export class CoreGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
     }
 
     @SubscribeMessage('start-round')
-    async handleStartRound(
-        @ConnectedSocket() client: Socket,
-        @MessageBody() body: StartRoundRequest,
-    ) {
+    async handleStartRound(@ConnectedSocket() client: Socket, @MessageBody() lobbyId: string) {
         console.log('start-round');
         const user = this.userService.getUser(client.id);
 
-        if (!this.lobbyService.isLobbyHost(user, body.lobbyId))
+        if (!this.lobbyService.isLobbyHost(user, lobbyId))
             throw new Error('Only host can start game');
 
-        const lobby = this.lobbyService.getLobby(body.lobbyId);
+        const lobby = this.lobbyService.getLobby(lobbyId);
         if (!lobby.isPlaying) throw new Error('게임중이 아닙니다.');
 
         // for test
         console.log(lobby);
 
-        const round = this.roundService.startRound(lobby);
-        lobby.rounds.push(round);
-        client.nsp.to(body.lobbyId).emit('start-round', round);
+        lobby.users.forEach((user) => {
+            // TODO : 사용자에게 전달되는 StartRoundResponse를 각 라운드에 저장.
+            const round = this.roundService.startRound(lobby);
+            client.nsp.to(user.socketId).emit('start-round', round);
+        });
         return null;
     }
 }

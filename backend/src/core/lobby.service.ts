@@ -61,12 +61,4 @@ export class LobbyService {
         this.validateLobby(lobbyId);
         return this.store[lobbyId];
     }
-
-    getRandomWord(): string {
-        return this.getRandomInt(100);
-    }
-
-    getRandomInt(max) {
-        return Math.floor(Math.random() * max).toString();
-    }
 }

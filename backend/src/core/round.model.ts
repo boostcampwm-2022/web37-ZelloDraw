@@ -14,8 +14,8 @@ export class Round {
     limitTime: number;
 
     @IsNotEmpty()
-    word?: string;
+    word?: string[];
 
     @IsNotEmpty()
-    image?: any;
+    image?: any[];
 }

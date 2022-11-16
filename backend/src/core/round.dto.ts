@@ -1,11 +1,21 @@
 import { IsNotEmpty } from 'class-validator';
 
-export class StartRoundRequest {
+export class StartRoundResponse {
     @IsNotEmpty()
-    public lobbyId: string;
-}
+    type: 'DRAW' | 'ANSWER';
 
-export class CompleteRoundRequest {
     @IsNotEmpty()
-    public lobbyId: string;
+    round: number;
+
+    @IsNotEmpty()
+    lobbyId: string;
+
+    @IsNotEmpty()
+    limitTime: number;
+
+    @IsNotEmpty()
+    word?: string;
+
+    @IsNotEmpty()
+    image?: any;
 }
