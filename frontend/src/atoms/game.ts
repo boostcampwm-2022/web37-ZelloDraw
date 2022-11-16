@@ -1,5 +1,4 @@
-import { atom, selector } from 'recoil';
-import { colors } from '@styles/ZelloTheme';
+import { atom } from 'recoil';
 
 /**
  * 로비(게임)에 접속한 유저 리스트
@@ -14,26 +13,5 @@ export const userListState = atom<string[]>({
  */
 export const colorState = atom<string>({
     key: 'colorState',
-    default: 'black',
-});
-
-export const rgbColorSelector = selector<string>({
-    key: 'rgbColor',
-    get: ({ get }) => {
-        const colorName = get(colorState);
-        return colors[colorName];
-    },
-});
-
-interface DrawingToolStateType {
-    isPainting: boolean; // 그리기 드로잉 도구 선택 여부
-    isFilling: boolean; // 채우기 드로잉 도구 선택 여부
-}
-
-export const drawingToolState = atom<DrawingToolStateType>({
-    key: `drawingToolState`,
-    default: {
-        isPainting: false,
-        isFilling: false,
-    },
+    default: '#001D2E',
 });

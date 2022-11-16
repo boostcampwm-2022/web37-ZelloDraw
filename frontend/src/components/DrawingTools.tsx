@@ -1,5 +1,4 @@
-import { useState } from 'react';
-import { colors } from '@styles/ZelloTheme';
+import React, { useState, useEffect, useRef } from 'react';
 import { ReactComponent as PenIcon } from '@assets/icons/pen-icon.svg';
 import { ReactComponent as PaintIcon } from '@assets/icons/paint-icon.svg';
 import { ReactComponent as EraserIcon } from '@assets/icons/eraser-icon.svg';
@@ -8,39 +7,36 @@ import styled from 'styled-components';
 import { Center } from '@styles/styled';
 import { useRecoilState } from 'recoil';
 import { colorState } from '@atoms/game';
+import { colorName, ToolsType } from '@utils/constants';
+import { colors } from '@styles/ZelloTheme';
 
 function DrawingTools({ onDraw }: { onDraw: boolean }) {
     const [selectedColor, setSelectedColor] = useRecoilState<string>(colorState);
-    const colorName = [
-        'brown',
-        'green',
-        'pink',
-        'sky',
-        'red',
-        'primary',
-        'yellow',
-        'purple',
-        'gray1',
-        'black',
-        'white',
-        'rainbow',
+    const [isPicked, setIsPicked] = useState(false);
+
+    const tools = [
+        { element: <PenIcon />, type: ToolsType.PEN },
+        { element: <PaintIcon />, type: ToolsType.PAINT },
+        { element: <EraserIcon />, type: ToolsType.ERASER },
+        { element: <ResetIcon />, type: ToolsType.RESET },
     ];
+
+    const onClickColor = (colorName: string) => {
+        setSelectedColor(colors[colorName]);
+        setIsPicked(false);
+    };
+
+    const onChangeColorPicker = (event: React.ChangeEvent<HTMLInputElement> | any) => {
+        setSelectedColor(event.target.value);
+        setIsPicked(true);
+    };
 
     return (
         <Container onDraw={onDraw}>
             <Tools>
-                <Tool>
-                    <PenIcon />
-                </Tool>
-                <Tool>
-                    <PaintIcon />
-                </Tool>
-                <Tool>
-                    <EraserIcon />
-                </Tool>
-                <Tool>
-                    <ResetIcon />
-                </Tool>
+                {tools.map((tool, index) => (
+                    <Tool key={index}>{tool.element}</Tool>
+                ))}
             </Tools>
             <ColorPicker>
                 {colorName.map((colorName, index) => (
@@ -48,10 +44,17 @@ function DrawingTools({ onDraw }: { onDraw: boolean }) {
                         type={'button'}
                         key={`${colorName} ${index}`}
                         colorName={colorName}
-                        isSelected={colorName === selectedColor}
-                        onClick={() => setSelectedColor(colorName)}
+                        isSelected={colors[colorName] === selectedColor && !isPicked}
+                        onClick={() => onClickColor(colorName)}
                     />
                 ))}
+                <ColorInput
+                    type={'color'}
+                    colorName={'rainbow'}
+                    isSelected={isPicked}
+                    onChange={onChangeColorPicker}
+                    onClick={onChangeColorPicker}
+                />
             </ColorPicker>
         </Container>
     );
@@ -119,4 +122,39 @@ const Color = styled.input<{ colorName: string; isSelected: boolean }>`
     background: ${({ colorName }) => colors[colorName as keyof typeof colors]};
     box-shadow: ${({ theme }) => theme.shadow.btn};
     border: ${({ isSelected }) => (isSelected ? `3px solid rgba(246, 245, 248, 0.6)` : ``)};
+    cursor: pointer;
+`;
+
+const ColorInput = styled(Color)`
+    -webkit-appearance: none;
+    appearance: none;
+    padding: 0;
+    border-radius: 50%;
+    border: ${({ isSelected }) => (isSelected ? `3px solid rgba(246, 245, 248, 0.6)` : ``)};
+
+    &::-webkit-color-swatch-wrapper {
+        padding: 0;
+    }
+
+    &::-moz-color-swatch-wrapper {
+        padding: 0;
+    }
+
+    &::-webkit-color-swatch {
+        appearance: none;
+        border: none;
+        border-radius: 50%;
+        width: 0px;
+    }
+
+    &::-moz-color-swatch {
+        border: none;
+        border-radius: 50%;
+        width: 20px;
+    }
+`;
+
+const HexColorWrapper = styled.div`
+    position: absolute;
+    margin-top: 260px;
 `;

@@ -1,6 +1,7 @@
 import { useState, useRef, useEffect, useCallback } from 'react';
 import { useRecoilValue } from 'recoil';
-import { rgbColorSelector } from './../atoms/game';
+import { CANVAS_WIDTH, CANVAS_HEIGHT } from './../utils/constants';
+import { colorState } from '@atoms/game';
 
 interface Coordinate {
     x: number;
@@ -13,15 +14,15 @@ function useCanvas() {
     const [pos, setPos] = useState<Coordinate | undefined>({ x: 0, y: 0 });
     const [isPainting, setIsPainting] = useState<boolean>(false);
 
-    const selectedRGB = useRecoilValue(rgbColorSelector);
+    const selectedColor = useRecoilValue(colorState);
 
     const getCoordinates = (event: MouseEvent): Coordinate | undefined => {
         return { x: event.offsetX, y: event.offsetY };
     };
 
     const onColorChange = (ctx: CanvasRenderingContext2D) => {
-        ctx.strokeStyle = selectedRGB;
-        ctx.fillStyle = selectedRGB;
+        ctx.strokeStyle = selectedColor;
+        ctx.fillStyle = selectedColor;
     };
 
     const drawLine = (prevPos: Coordinate, newPos: Coordinate) => {
@@ -88,8 +89,8 @@ function useCanvas() {
     useEffect(() => {
         if (!canvasRef.current) return;
         const canvas: HTMLCanvasElement = canvasRef.current;
-        canvas.width = 742;
-        canvas.height = 468;
+        canvas.width = CANVAS_WIDTH;
+        canvas.height = CANVAS_HEIGHT;
     }, []);
 
     return canvasRef;
