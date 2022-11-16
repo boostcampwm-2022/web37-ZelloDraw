@@ -28,12 +28,13 @@ export class CoreGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
         private readonly userService: UserService,
     ) {}
 
-    handleDisconnect(client: any) {
-        console.log('disconnect');
+    handleConnection(client: any) {
+        this.userService.createUser(client.id, 'noname');
     }
 
-    handleConnection(client: any, ...args: any[]) {
-        console.log('connect');
+    async handleDisconnect(@ConnectedSocket() client: Socket) {
+        await this.handleLeaveLobby(client);
+        this.userService.deleteUser(client.id);
     }
 
     afterInit(server: any) {
@@ -47,7 +48,7 @@ export class CoreGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
         @MessageBody() body: CreateLobbyRequest,
     ) {
         // TODO: socket connection 라이프 사이클에 user 생성, 삭제 로직 할당
-        const user = this.userService.createUser(client.id, body.userName);
+        const user = this.userService.getUser(client.id);
         const lobbyId = this.lobbyService.createLobby(user);
         await client.join(lobbyId);
         return lobbyId;
@@ -60,7 +61,7 @@ export class CoreGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
     ) {
         const lobby = this.lobbyService.getLobby(body.lobbyId);
         // TODO: socket connection 라이프 사이클에 user 생성, 삭제 로직 할당
-        const user = this.userService.createUser(client.id, body.userName);
+        const user = this.userService.getUser(client.id);
 
         await this.lobbyService.joinLobby(user, lobby.id);
         await client.join(body.lobbyId);

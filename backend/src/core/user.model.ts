@@ -4,8 +4,9 @@ export class User {
     @IsNotEmpty()
     socketId: string;
 
-    @IsNotEmpty()
     name: string;
+
+    lobbyId: string | undefined;
 
     constructor(socketId: string, name: string) {
         this.socketId = socketId;
