@@ -14,6 +14,7 @@ import { RoundService } from './round.service';
 import { UsePipes, ValidationPipe } from '@nestjs/common';
 import { JoinLobbyRequest, JoinLobbyResponse, JoinLobbyReEmitRequest } from './user.dto';
 import { UserService } from './user.service';
+import { Round } from './round.model';
 
 // TODO: Validation Pipe 관련 내용 학습 + 소켓에서 에러 처리 어케할건지 학습 하고 적용하기
 // @UsePipes(new ValidationPipe())
@@ -123,11 +124,14 @@ export class CoreGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
         // for test
         console.log(lobby);
 
+        const round = new Round();
         lobby.users.forEach((user) => {
-            // TODO : 사용자에게 전달되는 StartRoundResponse를 각 라운드에 저장.
-            const round = this.roundService.startRound(lobby);
-            client.nsp.to(user.socketId).emit('start-round', round);
+            const userRound = this.roundService.startRound(lobby);
+            round.allUserRounds.push(userRound);
+            client.nsp.to(user.socketId).emit('start-round', userRound);
         });
+
+        lobby.rounds.push(round);
 
         setTimeout(() => {
             client.nsp
