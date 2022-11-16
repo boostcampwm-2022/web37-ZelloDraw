@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import GameModeList from '@components/GameModeList';
 import UserList from '@components/UserList';
@@ -16,9 +16,9 @@ function Lobby() {
     const [userList, setUserList] = useRecoilState(userListState);
     const user = useRecoilValue(userState);
     const [setPage] = useMovePage();
+    const lobbyId = getParam('id');
 
     useEffect(() => {
-        const lobbyId = getParam('id');
         NetworkService.emit(
             'join-lobby',
             { userName: user.name, lobbyId },
@@ -53,7 +53,7 @@ function Lobby() {
                 </LogoWrapper>
                 <FlexBox>
                     <UserList />
-                    <GameModeList />
+                    <GameModeList lobbyId={lobbyId} />
                 </FlexBox>
                 <ButtonWrapper>
                     <CameraButton />
