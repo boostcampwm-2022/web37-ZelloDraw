@@ -8,8 +8,6 @@ export class RoundService {
         return {
             round: body.round,
             lobbyId: body.lobbyId,
-            startTime: new Date(),
-            completeTime: new Date(),
         };
     }
 }

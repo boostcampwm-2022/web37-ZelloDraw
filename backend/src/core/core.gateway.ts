@@ -107,14 +107,8 @@ export class CoreGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
         const gameMock = {
             id: lobbyId,
             users: lobby.host,
-            randomWord: '',
         };
-        console.log('lobby user 정보 : ');
-        console.log(lobby.users);
-        lobby.users.forEach((user) => {
-            gameMock.randomWord = this.lobbyService.getRandomWord();
-            client.nsp.to(user.socketId).emit('start-game', gameMock);
-        });
+        client.broadcast.to(lobbyId).emit('start-game', gameMock);
     }
 
     @SubscribeMessage('start-round')

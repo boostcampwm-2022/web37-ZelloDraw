@@ -7,16 +7,8 @@ export class Round {
     @IsNotEmpty()
     lobbyId: string;
 
-    @IsNotEmpty()
-    startTime: Date;
-
-    @IsNotEmpty()
-    completeTime: Date;
-
-    constructor(round: number, lobbyId: string, startTime: Date, completeTime: Date) {
+    constructor(round: number, lobbyId: string) {
         this.round = round;
         this.lobbyId = lobbyId;
-        this.startTime = startTime;
-        this.completeTime = completeTime;
     }
 }
