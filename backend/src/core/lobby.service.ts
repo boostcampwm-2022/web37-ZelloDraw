@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { User } from './user.model';
+import { Round } from './round.model';
 
 export interface LobbyStore {
     [key: string]: Lobby;
@@ -9,6 +10,8 @@ export interface Lobby {
     id: string;
     host: User;
     users: User[];
+    isPlaying: boolean;
+    rounds: Round[];
 }
 @Injectable()
 export class LobbyService {
@@ -20,6 +23,8 @@ export class LobbyService {
             id: lobbyId,
             host: user,
             users: [],
+            isPlaying: false,
+            rounds: [],
         };
         return lobbyId;
     }
