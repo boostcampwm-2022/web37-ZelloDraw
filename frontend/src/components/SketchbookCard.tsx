@@ -6,19 +6,24 @@ import DrawingTools from '@components/DrawingTools';
 import { Center } from '@styles/styled';
 import { ReactComponent as Sketchbook } from '@assets/sketchbook.svg';
 import { getRoundInfo } from '@game/NetworkServiceUtils';
-import { roundInfoType } from '@atoms/game';
+import { roundInfoState, roundInfoType } from '@atoms/game';
+import { useRecoilState } from 'recoil';
 
 function SketchbookCard({ onDraw }: { onDraw: boolean }) {
     const [word, setWord] = useState('');
+    const [roundInfo, setRoundInfo] = useRecoilState<roundInfoType>(roundInfoState);
 
     useEffect(() => {
-        // getRoundInfo()
-        //     .then((roundInfo: roundInfoType) => {
-        //         if(roundInfo.word !== undefined)
-        //         setWord(roundInfo.word);
-        //     })
-        //     .catch((err) => console.error(err));
+        getRoundInfo()
+            .then((roundInfo: roundInfoType) => {
+                setRoundInfo(roundInfo);
+            })
+            .catch((err) => console.error(err));
     }, []);
+
+    useEffect(() => {
+        console.log('roundInfo', roundInfo);
+    }, [roundInfo]);
 
     return (
         <Card>
@@ -32,7 +37,7 @@ function SketchbookCard({ onDraw }: { onDraw: boolean }) {
                     <Canvas />
                     {onDraw && (
                         <Keyword>
-                            <span>{word}</span>
+                            <span>{roundInfo.word}</span>
                         </Keyword>
                     )}
                 </SketchbookWrapper>
