@@ -7,26 +7,22 @@ import MicButton from '@components/MicButton';
 import { ReactComponent as SmallLogo } from '@assets/logo-s.svg';
 import useMovePage from '@hooks/useMovePage';
 import { networkServiceInstance as NetworkService } from '../services/socketService';
-import { useRecoilState, useRecoilValue } from 'recoil';
-import { userState } from '@atoms/user';
+import { useRecoilState } from 'recoil';
 import { userListState } from '@atoms/game';
 import { getParam } from '@utils/common';
+import { JoinLobbyReEmitRequest, JoinLobbyRequest } from '@backend/core/user.dto';
 
 function Lobby() {
     const [userList, setUserList] = useRecoilState(userListState);
-    const user = useRecoilValue(userState);
     const [setPage] = useMovePage();
 
     useEffect(() => {
         const lobbyId = getParam('id');
-        NetworkService.emit(
-            'join-lobby',
-            { userName: user.name, lobbyId },
-            (res: Array<{ userName: string }>) => {
-                const data = res.map((user) => user.userName);
-                setUserList(data);
-            },
-        );
+        const payload: JoinLobbyRequest = { lobbyId };
+        NetworkService.emit('join-lobby', payload, (res: Array<{ userName: string }>) => {
+            const data = res.map((user) => user.userName);
+            setUserList(data);
+        });
         NetworkService.on('leave-lobby', (users: Array<{ userName: string }>) => {
             setUserList(users.map((user) => user.userName));
         });
@@ -37,7 +33,7 @@ function Lobby() {
     }, []);
 
     useEffect(() => {
-        NetworkService.on('join-lobby', (user: { userName: string }) => {
+        NetworkService.on('join-lobby', (user: JoinLobbyReEmitRequest) => {
             setUserList([...userList, user.userName]);
         });
         return () => {
