@@ -8,17 +8,30 @@ import MadeByText from '@components/MadeByText';
 import useMovePage from '@hooks/useMovePage';
 import { useRecoilValue } from 'recoil';
 import { userState } from '@atoms/user';
+import { networkServiceInstance as NetworkService } from '../services/socketService';
+import { getParam } from '@utils/common';
 
 function Main() {
     const [setPage] = useMovePage();
     const user = useRecoilValue(userState);
+    const lobbyId = getParam('id');
+
+    const onClickEnterBtn = () => {
+        if (user.isHost) {
+            NetworkService.emit('create-lobby', { userName: user.name }, (res: string) => {
+                setPage(`/lobby?id=${res}`);
+            });
+        } else {
+            setPage(`/lobby?id=${lobbyId}`);
+        }
+    };
 
     return (
         <MainContainer>
             <MainLogo style={{ cursor: 'pointer' }} onClick={() => setPage('/')} />
             <CardContainer>
                 <UserCard />
-                <InfoCard />
+                <InfoCard onHandleEnterLobby={onClickEnterBtn} />
             </CardContainer>
             {!user.isHost && <GuestEntranceMessage />}
             <LogoWrapper>
