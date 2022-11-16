@@ -107,7 +107,7 @@ export class CoreGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
             id: lobbyId,
             users: lobby.host,
         };
-        client.broadcast.to(lobbyId).emit('start-game', gameMock);
+        client.nsp.to(lobbyId).emit('start-game', gameMock);
     }
 
     @SubscribeMessage('start-round')
