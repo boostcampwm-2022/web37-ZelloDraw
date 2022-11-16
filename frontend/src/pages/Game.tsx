@@ -6,7 +6,7 @@ import GameUsers from '@components/GameUsers';
 import PrimaryButton from '@components/PrimaryButton';
 import MicButton from '@components/MicButton';
 import CameraButton from '@components/CameraButton';
-import Logo from '@assets/logo-s.png';
+import SmallLogo from '@assets/logo-s.png';
 import { emitStartGameToSocket } from '@game/socketio';
 
 function Game() {
@@ -39,7 +39,7 @@ function Game() {
                 <MicButton />
             </CamAndMicWrapper>
             <LogoWrapper>
-                <img src={Logo} />
+                <img src={SmallLogo} />
             </LogoWrapper>
             <div />
         </Container>
