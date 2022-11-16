@@ -12,12 +12,7 @@ import { Socket } from 'socket.io';
 import { LobbyService } from './lobby.service';
 import { RoundService } from './round.service';
 import { UsePipes, ValidationPipe } from '@nestjs/common';
-import {
-    JoinLobbyRequest,
-    CreateLobbyRequest,
-    JoinLobbyResponse,
-    JoinLobbyReEmitRequest,
-} from './user.dto';
+import { JoinLobbyRequest, JoinLobbyResponse, JoinLobbyReEmitRequest } from './user.dto';
 import { StartRoundRequest, CompleteRoundRequest } from './round.dto';
 import { UserService } from './user.service';
 
@@ -107,7 +102,6 @@ export class CoreGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
         // TODO: gameMock 데이터 대신 실제 게임 데이터로 변경 필요
         const lobby = this.lobbyService.getLobby(lobbyId);
         lobby.isPlaying = true;
-        console.log(lobby);
 
         const gameMock = {
             id: lobbyId,
