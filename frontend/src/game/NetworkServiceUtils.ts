@@ -14,7 +14,7 @@ export const onStartGame = (setPage: (url: string) => void) => {
 };
 
 export const emitStartRound = (lobbyId: string) => {
-    NetworkService.emit('start-round', { lobbyId });
+    NetworkService.emit('start-round', lobbyId);
 };
 
 export const getRoundInfo = async () => {

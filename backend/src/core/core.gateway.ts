@@ -15,6 +15,7 @@ import { UsePipes, ValidationPipe } from '@nestjs/common';
 import { JoinLobbyRequest, JoinLobbyResponse, JoinLobbyReEmitRequest } from './user.dto';
 import { UserService } from './user.service';
 import { Round } from './round.model';
+import { StartRoundResponse } from './round.dto';
 
 // TODO: Validation Pipe 관련 내용 학습 + 소켓에서 에러 처리 어케할건지 학습 하고 적용하기
 // @UsePipes(new ValidationPipe())
@@ -96,8 +97,9 @@ export class CoreGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
         console.log('start-game');
         const user = this.userService.getUser(client.id);
 
-        if (!this.lobbyService.isLobbyHost(user, lobbyId))
+        if (!this.lobbyService.isLobbyHost(user, lobbyId)) {
             throw new Error('Only host can start game');
+        }
         // TODO: GameStart 로직 처리 (게임 시작시 게임의 상태 정보 변경)
         // TODO: gameMock 데이터 대신 실제 게임 데이터로 변경 필요
         const lobby = this.lobbyService.getLobby(lobbyId);
@@ -112,7 +114,11 @@ export class CoreGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 
     @SubscribeMessage('start-round')
     async handleStartRound(@ConnectedSocket() client: Socket, @MessageBody() lobbyId: string) {
-        console.log('start-round');
+        // console.log('start-round');
+        // console.log('socket-id : ');
+        // console.log(client.id);
+        // console.log('lobby-id : ');
+        // console.log(lobbyId);
         const user = this.userService.getUser(client.id);
 
         if (!this.lobbyService.isLobbyHost(user, lobbyId))
@@ -122,21 +128,24 @@ export class CoreGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
         if (!lobby.isPlaying) throw new Error('게임중이 아닙니다.');
 
         // for test
-        console.log(lobby);
+        // console.log(lobby);
 
-        const round = new Round();
+        const round: StartRoundResponse[] = [];
         lobby.users.forEach((user) => {
             const userRound = this.roundService.startRound(lobby);
-            round.allUserRounds.push(userRound);
-            client.nsp.to(user.socketId).emit('start-round', userRound);
+            console.log('each round');
+            console.log(userRound);
+            round.push(userRound);
+            client.nsp.to(lobbyId).emit('start-round', userRound);
         });
 
-        lobby.rounds.push(round);
+        lobby.rounds.push(new Round(round));
+        console.log('lobby.rounds');
+        console.log(lobby.rounds);
 
         setTimeout(() => {
-            client.nsp
-                .to(user.socketId)
-                .emit('complete-round', { round: lobby.rounds.length, lobbyId });
+            console.log('발송');
+            client.nsp.to(lobbyId).emit('complete-round', { round: lobby.rounds.length, lobbyId });
         }, 6000);
         return null;
     }
