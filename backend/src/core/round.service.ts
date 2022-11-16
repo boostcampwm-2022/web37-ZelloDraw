@@ -1,16 +1,18 @@
 import { Injectable } from '@nestjs/common';
 import { Round } from './round.model';
-import { StartRoundRequest } from './round.dto';
+import { Lobby } from './lobby.service';
 
 @Injectable()
 export class RoundService {
-    startRound(body: StartRoundRequest): Round {
-        // TODO: 해당 로비의 round 정보를 파악하여, 다음 라운드를 지정.
+    startRound(lobby: Lobby): Round {
+        // round가 짝수이면 단어를 확인하는 시간 ex) 0번째, 2번째 라운드
+        // round가 홀수이면 그림을 그리는 시간 ex) 1번째, 3번째 라운드
+        const roundTime = lobby.rounds.length;
         return {
-            type: 'DRAW',
-            round: 1,
-            lobbyId: body.lobbyId,
-            limitTime: 60,
+            type: roundTime % 2 === 0 ? 'ANSWER' : 'DRAW',
+            round: roundTime,
+            lobbyId: lobby.id,
+            limitTime: roundTime % 2 === 0 ? 30 : 60,
         };
     }
 }
