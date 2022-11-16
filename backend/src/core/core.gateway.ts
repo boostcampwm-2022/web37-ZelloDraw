@@ -104,7 +104,7 @@ export class CoreGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
         lobby.isPlaying = true;
 
         const gameMock = {
-            id: lobbyId,
+            lobbyId,
             users: lobby.host,
         };
         client.nsp.to(lobbyId).emit('start-game', gameMock);
@@ -129,7 +129,7 @@ export class CoreGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 
         const round = this.roundService.startRound(lobby);
         lobby.rounds.push(round);
-        client.broadcast.to(body.lobbyId).emit('start-round', round);
+        client.nsp.to(body.lobbyId).emit('start-round', round);
         return null;
     }
 }
