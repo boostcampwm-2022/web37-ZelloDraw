@@ -37,7 +37,7 @@ function SketchbookCard({ onDraw }: { onDraw: boolean }) {
                     <Canvas />
                     {onDraw && (
                         <Keyword>
-                            <span>{roundInfo.word}</span>
+                            <span>{word}</span>
                         </Keyword>
                     )}
                 </SketchbookWrapper>
