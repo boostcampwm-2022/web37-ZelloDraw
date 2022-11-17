@@ -9,8 +9,7 @@ import { getRoundInfo } from '@game/NetworkServiceUtils';
 import { roundInfoState, roundInfoType } from '@atoms/game';
 import { useRecoilState } from 'recoil';
 
-function SketchbookCard({ onDraw }: { onDraw: boolean }) {
-    const [word, setWord] = useState('');
+function SketchbookCard({ drawState }: { drawState: boolean }) {
     const [roundInfo, setRoundInfo] = useRecoilState<roundInfoType>(roundInfoState);
 
     useEffect(() => {
@@ -35,13 +34,13 @@ function SketchbookCard({ onDraw }: { onDraw: boolean }) {
                 <SketchbookWrapper>
                     <Sketchbook />
                     <Canvas />
-                    {onDraw && (
+                    {drawState && (
                         <Keyword>
                             <span>{word}</span>
                         </Keyword>
                     )}
                 </SketchbookWrapper>
-                <DrawingTools onDraw={onDraw} />
+                <DrawingTools drawState={drawState} />
             </Container>
         </Card>
     );

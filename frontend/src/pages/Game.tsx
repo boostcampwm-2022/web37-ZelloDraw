@@ -15,9 +15,9 @@ function Game() {
         <Container>
             <GameUsers />
             <SketchbookSection>
-                <SketchbookCard onDraw={onDraw} />
+                <SketchbookCard drawState={drawState} />
                 <SubmitSection>
-                    {!onDraw ? (
+                    {!drawState ? (
                         <AnswerInput placeholder={'그림을 보고 답을 맞춰보세요!'} />
                     ) : (
                         <div />
