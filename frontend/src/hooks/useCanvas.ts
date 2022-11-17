@@ -1,7 +1,10 @@
 import { useState, useRef, useEffect, useCallback } from 'react';
-import { useRecoilValue } from 'recoil';
-import { CANVAS_WIDTH, CANVAS_HEIGHT } from './../utils/constants';
-import { colorState } from '@atoms/game';
+import {
+    CANVAS_WIDTH,
+    CANVAS_HEIGHT,
+    PEN_LINE_WIDTH,
+    PEN_DEFAULT_COLOR,
+} from './../utils/constants';
 
 interface Coordinate {
     x: number;
@@ -10,35 +13,21 @@ interface Coordinate {
 
 function useCanvas() {
     const canvasRef = useRef<HTMLCanvasElement>(null);
+    const ctxRef = useRef<any>(null);
 
     const [pos, setPos] = useState<Coordinate | undefined>({ x: 0, y: 0 });
     const [isPainting, setIsPainting] = useState<boolean>(false);
-
-    const selectedColor = useRecoilValue(colorState);
 
     const getCoordinates = (event: MouseEvent): Coordinate | undefined => {
         return { x: event.offsetX, y: event.offsetY };
     };
 
-    const onColorChange = (ctx: CanvasRenderingContext2D) => {
-        ctx.strokeStyle = selectedColor;
-        ctx.fillStyle = selectedColor;
-    };
-
     const drawLine = (prevPos: Coordinate, newPos: Coordinate) => {
-        if (!canvasRef.current) return;
-        const canvas: HTMLCanvasElement = canvasRef.current;
-        const ctx = canvas.getContext('2d');
-        if (!ctx) return;
-
-        onColorChange(ctx);
-
-        ctx.beginPath();
-        ctx.moveTo(prevPos.x, prevPos.y);
-        ctx.lineTo(newPos.x, newPos.y);
-        ctx.closePath();
-
-        ctx.stroke();
+        ctxRef.current.beginPath();
+        ctxRef.current.moveTo(prevPos.x, prevPos.y);
+        ctxRef.current.lineTo(newPos.x, newPos.y);
+        ctxRef.current.closePath();
+        ctxRef.current.stroke();
     };
 
     const onMove = useCallback(
@@ -91,9 +80,15 @@ function useCanvas() {
         const canvas: HTMLCanvasElement = canvasRef.current;
         canvas.width = CANVAS_WIDTH;
         canvas.height = CANVAS_HEIGHT;
+
+        const ctx = canvas.getContext('2d');
+        if (!ctx) return;
+        ctx.strokeStyle = PEN_DEFAULT_COLOR;
+        ctx.lineWidth = PEN_LINE_WIDTH;
+        ctxRef.current = ctx;
     }, []);
 
-    return canvasRef;
+    return [canvasRef, ctxRef];
 }
 
 export default useCanvas;

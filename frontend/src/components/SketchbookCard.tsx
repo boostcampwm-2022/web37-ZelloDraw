@@ -5,8 +5,9 @@ import { ReactComponent as Sketchbook } from '@assets/sketchbook.svg';
 import DrawingTools from '@components/DrawingTools';
 import { Center } from '@styles/styled';
 import useCanvas from '@hooks/useCanvas';
+
 function SketchbookCard({ onDraw }: { onDraw: boolean }) {
-    const canvasRef = useCanvas();
+    const [canvasRef, ctxRef] = useCanvas();
 
     return (
         <Card>
@@ -24,7 +25,7 @@ function SketchbookCard({ onDraw }: { onDraw: boolean }) {
                         </Keyword>
                     )}
                 </SketchbookWrapper>
-                <DrawingTools onDraw={onDraw} />
+                <DrawingTools onDraw={onDraw} ctxRef={ctxRef} />
             </Container>
         </Card>
     );

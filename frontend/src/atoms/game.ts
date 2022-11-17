@@ -7,11 +7,3 @@ export const userListState = atom<string[]>({
     key: 'userListState',
     default: [],
 });
-
-/**
- * 유저의 드로잉 정보 (선택한 색상, 그리기 도구)
- */
-export const colorState = atom<string>({
-    key: 'colorState',
-    default: '#001D2E',
-});

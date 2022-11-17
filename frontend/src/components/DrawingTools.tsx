@@ -1,41 +1,129 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState } from 'react';
 import { ReactComponent as PenIcon } from '@assets/icons/pen-icon.svg';
 import { ReactComponent as PaintIcon } from '@assets/icons/paint-icon.svg';
 import { ReactComponent as EraserIcon } from '@assets/icons/eraser-icon.svg';
 import { ReactComponent as ResetIcon } from '@assets/icons/reset-icon.svg';
+import { ReactComponent as ActivedPenIcon } from '@assets/icons/pen-icon-actived.svg';
+import { ReactComponent as ActivedPaintIcon } from '@assets/icons/paint-icon-actived.svg';
+import { ReactComponent as ActivedEraserIcon } from '@assets/icons/eraser-icon-actived.svg';
+import { ReactComponent as ActivedResetIcon } from '@assets/icons/reset-icon-actived.svg';
 import styled from 'styled-components';
 import { Center } from '@styles/styled';
-import { useRecoilState } from 'recoil';
-import { colorState } from '@atoms/game';
-import { colorName, ToolsType } from '@utils/constants';
+import {
+    colorName,
+    ERASER_COLOR,
+    ERASER_LINE_WIDTH,
+    PEN_LINE_WIDTH,
+    CANVAS_WIDTH,
+    CANVAS_HEIGHT,
+    ToolsType,
+} from '@utils/constants';
 import { colors } from '@styles/ZelloTheme';
 
-function DrawingTools({ onDraw }: { onDraw: boolean }) {
-    const [selectedColor, setSelectedColor] = useRecoilState<string>(colorState);
+interface DrawingToolsType {
+    onDraw: boolean;
+    ctxRef: any;
+}
+
+function DrawingTools({ onDraw, ctxRef }: DrawingToolsType) {
+    const [selectedColor, setSelectedColor] = useState<string>(colors.black);
     const [isPicked, setIsPicked] = useState(false);
+    const [selectedTool, setSelectedTool] = useState(ToolsType.PEN);
+
+    // TODO: 추후 분리예정
+    const onClickPen = () => {
+        ctxRef.current.strokeStyle = selectedColor;
+        ctxRef.current.lineWidth = PEN_LINE_WIDTH;
+    };
+
+    const onColorChange = (color: string) => {
+        ctxRef.current.strokeStyle = color;
+        ctxRef.current.fillStyle = color;
+        ctxRef.current.lineWidth = PEN_LINE_WIDTH;
+    };
+
+    const onClickEraser = () => {
+        ctxRef.current.strokeStyle = ERASER_COLOR;
+        ctxRef.current.lineWidth = ERASER_LINE_WIDTH;
+    };
+
+    const onClickReset = () => {
+        ctxRef.current.clearRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
+    };
 
     const tools = [
-        { element: <PenIcon />, type: ToolsType.PEN },
-        { element: <PaintIcon />, type: ToolsType.PAINT },
-        { element: <EraserIcon />, type: ToolsType.ERASER },
-        { element: <ResetIcon />, type: ToolsType.RESET },
+        {
+            element:
+                selectedTool === ToolsType.PEN ? (
+                    <ActivedPenIcon />
+                ) : (
+                    <PenIcon onClick={onClickPen} />
+                ),
+            type: ToolsType.PEN,
+        },
+        {
+            element:
+                selectedTool === ToolsType.PAINT ? (
+                    <ActivedPaintIcon />
+                ) : (
+                    <PaintIcon onClick={onClickPen} />
+                ),
+            type: ToolsType.PAINT,
+        },
+        {
+            element:
+                selectedTool === ToolsType.ERASER ? (
+                    <ActivedEraserIcon />
+                ) : (
+                    <EraserIcon onClick={onClickEraser} />
+                ),
+            type: ToolsType.ERASER,
+        },
+        {
+            element:
+                selectedTool === ToolsType.RESET ? (
+                    <ActivedResetIcon />
+                ) : (
+                    <ResetIcon onClick={onClickReset} />
+                ),
+            type: ToolsType.RESET,
+        },
     ];
 
     const onClickColor = (colorName: string) => {
         setSelectedColor(colors[colorName]);
+        setSelectedTool(ToolsType.PEN);
         setIsPicked(false);
+        onColorChange(colors[colorName]);
     };
 
     const onChangeColorPicker = (event: React.ChangeEvent<HTMLInputElement> | any) => {
         setSelectedColor(event.target.value);
+        setSelectedTool(ToolsType.PEN);
         setIsPicked(true);
+        onColorChange(event.target.value);
+    };
+
+    const onChangeTool = (tool: ToolsType) => {
+        setSelectedTool(tool);
+        if (tool === ToolsType.RESET) {
+            setTimeout(() => {
+                setSelectedTool(ToolsType.PEN);
+            }, 200);
+        }
     };
 
     return (
         <Container onDraw={onDraw}>
             <Tools>
                 {tools.map((tool, index) => (
-                    <Tool key={index}>{tool.element}</Tool>
+                    <Tool
+                        key={index}
+                        onClick={() => onChangeTool(tool.type)}
+                        isSelected={selectedTool === tool.type}
+                    >
+                        {tool.element}
+                    </Tool>
                 ))}
             </Tools>
             <ColorPicker>
@@ -95,7 +183,7 @@ const Tools = styled.div`
     }
 `;
 
-const Tool = styled.button`
+const Tool = styled.button<{ isSelected: boolean }>`
     width: 48px;
     height: 48px;
     display: flex;
@@ -103,7 +191,8 @@ const Tool = styled.button`
     align-items: center;
     background-color: ${({ theme }) => theme.color.whiteT2};
     border-radius: 10px;
-    border: 1px solid ${({ theme }) => theme.color.brown};
+    border: 1px solid
+        ${(props) => (props.isSelected ? props.theme.color.primaryDark : props.theme.color.brown)};
     box-shadow: ${({ theme }) => theme.shadow.btn};
 `;
 
