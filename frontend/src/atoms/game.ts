@@ -1,7 +1,8 @@
 import { atom } from 'recoil';
 
 export interface roundInfoType {
-    round: 'DRAW' | 'ANSWER';
+    type: 'DRAW' | 'ANSWER';
+    round: number;
     lobbyId: string;
     limitTime: number;
     word?: string;
