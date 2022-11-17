@@ -4,7 +4,7 @@ import GameModeList from '@components/GameModeList';
 import UserList from '@components/UserList';
 import CameraButton from '@components/CameraButton';
 import MicButton from '@components/MicButton';
-import { ReactComponent as SmallLogo } from '@assets/logo-s.svg';
+import SmallLogo from '@assets/logo-s.png';
 import useMovePage from '@hooks/useMovePage';
 import {
     networkServiceInstance as NetworkService,
@@ -18,9 +18,9 @@ import { JoinLobbyReEmitRequest, JoinLobbyRequest } from '@backend/core/user.dto
 function Lobby() {
     const [userList, setUserList] = useRecoilState(userListState);
     const [setPage] = useMovePage();
+    const lobbyId = getParam('id');
 
     useEffect(() => {
-        const lobbyId = getParam('id');
         const payload: JoinLobbyRequest = { lobbyId };
         NetworkService.emit(
             'join-lobby',
@@ -55,12 +55,12 @@ function Lobby() {
     return (
         <>
             <LobbyContainer>
-                <LogoWrapper>
-                    <SmallLogo style={{ cursor: 'pointer' }} onClick={() => setPage('/')} />
+                <LogoWrapper onClick={() => setPage('/')}>
+                    <img src={SmallLogo} />
                 </LogoWrapper>
                 <FlexBox>
                     <UserList />
-                    <GameModeList />
+                    <GameModeList lobbyId={lobbyId} />
                 </FlexBox>
                 <ButtonWrapper>
                     <CameraButton />
@@ -77,6 +77,10 @@ const LogoWrapper = styled.div`
     position: absolute;
     top: 12px;
     left: 24px;
+
+    img {
+        cursor: pointer;
+    }
 `;
 
 const LobbyContainer = styled.section`
