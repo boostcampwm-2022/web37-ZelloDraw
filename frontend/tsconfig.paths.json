@@ -10,8 +10,7 @@
             "@atoms/*": ["./atoms/*"],
             "@utils/*": ["./utils/*"],
             "@game/*": ["./game/*"],
-            "@services/*": ["./services/*"]
-            "@utils/*": ["./utils/*"],
+            "@services/*": ["./services/*"],
             "@backend/*": ["../../backend/src/*"]
         }
     }

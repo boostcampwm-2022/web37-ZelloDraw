@@ -36,9 +36,6 @@ function GameModeList({ lobbyId }: { lobbyId: string }) {
                 {modes.map((mode, idx) => (
                     <GameModeItem mode={mode} key={mode.title} isSelected={idx === 0} />
                 ))}
-                <ButtonWrapper onClick={onClickStartBtn}>
-                    <PrimaryButton topText='START GAME' bottomText='시작하기' />
-                </ButtonWrapper>
                 {user.isHost ? (
                     <ButtonWrapper>
                         <PrimaryButton topText='START GAME' bottomText='시작하기' />

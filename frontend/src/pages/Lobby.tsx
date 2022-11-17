@@ -15,9 +15,9 @@ import { JoinLobbyReEmitRequest, JoinLobbyRequest } from '@backend/core/user.dto
 function Lobby() {
     const [userList, setUserList] = useRecoilState(userListState);
     const [setPage] = useMovePage();
+    const lobbyId = getParam('id');
 
     useEffect(() => {
-        const lobbyId = getParam('id');
         const payload: JoinLobbyRequest = { lobbyId };
         NetworkService.emit('join-lobby', payload, (res: Array<{ userName: string }>) => {
             const data = res.map((user) => user.userName);
@@ -67,9 +67,9 @@ const LogoWrapper = styled.div`
     top: 12px;
     left: 24px;
 
-  img {
-    cursor: pointer;
-  }
+    img {
+        cursor: pointer;
+    }
 `;
 
 const LobbyContainer = styled.section`
