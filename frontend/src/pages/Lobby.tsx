@@ -6,7 +6,10 @@ import CameraButton from '@components/CameraButton';
 import MicButton from '@components/MicButton';
 import SmallLogo from '@assets/logo-s.png';
 import useMovePage from '@hooks/useMovePage';
-import { networkServiceInstance as NetworkService } from '../services/socketService';
+import {
+    networkServiceInstance as NetworkService,
+    SocketException,
+} from '../services/socketService';
 import { useRecoilState } from 'recoil';
 import { userListState } from '@atoms/game';
 import { getParam } from '@utils/common';
@@ -19,10 +22,18 @@ function Lobby() {
 
     useEffect(() => {
         const payload: JoinLobbyRequest = { lobbyId };
-        NetworkService.emit('join-lobby', payload, (res: Array<{ userName: string }>) => {
-            const data = res.map((user) => user.userName);
-            setUserList(data);
-        });
+        NetworkService.emit(
+            'join-lobby',
+            payload,
+            (res: Array<{ userName: string }>) => {
+                const data = res.map((user) => user.userName);
+                setUserList(data);
+            },
+            (err: SocketException) => {
+                alert(JSON.stringify(err.message));
+                setPage('/');
+            },
+        );
         NetworkService.on('leave-lobby', (users: Array<{ userName: string }>) => {
             setUserList(users.map((user) => user.userName));
         });

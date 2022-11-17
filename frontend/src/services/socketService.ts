@@ -1,4 +1,10 @@
 import { io, Socket } from 'socket.io-client';
+import { SocketExceptionStatus } from '@backend/core/socket.exception';
+
+export interface SocketException {
+    status: SocketExceptionStatus;
+    message: string;
+}
 
 export class SocketService {
     private static instance: SocketService;
@@ -32,7 +38,27 @@ export class SocketService {
     }
 
     public emit(event: string, ...args: any[]) {
-        this.socket.emit(event, ...args);
+        if (this.isArgsWithErrorHandler(args)) {
+            const [ackCallback, errorHandlerCallback] = args.slice(-2);
+            const ackCallbackWithErrorHandler = (res: any | SocketException) => {
+                if (!this.isSocketResponseError(res)) {
+                    ackCallback(res);
+                } else {
+                    errorHandlerCallback(res);
+                }
+            };
+            this.socket.emit(event, ...args.slice(0, -2), ackCallbackWithErrorHandler);
+        } else {
+            this.socket.emit(event, ...args);
+        }
+    }
+
+    private isArgsWithErrorHandler(args: any[]) {
+        return args.at(-1) instanceof Function && args.at(-2) instanceof Function;
+    }
+
+    private isSocketResponseError(res: any | SocketException): res is SocketException {
+        return res.error !== undefined;
     }
 }
 

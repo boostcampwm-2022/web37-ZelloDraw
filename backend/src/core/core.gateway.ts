@@ -11,14 +11,17 @@ import {
 import { Socket } from 'socket.io';
 import { LobbyService } from './lobby.service';
 import { RoundService } from './round.service';
-import { UsePipes, ValidationPipe } from '@nestjs/common';
+import { UseFilters, UsePipes, ValidationPipe } from '@nestjs/common';
 import { JoinLobbyRequest, JoinLobbyResponse, JoinLobbyReEmitRequest } from './user.dto';
 import { UserService } from './user.service';
 import { Round } from './round.model';
 import { StartRoundResponse } from './round.dto';
+import { SocketException } from './socket.exception';
+import { SocketExceptionFilter } from './socket.filter';
 
 // TODO: Validation Pipe 관련 내용 학습 + 소켓에서 에러 처리 어케할건지 학습 하고 적용하기
 // @UsePipes(new ValidationPipe())
+@UseFilters(new SocketExceptionFilter())
 @WebSocketGateway(8180, { namespace: 'core' })
 export class CoreGateway implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect {
     constructor(
@@ -37,7 +40,6 @@ export class CoreGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
     }
 
     afterInit(server: any) {
-        console.log(server);
         console.log('afterInit');
     }
 
@@ -61,20 +63,23 @@ export class CoreGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
         @ConnectedSocket() client: Socket,
         @MessageBody() body: JoinLobbyRequest,
     ) {
-        const lobby = this.lobbyService.getLobby(body.lobbyId);
-        // TODO: socket connection 라이프 사이클에 user 생성, 삭제 로직 할당
-        const user = this.userService.getUser(client.id);
+        try {
+            const lobby = this.lobbyService.getLobby(body.lobbyId);
+            const user = this.userService.getUser(client.id);
 
-        await this.lobbyService.joinLobby(user, lobby.id);
-        await client.join(body.lobbyId);
-        client
-            .to(lobby.id)
-            // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
-            .emit('join-lobby', { userName: user.name } as JoinLobbyReEmitRequest);
+            await this.lobbyService.joinLobby(user, lobby.id);
+            await client.join(body.lobbyId);
+            client
+                .to(lobby.id)
+                // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
+                .emit('join-lobby', { userName: user.name } as JoinLobbyReEmitRequest);
 
-        return lobby.users.map((user) => {
-            return { userName: user.name };
-        }) as JoinLobbyResponse;
+            return lobby.users.map((user) => {
+                return { userName: user.name };
+            }) as JoinLobbyResponse;
+        } catch (e) {
+            throw new SocketException('BadRequest', e.message);
+        }
     }
 
     @SubscribeMessage('leave-lobby')
