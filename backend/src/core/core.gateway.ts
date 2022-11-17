@@ -114,34 +114,27 @@ export class CoreGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 
     @SubscribeMessage('start-round')
     async handleStartRound(@ConnectedSocket() client: Socket, @MessageBody() lobbyId: string) {
-        // console.log('start-round');
-        // console.log('socket-id : ');
-        // console.log(client.id);
-        // console.log('lobby-id : ');
-        // console.log(lobbyId);
         const user = this.userService.getUser(client.id);
 
-        if (!this.lobbyService.isLobbyHost(user, lobbyId))
+        if (!this.lobbyService.isLobbyHost(user, lobbyId)) {
             throw new Error('Only host can start game');
+        }
 
         const lobby = this.lobbyService.getLobby(lobbyId);
         if (!lobby.isPlaying) throw new Error('게임중이 아닙니다.');
 
-        // for test
-        // console.log(lobby);
+        if (!lobby.isPlaying) {
+            throw new Error('게임중이 아닙니다.');
+        }
 
         const round: StartRoundResponse[] = [];
         lobby.users.forEach((user) => {
             const userRound = this.roundService.startRound(lobby);
-            console.log('each round');
-            console.log(userRound);
             round.push(userRound);
             client.nsp.to(lobbyId).emit('start-round', userRound);
         });
 
         lobby.rounds.push(new Round(round));
-        console.log('lobby.rounds');
-        console.log(lobby.rounds);
 
         setTimeout(() => {
             console.log('발송');
