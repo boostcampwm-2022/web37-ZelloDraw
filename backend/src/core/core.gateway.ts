@@ -131,7 +131,8 @@ export class CoreGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
         lobby.users.forEach((user) => {
             const userRound = this.roundService.startRound(lobby);
             round.push(userRound);
-            client.nsp.to(lobbyId).emit('start-round', userRound);
+
+            client.nsp.to(user.socketId).emit('start-round', userRound);
         });
 
         lobby.rounds.push(new Round(round));
