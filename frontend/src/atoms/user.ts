@@ -1,6 +1,6 @@
 import { atom } from 'recoil';
 
-interface userStateType {
+export interface userStateType {
     name: string;
     isHost: boolean | null;
 }

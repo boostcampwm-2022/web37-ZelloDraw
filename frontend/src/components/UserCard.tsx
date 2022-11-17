@@ -5,12 +5,15 @@ import CameraButton from '@components/CameraButton';
 import MicButton from '@components/MicButton';
 import { userState } from '@atoms/user';
 import { useRecoilState } from 'recoil';
+import { networkServiceInstance as NetworkService } from '../services/socketService';
 
 function UserCard() {
     const [user, setUserState] = useRecoilState(userState);
 
     const setUserNickname = (e: React.ChangeEvent<HTMLInputElement>) => {
+        console.log(e.target.value);
         setUserState({ ...user, name: e.target.value });
+        NetworkService.emit('update-user-name', user.name);
     };
 
     return (
