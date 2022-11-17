@@ -1,4 +1,8 @@
-export const colors = {
+interface ColorsType {
+    [key: string]: string;
+}
+
+export const colors: ColorsType = {
     primary: '#012CAE',
     primaryLight: '#5C81F0',
     primaryDark: '#102B7B',
