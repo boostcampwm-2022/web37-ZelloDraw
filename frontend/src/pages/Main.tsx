@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import styled from 'styled-components';
 import UserCard from '@components/UserCard';
-import { ReactComponent as MainLogo } from '@assets/logo-l.svg';
+import Logo from '@assets/logo-l.png';
 import InfoCard from '@components/InfoCard';
 import GuestEntranceMessage from '@components/GuestMessageBox';
 import MadeByText from '@components/MadeByText';
@@ -32,15 +32,17 @@ function Main() {
 
     return (
         <MainContainer>
-            <MainLogo style={{ cursor: 'pointer' }} onClick={() => setPage('/')} />
+            <LogoWrapper onClick={() => setPage('/')}>
+                <img src={Logo} />
+            </LogoWrapper>
             <CardContainer>
                 <UserCard />
                 <InfoCard onHandleEnterLobby={onClickEnterBtn} />
             </CardContainer>
             {!user.isHost && <GuestEntranceMessage />}
-            <LogoWrapper>
+            <BottomWrapper>
                 <MadeByText />
-            </LogoWrapper>
+            </BottomWrapper>
         </MainContainer>
     );
 }
@@ -62,6 +64,10 @@ const CardContainer = styled.div`
 `;
 
 const LogoWrapper = styled.div`
+    cursor: pointer;
+`;
+
+const BottomWrapper = styled.div`
     position: absolute;
     bottom: 0px;
     right: 0px;

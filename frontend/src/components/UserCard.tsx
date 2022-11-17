@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 import styled from 'styled-components';
 import Card from '@components/Card';
 import CameraButton from '@components/CameraButton';
@@ -6,15 +6,23 @@ import MicButton from '@components/MicButton';
 import { userState } from '@atoms/user';
 import { useRecoilState } from 'recoil';
 import { networkServiceInstance as NetworkService } from '../services/socketService';
+import { debounce } from 'lodash';
 
 function UserCard() {
     const [user, setUserState] = useRecoilState(userState);
 
-    const setUserNickname = (e: React.ChangeEvent<HTMLInputElement>) => {
-        console.log(e.target.value);
-        setUserState({ ...user, name: e.target.value });
-        NetworkService.emit('update-user-name', user.name);
+    const onChangeName = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const name = e.target.value;
+        setUserState({ ...user, name });
+        debounceOnChange(name);
     };
+
+    const debounceOnChange = useCallback(
+        debounce((name: string) => {
+            NetworkService.emit('update-user-name', name);
+        }, 500),
+        [],
+    );
 
     return (
         <Card>
@@ -25,7 +33,7 @@ function UserCard() {
                     <NameInput
                         type='text'
                         placeholder={user.name}
-                        onChange={setUserNickname}
+                        onChange={onChangeName}
                         maxLength={7}
                     />
                     <span>&#125;</span>

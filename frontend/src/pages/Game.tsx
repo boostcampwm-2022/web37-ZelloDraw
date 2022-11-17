@@ -6,7 +6,7 @@ import GameUsers from '@components/GameUsers';
 import PrimaryButton from '@components/PrimaryButton';
 import MicButton from '@components/MicButton';
 import CameraButton from '@components/CameraButton';
-import Logo from '@assets/logo-s.svg';
+import Logo from '@assets/logo-s.png';
 
 function Game() {
     const [onDraw, setOnDraw] = useState(true);
