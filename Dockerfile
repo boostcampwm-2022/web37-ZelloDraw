@@ -7,7 +7,7 @@ COPY frontend ./frontend
 
 WORKDIR /app/backend
 RUN npm ci
-RUN npm start
+RUN npm deploy:prod
 
 WORKDIR /app/frontend
 RUN npm ci

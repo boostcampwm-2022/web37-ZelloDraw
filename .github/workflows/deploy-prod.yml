@@ -1,4 +1,4 @@
-name: 'deploy when push'
+name: "deploy when push"
 
 on:
   push:
@@ -26,4 +26,4 @@ jobs:
             cd ~/web37-ZelloDraw/ && git pull origin feat_docker
             docker build -f Dockerfile -t zello_draw .
             docker ps -a -q --filter name=zello_draw | grep -q . && docker rm -f zello_draw
-            docker run -d -p 3000:3000 -p 19785:19785 --name zello_draw zello_draw
+            docker run -d -p 3000:3000 -p 8080:8080 --name zello_draw zello_draw
