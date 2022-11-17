@@ -1,6 +1,9 @@
 import styled from 'styled-components';
 import { useEffect, useState } from 'react';
 import { Center } from '@styles/styled';
+import { useRecoilState } from 'recoil';
+import { roundInfoState, roundInfoType } from '@atoms/game';
+import { getRoundInfo } from '@game/NetworkServiceUtils';
 import SketchbookCard from '@components/SketchbookCard';
 import GameUsers from '@components/GameUsers';
 import PrimaryButton from '@components/PrimaryButton';
@@ -9,7 +12,20 @@ import CameraButton from '@components/CameraButton';
 import SmallLogo from '@assets/logo-s.png';
 
 function Game() {
-    const [onDraw, setOnDraw] = useState(true);
+    const [roundInfo, setRoundInfo] = useRecoilState<roundInfoType>(roundInfoState);
+    const [drawState, setDrawState] = useState(false);
+
+    // useEffect(() => {
+    // TODO: useEffect 안에서는 동작하지 않는 이유는 무엇일까?
+    getRoundInfo()
+        .then((res) => setRoundInfo(res))
+        .catch((err) => console.log(err));
+    // });
+
+    useEffect(() => {
+        if (roundInfo === undefined) return;
+        setDrawState(roundInfo.type === 'DRAW');
+    }, [roundInfo]);
 
     return (
         <Container>

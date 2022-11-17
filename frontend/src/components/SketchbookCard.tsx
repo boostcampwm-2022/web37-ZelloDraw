@@ -5,30 +5,28 @@ import Timer from '@components/Timer';
 import DrawingTools from '@components/DrawingTools';
 import { Center } from '@styles/styled';
 import { ReactComponent as Sketchbook } from '@assets/sketchbook.svg';
-import { getRoundInfo } from '@game/NetworkServiceUtils';
 import { roundInfoState, roundInfoType } from '@atoms/game';
-import { useRecoilState } from 'recoil';
+import { useRecoilValue } from 'recoil';
 
 function SketchbookCard({ drawState }: { drawState: boolean }) {
-    const [roundInfo, setRoundInfo] = useRecoilState<roundInfoType>(roundInfoState);
+    const roundInfo = useRecoilValue<roundInfoType>(roundInfoState);
+    const [word, setWord] = useState('');
+    const [round, setRound] = useState(0);
 
     useEffect(() => {
-        getRoundInfo()
-            .then((roundInfo: roundInfoType) => {
-                setRoundInfo(roundInfo);
-            })
-            .catch((err) => console.error(err));
-    }, []);
+        if (roundInfo === undefined) return;
 
-    useEffect(() => {
-        console.log('roundInfo', roundInfo);
+        if (roundInfo.type === 'DRAW' && roundInfo.word !== undefined) {
+            setWord(roundInfo.word);
+        }
+        setRound(roundInfo.round);
     }, [roundInfo]);
 
     return (
         <Card>
             <Container>
                 <GameStateSection>
-                    <GameTurn>4/8</GameTurn>
+                    <GameTurn>{round}/8</GameTurn>
                     <Timer />
                 </GameStateSection>
                 <SketchbookWrapper>

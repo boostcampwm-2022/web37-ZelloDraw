@@ -18,14 +18,9 @@ export const emitStartRound = (lobbyId: string) => {
 };
 
 export const getRoundInfo = async () => {
-    console.log('getRoundInfo1');
-    const roundInfo = await new Promise<roundInfoType>((resolve) => {
-        console.log('getRoundInfo2-1');
-        NetworkService.on('start-round', (roundInfo: roundInfoType) => {
-            console.log('getRoundInfo2-2', roundInfo);
-            resolve(roundInfo);
+    return await new Promise<roundInfoType>((resolve) => {
+        NetworkService.on('start-round', (userRound: roundInfoType) => {
+            resolve(userRound);
         });
     });
-    console.log('getRoundInfo3', roundInfo);
-    return roundInfo;
 };
