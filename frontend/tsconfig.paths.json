@@ -11,6 +11,8 @@
             "@utils/*": ["./utils/*"],
             "@game/*": ["./game/*"],
             "@services/*": ["./services/*"]
+            "@utils/*": ["./utils/*"],
+            "@backend/*": ["../../backend/src/*"]
         }
     }
 }

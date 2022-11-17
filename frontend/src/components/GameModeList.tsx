@@ -6,11 +6,12 @@ import { ReactComponent as GirlWithPencilChar } from '@assets/girl-with-pencil 1
 import PrimaryButton from '@components/PrimaryButton';
 import { emitStartGame, onStartGame } from '@game/NetworkServiceUtils';
 import useMovePage from '@hooks/useMovePage';
+import { useRecoilValue } from 'recoil';
+import { userState, userStateType } from '@atoms/user';
 
 function GameModeList({ lobbyId }: { lobbyId: string }) {
-    const [selected, setSelected] = useState<number>(0);
+    const user = useRecoilValue<userStateType>(userState);
     const [setPage] = useMovePage();
-
     const modes = [
         {
             title: 'RANDOM KEYWORD',
@@ -33,11 +34,20 @@ function GameModeList({ lobbyId }: { lobbyId: string }) {
         <Card>
             <CardInner>
                 {modes.map((mode, idx) => (
-                    <GameModeItem mode={mode} key={mode.title} isSelected={selected === idx} />
+                    <GameModeItem mode={mode} key={mode.title} isSelected={idx === 0} />
                 ))}
                 <ButtonWrapper onClick={onClickStartBtn}>
                     <PrimaryButton topText='START GAME' bottomText='시작하기' />
                 </ButtonWrapper>
+                {user.isHost ? (
+                    <ButtonWrapper>
+                        <PrimaryButton topText='START GAME' bottomText='시작하기' />
+                    </ButtonWrapper>
+                ) : (
+                    <TextWrapper>
+                        <span>*</span> 게임 시작을 기다리고 있어요... <span>*</span>
+                    </TextWrapper>
+                )}
             </CardInner>
         </Card>
     );
@@ -54,4 +64,26 @@ const CardInner = styled.div`
 
 const ButtonWrapper = styled.div`
     margin: auto 0 0 auto;
+`;
+
+const TextWrapper = styled.div`
+    font-style: normal;
+    font-weight: 400;
+    font-size: ${({ theme }) => theme.typo.h5};
+    line-height: 26px;
+    text-align: center;
+    letter-spacing: -0.045em;
+    color: ${({ theme }) => theme.color.white};
+    margin: auto;
+    margin-bottom: 16px;
+
+    background: ${({ theme }) => theme.gradation.yellowPurple};
+    -webkit-background-clip: text;
+    -webkit-text-stroke: 1px transparent;
+
+    span {
+        font-family: 'Sniglet';
+        font-weight: 800;
+        letter-spacing: -0.05em;
+    }
 `;
