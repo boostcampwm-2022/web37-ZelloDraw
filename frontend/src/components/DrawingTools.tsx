@@ -21,11 +21,11 @@ import {
 import { colors } from '@styles/ZelloTheme';
 
 interface DrawingToolsType {
-    onDraw: boolean;
+    drawState: boolean;
     ctxRef: any;
 }
 
-function DrawingTools({ onDraw, ctxRef }: DrawingToolsType) {
+function DrawingTools({ drawState, ctxRef }: DrawingToolsType) {
     const [selectedColor, setSelectedColor] = useState<string>(colors.black);
     const [isPicked, setIsPicked] = useState(false);
     const [selectedTool, setSelectedTool] = useState(ToolsType.PEN);
@@ -114,7 +114,7 @@ function DrawingTools({ onDraw, ctxRef }: DrawingToolsType) {
     };
 
     return (
-        <Container onDraw={onDraw}>
+        <Container drawState={drawState}>
             <Tools>
                 {tools.map((tool, index) => (
                     <Tool
@@ -150,9 +150,9 @@ function DrawingTools({ onDraw, ctxRef }: DrawingToolsType) {
 
 export default DrawingTools;
 
-const Container = styled(Center)<{ onDraw: boolean }>`
+const Container = styled(Center)<{ drawState: boolean }>`
     flex-direction: column;
-    opacity: ${({ onDraw }) => (onDraw ? 1 : 0)};
+    opacity: ${({ drawState }) => (drawState ? 1 : 0)};
 `;
 
 const Tools = styled.div`

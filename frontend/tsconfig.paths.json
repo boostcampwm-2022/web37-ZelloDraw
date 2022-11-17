@@ -8,7 +8,10 @@
             "@styles/*": ["./styles/*"],
             "@hooks/*": ["./hooks/*"],
             "@atoms/*": ["./atoms/*"],
-            "@utils/*": ["./utils/*"]
+            "@utils/*": ["./utils/*"],
+            "@game/*": ["./game/*"],
+            "@services/*": ["./services/*"],
+            "@backend/*": ["../../backend/src/*"]
         }
     }
 }

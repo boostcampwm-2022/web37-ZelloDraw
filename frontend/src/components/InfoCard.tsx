@@ -2,7 +2,7 @@ import { useEffect } from 'react';
 import styled from 'styled-components';
 import Card from '@components/Card';
 import PrimaryButton from '@components/PrimaryButton';
-import Carousel from '@components/Carousel';
+import InfoCarousel from '@components/InfoCarousel';
 import { userState } from '@atoms/user';
 import { useRecoilState } from 'recoil';
 import { getParam } from '@utils/common';
@@ -13,6 +13,7 @@ function InfoCard({ onHandleEnterLobby }: { onHandleEnterLobby: () => void }) {
 
     useEffect(() => {
         if (user.isHost) return;
+        // 호스트는 주소 복사로 들어오지 않고 가장 먼저 들어온 사람이기 때문에 lobbyId는 ''이다. isHost가 true가 된다.
         setUser({ ...user, isHost: lobbyId === '' });
     }, []);
 
@@ -21,7 +22,7 @@ function InfoCard({ onHandleEnterLobby }: { onHandleEnterLobby: () => void }) {
             <CardInner>
                 <HeadingWelcome>WELCOME!</HeadingWelcome>
                 <InfoDiv>
-                    <Carousel />
+                    <InfoCarousel />
                 </InfoDiv>
                 <ButtonWrapper onClick={onHandleEnterLobby}>
                     {user.isHost ? (

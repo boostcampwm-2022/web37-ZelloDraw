@@ -1,24 +1,25 @@
-import { useState } from 'react';
 import styled from 'styled-components';
 import { getParam } from '@utils/common';
 import useCopyClipBoard from '@hooks/useCopyClipboard';
-import ToastMessage from '@components/ToastMessage';
+import toast, { Toaster } from 'react-hot-toast';
 
 function InviteButton() {
     const [isCopied, onCopy] = useCopyClipBoard();
-    const [toast, setToast] = useState<boolean>(false);
 
     const onClickInviteBtn = () => {
         const invitationLink = `${window.location.origin}?id=${getParam('id')}`;
         void onCopy(invitationLink);
-        isCopied && setToast(true);
+        // TODO - setIsCopied 비동기 실행으로 인한 set 이슈 해결
+        toast('🖇 클립보드에 복사되었습니다.');
     };
 
     return (
-        <InviteBtn onClick={onClickInviteBtn}>
-            INVITE<h3>초대하기</h3>
-            {toast && <ToastMessage setToast={setToast} text='🖇 클립보드에 복사되었습니다.' />}
-        </InviteBtn>
+        <>
+            <InviteBtn onClick={onClickInviteBtn}>
+                INVITE<h3>초대하기</h3>
+            </InviteBtn>
+            <Toaster position='top-center' reverseOrder={false} toastOptions={{ duration: 1500 }} />
+        </>
     );
 }
 

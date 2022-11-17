@@ -4,29 +4,25 @@ import GameModeList from '@components/GameModeList';
 import UserList from '@components/UserList';
 import CameraButton from '@components/CameraButton';
 import MicButton from '@components/MicButton';
-import { ReactComponent as SmallLogo } from '@assets/logo-s.svg';
+import SmallLogo from '@assets/logo-s.png';
 import useMovePage from '@hooks/useMovePage';
 import { networkServiceInstance as NetworkService } from '../services/socketService';
-import { useRecoilState, useRecoilValue } from 'recoil';
-import { userState } from '@atoms/user';
+import { useRecoilState } from 'recoil';
 import { userListState } from '@atoms/game';
 import { getParam } from '@utils/common';
+import { JoinLobbyReEmitRequest, JoinLobbyRequest } from '@backend/core/user.dto';
 
 function Lobby() {
     const [userList, setUserList] = useRecoilState(userListState);
-    const user = useRecoilValue(userState);
     const [setPage] = useMovePage();
+    const lobbyId = getParam('id');
 
     useEffect(() => {
-        const lobbyId = getParam('id');
-        NetworkService.emit(
-            'join-lobby',
-            { userName: user.name, lobbyId },
-            (res: Array<{ userName: string }>) => {
-                const data = res.map((user) => user.userName);
-                setUserList(data);
-            },
-        );
+        const payload: JoinLobbyRequest = { lobbyId };
+        NetworkService.emit('join-lobby', payload, (res: Array<{ userName: string }>) => {
+            const data = res.map((user) => user.userName);
+            setUserList(data);
+        });
         NetworkService.on('leave-lobby', (users: Array<{ userName: string }>) => {
             setUserList(users.map((user) => user.userName));
         });
@@ -37,7 +33,7 @@ function Lobby() {
     }, []);
 
     useEffect(() => {
-        NetworkService.on('join-lobby', (user: { userName: string }) => {
+        NetworkService.on('join-lobby', (user: JoinLobbyReEmitRequest) => {
             setUserList([...userList, user.userName]);
         });
         return () => {
@@ -48,12 +44,12 @@ function Lobby() {
     return (
         <>
             <LobbyContainer>
-                <LogoWrapper>
-                    <SmallLogo style={{ cursor: 'pointer' }} onClick={() => setPage('/')} />
+                <LogoWrapper onClick={() => setPage('/')}>
+                    <img src={SmallLogo} />
                 </LogoWrapper>
                 <FlexBox>
                     <UserList />
-                    <GameModeList />
+                    <GameModeList lobbyId={lobbyId} />
                 </FlexBox>
                 <ButtonWrapper>
                     <CameraButton />
@@ -70,6 +66,10 @@ const LogoWrapper = styled.div`
     position: absolute;
     top: 12px;
     left: 24px;
+
+    img {
+        cursor: pointer;
+    }
 `;
 
 const LobbyContainer = styled.section`
