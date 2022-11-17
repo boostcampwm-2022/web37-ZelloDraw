@@ -2,7 +2,7 @@ import { useEffect } from 'react';
 import styled from 'styled-components';
 import Card from '@components/Card';
 import PrimaryButton from '@components/PrimaryButton';
-import Carousel from '@components/Carousel';
+import InfoCarousel from '@components/InfoCarousel';
 import { userState } from '@atoms/user';
 import { useRecoilState } from 'recoil';
 import { getParam } from '@utils/common';
@@ -21,7 +21,7 @@ function InfoCard({ onHandleEnterLobby }: { onHandleEnterLobby: () => void }) {
             <CardInner>
                 <HeadingWelcome>WELCOME!</HeadingWelcome>
                 <InfoDiv>
-                    <Carousel />
+                    <InfoCarousel />
                 </InfoDiv>
                 <ButtonWrapper onClick={onHandleEnterLobby}>
                     {user.isHost ? (
