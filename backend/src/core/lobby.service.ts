@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { User } from './user.model';
 import { UserService } from './user.service';
+import { Round } from './round.model';
 
 export interface LobbyStore {
     [key: string]: Lobby;
@@ -10,6 +11,8 @@ export interface Lobby {
     id: string;
     host: User;
     users: User[];
+    isPlaying: boolean;
+    rounds: Round[];
 }
 @Injectable()
 export class LobbyService {
@@ -23,6 +26,8 @@ export class LobbyService {
             id: lobbyId,
             host: user,
             users: [],
+            isPlaying: false,
+            rounds: [],
         };
         return lobbyId;
     }
@@ -47,7 +52,7 @@ export class LobbyService {
         }
     }
 
-    isLobbyOwner(user: User, lobbyId: string): boolean {
+    isLobbyHost(user: User, lobbyId: string): boolean {
         const lobby = this.getLobby(lobbyId);
         return lobby.host.socketId === user.socketId;
     }

@@ -1,14 +1,17 @@
+import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import Card from '@components/Card';
 import GameModeItem from '@components/GameModeItem';
 import { ReactComponent as GirlWithPencilChar } from '@assets/girl-with-pencil 1.svg';
 import PrimaryButton from '@components/PrimaryButton';
+import { emitStartGame, onStartGame } from '@game/NetworkServiceUtils';
+import useMovePage from '@hooks/useMovePage';
 import { useRecoilValue } from 'recoil';
 import { userState, userStateType } from '@atoms/user';
 
-function GameModeList() {
+function GameModeList({ lobbyId }: { lobbyId: string }) {
     const user = useRecoilValue<userStateType>(userState);
-
+    const [setPage] = useMovePage();
     const modes = [
         {
             title: 'RANDOM KEYWORD',
@@ -17,6 +20,16 @@ function GameModeList() {
         },
     ];
 
+    const onClickStartBtn = () => {
+        // 게임시작 이벤트 발생
+        emitStartGame(lobbyId);
+        console.log('게임시작');
+    };
+
+    useEffect(() => {
+        onStartGame(setPage);
+    }, []);
+
     return (
         <Card>
             <CardInner>
@@ -24,7 +37,7 @@ function GameModeList() {
                     <GameModeItem mode={mode} key={mode.title} isSelected={idx === 0} />
                 ))}
                 {user.isHost ? (
-                    <ButtonWrapper>
+                    <ButtonWrapper onClick={onClickStartBtn}>
                         <PrimaryButton topText='START GAME' bottomText='시작하기' />
                     </ButtonWrapper>
                 ) : (

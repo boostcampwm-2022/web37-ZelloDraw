@@ -1,22 +1,39 @@
 import styled from 'styled-components';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Center } from '@styles/styled';
+import { useRecoilState } from 'recoil';
+import { roundInfoState, roundInfoType } from '@atoms/game';
+import { getRoundInfo } from '@game/NetworkServiceUtils';
 import SketchbookCard from '@components/SketchbookCard';
 import GameUsers from '@components/GameUsers';
 import PrimaryButton from '@components/PrimaryButton';
 import MicButton from '@components/MicButton';
 import CameraButton from '@components/CameraButton';
-import Logo from '@assets/logo-s.png';
+import SmallLogo from '@assets/logo-s.png';
 
 function Game() {
-    const [onDraw, setOnDraw] = useState(true);
+    const [roundInfo, setRoundInfo] = useRecoilState<roundInfoType>(roundInfoState);
+    const [drawState, setDrawState] = useState(false);
+
+    // useEffect(() => {
+    // TODO: useEffect 안에서는 동작하지 않는 이유는 무엇일까?
+    getRoundInfo()
+        .then((res) => setRoundInfo(res))
+        .catch((err) => console.log(err));
+    // });
+
+    useEffect(() => {
+        if (roundInfo === undefined) return;
+        setDrawState(roundInfo.type === 'DRAW');
+    }, [roundInfo]);
+
     return (
         <Container>
             <GameUsers />
             <SketchbookSection>
-                <SketchbookCard onDraw={onDraw} />
+                <SketchbookCard drawState={drawState} />
                 <SubmitSection>
-                    {!onDraw ? (
+                    {!drawState ? (
                         <AnswerInput placeholder={'그림을 보고 답을 맞춰보세요!'} />
                     ) : (
                         <div />
@@ -29,7 +46,7 @@ function Game() {
                 <MicButton />
             </CamAndMicWrapper>
             <LogoWrapper>
-                <img src={Logo} />
+                <img src={SmallLogo} />
             </LogoWrapper>
             <div />
         </Container>
@@ -56,6 +73,7 @@ const SketchbookSection = styled.div`
 const SubmitSection = styled(Center)`
     width: 1120px;
     margin-top: 26px;
+
     > div {
         width: 100%;
     }
@@ -77,6 +95,7 @@ const AnswerInput = styled.input`
         color: ${({ theme }) => theme.color.gray1};
         font-weight: 500;
     }
+
     &:focus {
         border-color: ${({ theme }) => theme.color.green};
     }
@@ -87,6 +106,7 @@ const CamAndMicWrapper = styled.div`
     position: absolute;
     bottom: 24px;
     left: 26px;
+
     > button {
         margin-right: 16px;
     }

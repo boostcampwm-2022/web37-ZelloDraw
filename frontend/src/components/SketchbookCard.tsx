@@ -1,28 +1,44 @@
+import { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import Card from '@components/Card';
 import Timer from '@components/Timer';
-import { ReactComponent as Sketchbook } from '@assets/sketchbook.svg';
 import DrawingTools from '@components/DrawingTools';
 import { Center } from '@styles/styled';
+import { ReactComponent as Sketchbook } from '@assets/sketchbook.svg';
+import { roundInfoState, roundInfoType } from '@atoms/game';
+import { useRecoilValue } from 'recoil';
 
-function SketchbookCard({ onDraw }: { onDraw: boolean }) {
+function SketchbookCard({ drawState }: { drawState: boolean }) {
+    const roundInfo = useRecoilValue<roundInfoType>(roundInfoState);
+    const [word, setWord] = useState('');
+    const [round, setRound] = useState(0);
+
+    useEffect(() => {
+        if (roundInfo === undefined) return;
+
+        if (roundInfo.type === 'DRAW' && roundInfo.word !== undefined) {
+            setWord(roundInfo.word);
+        }
+        setRound(roundInfo.round);
+    }, [roundInfo]);
+
     return (
         <Card>
             <Container>
                 <GameStateSection>
-                    <GameTurn>4/8</GameTurn>
+                    <GameTurn>{round}/8</GameTurn>
                     <Timer />
                 </GameStateSection>
                 <SketchbookWrapper>
                     <Sketchbook />
                     <Canvas />
-                    {onDraw && (
+                    {drawState && (
                         <Keyword>
-                            <span>초코파이</span>
+                            <span>{word}</span>
                         </Keyword>
                     )}
                 </SketchbookWrapper>
-                <DrawingTools onDraw={onDraw} />
+                <DrawingTools drawState={drawState} />
             </Container>
         </Card>
     );
