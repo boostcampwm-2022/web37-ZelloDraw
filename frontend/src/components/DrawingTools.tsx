@@ -1,76 +1,24 @@
-import { useState } from 'react';
-import { ReactComponent as PenIcon } from '@assets/icons/pen-icon.svg';
-import { ReactComponent as PaintIcon } from '@assets/icons/paint-icon.svg';
-import { ReactComponent as EraserIcon } from '@assets/icons/eraser-icon.svg';
-import { ReactComponent as ResetIcon } from '@assets/icons/reset-icon.svg';
-import { ReactComponent as ActivedPenIcon } from '@assets/icons/pen-icon-actived.svg';
-import { ReactComponent as ActivedPaintIcon } from '@assets/icons/paint-icon-actived.svg';
-import { ReactComponent as ActivedEraserIcon } from '@assets/icons/eraser-icon-actived.svg';
-import { ReactComponent as ActivedResetIcon } from '@assets/icons/reset-icon-actived.svg';
 import styled from 'styled-components';
 import { Center, Color } from '@styles/styled';
-import { colorName, ToolsType } from '@utils/constants';
+import { colorName } from '@utils/constants';
 import HexColorPicker from './HexColorPicker';
 import { colors } from '@styles/ZelloTheme';
+import usePalette from '@hooks/usePalette';
+
+interface PaletteType {
+    onClickPen: (color: string) => void;
+    onColorChange: (color: string) => void;
+    onClickEraser: () => void;
+    onClickReset: () => void;
+}
 
 interface DrawingToolsType {
     drawState: boolean;
-    rest: any;
+    rest: PaletteType;
 }
 
 function DrawingTools({ drawState, rest }: DrawingToolsType) {
-    const [selectedColor, setSelectedColor] = useState<string>(colors.black);
-    const [selectedTool, setSelectedTool] = useState<ToolsType>(ToolsType.PEN);
-    const { onClickPen, onColorChange, onClickEraser, onClickReset } = rest;
-
-    const tools = [
-        {
-            element:
-                selectedTool === ToolsType.PEN ? (
-                    <ActivedPenIcon />
-                ) : (
-                    <PenIcon onClick={onClickPen} />
-                ),
-            type: ToolsType.PEN,
-        },
-        {
-            element: selectedTool === ToolsType.PAINT ? <ActivedPaintIcon /> : <PaintIcon />,
-            type: ToolsType.PAINT,
-        },
-        {
-            element:
-                selectedTool === ToolsType.ERASER ? (
-                    <ActivedEraserIcon />
-                ) : (
-                    <EraserIcon onClick={onClickEraser} />
-                ),
-            type: ToolsType.ERASER,
-        },
-        {
-            element:
-                selectedTool === ToolsType.RESET ? (
-                    <ActivedResetIcon />
-                ) : (
-                    <ResetIcon onClick={onClickReset} />
-                ),
-            type: ToolsType.RESET,
-        },
-    ];
-
-    const onClickColor = (color: string) => {
-        setSelectedColor(color);
-        setSelectedTool(ToolsType.PEN);
-        onColorChange(color);
-    };
-
-    const onChangeTool = (tool: ToolsType) => {
-        setSelectedTool(tool);
-        if (tool === ToolsType.RESET) {
-            setTimeout(() => {
-                setSelectedTool(ToolsType.PEN);
-            }, 200);
-        }
-    };
+    const { tools, selectedColor, selectedTool, onClickColor, onChangeTool } = usePalette(rest);
 
     return (
         <Container drawState={drawState}>
@@ -81,7 +29,7 @@ function DrawingTools({ drawState, rest }: DrawingToolsType) {
                         onClick={() => onChangeTool(tool.type)}
                         isSelected={selectedTool === tool.type}
                     >
-                        {tool.element}
+                        <img src={tool.element} onClick={tool.onclick} />
                     </Tool>
                 ))}
             </Tools>

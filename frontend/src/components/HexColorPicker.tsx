@@ -44,5 +44,7 @@ function HexColorPicker({ onClickPickerColor, selected }: HexColorPickerProps) {
 export default HexColorPicker;
 
 const ColorPickerWrapper = styled.div`
+    position: relative;
     z-index: 100;
+    margin-left: -100px;
 `;
