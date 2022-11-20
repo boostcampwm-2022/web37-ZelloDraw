@@ -10,8 +10,10 @@ import PrimaryButton from '@components/PrimaryButton';
 import MicButton from '@components/MicButton';
 import CameraButton from '@components/CameraButton';
 import SmallLogo from '@assets/logo-s.png';
+import useMovePage from '@hooks/useMovePage';
 
 function Game() {
+    const [setPage] = useMovePage();
     const [roundInfo, setRoundInfo] = useRecoilState<roundInfoType>(roundInfoState);
     const [drawState, setDrawState] = useState(false);
 
@@ -45,7 +47,7 @@ function Game() {
                 <CameraButton />
                 <MicButton />
             </CamAndMicWrapper>
-            <LogoWrapper>
+            <LogoWrapper onClick={() => setPage('/')}>
                 <img src={SmallLogo} />
             </LogoWrapper>
             <div />
@@ -116,4 +118,5 @@ const LogoWrapper = styled.div`
     justify-self: center;
     position: absolute;
     bottom: 40px;
+    cursor: pointer;
 `;

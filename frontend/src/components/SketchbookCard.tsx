@@ -10,7 +10,7 @@ import { roundInfoState, roundInfoType } from '@atoms/game';
 import { useRecoilValue } from 'recoil';
 
 function SketchbookCard({ drawState }: { drawState: boolean }) {
-    const [canvasRef, ctxRef] = useCanvas();
+    const { canvasRef, ...rest } = useCanvas();
     const roundInfo = useRecoilValue<roundInfoType>(roundInfoState);
     const [word, setWord] = useState('');
     const [round, setRound] = useState(0);
@@ -40,7 +40,7 @@ function SketchbookCard({ drawState }: { drawState: boolean }) {
                         </Keyword>
                     )}
                 </SketchbookWrapper>
-                <DrawingTools drawState={drawState} ctxRef={ctxRef} />
+                <DrawingTools drawState={drawState} rest={rest} />
             </Container>
         </Card>
     );

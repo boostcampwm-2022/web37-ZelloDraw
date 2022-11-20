@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { ReactComponent as PenIcon } from '@assets/icons/pen-icon.svg';
 import { ReactComponent as PaintIcon } from '@assets/icons/paint-icon.svg';
 import { ReactComponent as EraserIcon } from '@assets/icons/eraser-icon.svg';
@@ -8,48 +8,20 @@ import { ReactComponent as ActivedPaintIcon } from '@assets/icons/paint-icon-act
 import { ReactComponent as ActivedEraserIcon } from '@assets/icons/eraser-icon-actived.svg';
 import { ReactComponent as ActivedResetIcon } from '@assets/icons/reset-icon-actived.svg';
 import styled from 'styled-components';
-import { Center } from '@styles/styled';
-import {
-    colorName,
-    ERASER_COLOR,
-    ERASER_LINE_WIDTH,
-    PEN_LINE_WIDTH,
-    CANVAS_WIDTH,
-    CANVAS_HEIGHT,
-    ToolsType,
-} from '@utils/constants';
+import { Center, Color } from '@styles/styled';
+import { colorName, ToolsType } from '@utils/constants';
+import HexColorPicker from './HexColorPicker';
 import { colors } from '@styles/ZelloTheme';
 
 interface DrawingToolsType {
     drawState: boolean;
-    ctxRef: any;
+    rest: any;
 }
 
-function DrawingTools({ drawState, ctxRef }: DrawingToolsType) {
+function DrawingTools({ drawState, rest }: DrawingToolsType) {
     const [selectedColor, setSelectedColor] = useState<string>(colors.black);
-    const [isPicked, setIsPicked] = useState(false);
-    const [selectedTool, setSelectedTool] = useState(ToolsType.PEN);
-
-    // TODO: 추후 분리예정
-    const onClickPen = () => {
-        ctxRef.current.strokeStyle = selectedColor;
-        ctxRef.current.lineWidth = PEN_LINE_WIDTH;
-    };
-
-    const onColorChange = (color: string) => {
-        ctxRef.current.strokeStyle = color;
-        ctxRef.current.fillStyle = color;
-        ctxRef.current.lineWidth = PEN_LINE_WIDTH;
-    };
-
-    const onClickEraser = () => {
-        ctxRef.current.strokeStyle = ERASER_COLOR;
-        ctxRef.current.lineWidth = ERASER_LINE_WIDTH;
-    };
-
-    const onClickReset = () => {
-        ctxRef.current.clearRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
-    };
+    const [selectedTool, setSelectedTool] = useState<ToolsType>(ToolsType.PEN);
+    const { onClickPen, onColorChange, onClickEraser, onClickReset } = rest;
 
     const tools = [
         {
@@ -62,12 +34,7 @@ function DrawingTools({ drawState, ctxRef }: DrawingToolsType) {
             type: ToolsType.PEN,
         },
         {
-            element:
-                selectedTool === ToolsType.PAINT ? (
-                    <ActivedPaintIcon />
-                ) : (
-                    <PaintIcon onClick={onClickPen} />
-                ),
+            element: selectedTool === ToolsType.PAINT ? <ActivedPaintIcon /> : <PaintIcon />,
             type: ToolsType.PAINT,
         },
         {
@@ -90,18 +57,10 @@ function DrawingTools({ drawState, ctxRef }: DrawingToolsType) {
         },
     ];
 
-    const onClickColor = (colorName: string) => {
-        setSelectedColor(colors[colorName]);
+    const onClickColor = (color: string) => {
+        setSelectedColor(color);
         setSelectedTool(ToolsType.PEN);
-        setIsPicked(false);
-        onColorChange(colors[colorName]);
-    };
-
-    const onChangeColorPicker = (event: React.ChangeEvent<HTMLInputElement> | any) => {
-        setSelectedColor(event.target.value);
-        setSelectedTool(ToolsType.PEN);
-        setIsPicked(true);
-        onColorChange(event.target.value);
+        onColorChange(color);
     };
 
     const onChangeTool = (tool: ToolsType) => {
@@ -132,17 +91,11 @@ function DrawingTools({ drawState, ctxRef }: DrawingToolsType) {
                         type={'button'}
                         key={`${colorName} ${index}`}
                         colorName={colorName}
-                        isSelected={colors[colorName] === selectedColor && !isPicked}
-                        onClick={() => onClickColor(colorName)}
+                        isSelected={colors[colorName] === selectedColor}
+                        onClick={() => onClickColor(colors[colorName])}
                     />
                 ))}
-                <ColorInput
-                    type={'color'}
-                    colorName={'rainbow'}
-                    isSelected={isPicked}
-                    onChange={onChangeColorPicker}
-                    onClick={onChangeColorPicker}
-                />
+                <HexColorPicker onClickPickerColor={onClickColor} selected={selectedColor} />
             </ColorPicker>
         </Container>
     );
@@ -202,48 +155,4 @@ const ColorPicker = styled.div`
     grid-template-rows: repeat(6, 32px);
     grid-column-gap: 24px;
     grid-row-gap: 12px;
-`;
-
-const Color = styled.input<{ colorName: string; isSelected: boolean }>`
-    width: 100%;
-    height: 100%;
-    border-radius: 50%;
-    background: ${({ colorName }) => colors[colorName as keyof typeof colors]};
-    box-shadow: ${({ theme }) => theme.shadow.btn};
-    border: ${({ isSelected }) => (isSelected ? `3px solid rgba(246, 245, 248, 0.6)` : ``)};
-    cursor: pointer;
-`;
-
-const ColorInput = styled(Color)`
-    -webkit-appearance: none;
-    appearance: none;
-    padding: 0;
-    border-radius: 50%;
-    border: ${({ isSelected }) => (isSelected ? `3px solid rgba(246, 245, 248, 0.6)` : ``)};
-
-    &::-webkit-color-swatch-wrapper {
-        padding: 0;
-    }
-
-    &::-moz-color-swatch-wrapper {
-        padding: 0;
-    }
-
-    &::-webkit-color-swatch {
-        appearance: none;
-        border: none;
-        border-radius: 50%;
-        width: 0px;
-    }
-
-    &::-moz-color-swatch {
-        border: none;
-        border-radius: 50%;
-        width: 20px;
-    }
-`;
-
-const HexColorWrapper = styled.div`
-    position: absolute;
-    margin-top: 260px;
 `;
