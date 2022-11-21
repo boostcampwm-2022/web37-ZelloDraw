@@ -16,7 +16,7 @@ function SubmitSection() {
 
     useEffect(() => {
         setRandomWordToPlaceholder();
-    }, []);
+    }, [roundWord]);
 
     function setRandomWordToPlaceholder() {
         // 0번 라운드일때만 인풋 플레이스홀더에서 유저에게 랜덤 단어를 보여준다.

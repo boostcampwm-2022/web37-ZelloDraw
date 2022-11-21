@@ -44,11 +44,7 @@ export const roundWordState = selector({
     get: ({ get }) => {
         const roundInfo = get(roundInfoState);
 
-        if (
-            roundInfo === undefined ||
-            roundInfo.type === 'ANSWER' ||
-            roundInfo.word === undefined
-        ) {
+        if (roundInfo === undefined || roundInfo.word === undefined) {
             return '';
         }
 
