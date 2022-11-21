@@ -2,7 +2,7 @@ import styled from 'styled-components';
 import { Center } from '@styles/styled';
 import { ReactComponent as Sketchbook } from '@assets/sketchbook.svg';
 import { useRecoilValue } from 'recoil';
-import { roundDrawState, roundNumberState, roundWordState } from '@atoms/game';
+import { roundDrawState, roundNumberState, roundWordState, submitState } from '@atoms/game';
 import useCanvas from '@hooks/useCanvas';
 import Card from '@components/Card';
 import Timer from '@components/Timer';
@@ -13,8 +13,7 @@ function SketchbookCard() {
     const isDraw = useRecoilValue(roundDrawState);
     const word = useRecoilValue(roundWordState);
     const roundNum = useRecoilValue(roundNumberState);
-
-    // TODO: 첫라운드 일때만 스케치북에 설명 보여주기
+    const isSubmit = useRecoilValue(submitState);
 
     return (
         <Card>
@@ -39,7 +38,7 @@ function SketchbookCard() {
                         </FirstRoundGuide>
                     )}
                 </SketchbookWrapper>
-                <DrawingTools rest={rest} />
+                {isDraw && !isSubmit ? <DrawingTools rest={rest} /> : <div />}
             </Container>
         </Card>
     );
@@ -49,6 +48,9 @@ export default SketchbookCard;
 
 const Container = styled(Center)`
     padding: 44px 38px 0 28px;
+    > div:last-of-type {
+        width: 100%;
+    }
 `;
 
 const GameStateSection = styled.div`
