@@ -1,9 +1,8 @@
-import { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { Center } from '@styles/styled';
 import { ReactComponent as Sketchbook } from '@assets/sketchbook.svg';
 import { useRecoilValue } from 'recoil';
-import { drawState, roundInfoState, roundInfoType } from '@atoms/game';
+import { roundDrawState, roundNumberState, roundWordState } from '@atoms/game';
 import useCanvas from '@hooks/useCanvas';
 import Card from '@components/Card';
 import Timer from '@components/Timer';
@@ -11,25 +10,15 @@ import DrawingTools from '@components/DrawingTools';
 
 function SketchbookCard() {
     const { canvasRef, ...rest } = useCanvas();
-    const roundInfo = useRecoilValue<roundInfoType>(roundInfoState);
-    const isDraw = useRecoilValue(drawState);
-    const [word, setWord] = useState('');
-    const [round, setRound] = useState(0);
-
-    useEffect(() => {
-        if (roundInfo === undefined) return;
-
-        if (roundInfo.type === 'DRAW' && roundInfo.word !== undefined) {
-            setWord(roundInfo.word);
-        }
-        setRound(roundInfo.round);
-    }, [roundInfo]);
+    const isDraw = useRecoilValue(roundDrawState);
+    const word = useRecoilValue(roundWordState);
+    const roundNum = useRecoilValue(roundNumberState);
 
     return (
         <Card>
             <Container>
                 <GameStateSection>
-                    <GameTurn>{round}/8</GameTurn>
+                    <GameTurn>{roundNum}/8</GameTurn>
                     <Timer />
                 </GameStateSection>
                 <SketchbookWrapper>

@@ -28,13 +28,43 @@ export const roundInfoState = atom<roundInfoType>({
 /**
  * true면 현재 그릴 차례, false면 답을 맞출 차례
  */
-export const drawState = selector({
-    key: 'drawState',
+export const roundDrawState = selector({
+    key: 'roundDrawState',
     get: ({ get }) => {
         const roundInfo = get(roundInfoState);
-        if (roundInfo === undefined) return false;
 
+        if (roundInfo === undefined) return false;
         // 인풋 확인을 위해 임시로 !==(반대로) 해놓음
-        return roundInfo.type === 'DRAW';
+        return roundInfo.type !== 'DRAW';
+    },
+});
+
+export const roundWordState = selector({
+    key: 'roundWordState',
+    get: ({ get }) => {
+        const roundInfo = get(roundInfoState);
+
+        if (
+            roundInfo === undefined ||
+            roundInfo.type === 'ANSWER' ||
+            roundInfo.word === undefined
+        ) {
+            return '';
+        }
+
+        return roundInfo.word;
+    },
+});
+
+export const roundNumberState = selector({
+    key: 'roundNumberState',
+    get: ({ get }) => {
+        const roundInfo = get(roundInfoState);
+
+        if (roundInfo === undefined) {
+            return 0;
+        }
+
+        return roundInfo.round;
     },
 });

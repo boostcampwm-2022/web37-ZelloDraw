@@ -2,10 +2,10 @@ import styled from 'styled-components';
 import { Center } from '@styles/styled';
 import PrimaryButton from '@components/PrimaryButton';
 import { useRecoilValue } from 'recoil';
-import { drawState } from '@atoms/game';
+import { roundDrawState } from '@atoms/game';
 
 export default function SubmitWord() {
-    const isDraw = useRecoilValue(drawState);
+    const isDraw = useRecoilValue(roundDrawState);
 
     return (
         <Container>
