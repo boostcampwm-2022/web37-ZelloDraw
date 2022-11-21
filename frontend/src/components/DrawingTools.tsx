@@ -60,26 +60,6 @@ const Tools = styled.div`
     grid-template-rows: repeat(2, 1fr);
     grid-gap: 7px;
     margin-bottom: 44px;
-
-    button {
-        //펜 및 리셋 아이콘 위치 수정
-        svg {
-            transform: translateY(1px);
-        }
-    }
-    button:nth-of-type(2) {
-        //페인트 아이콘 위치 수정
-        svg {
-            transform: translate(-1px, -1px);
-        }
-    }
-
-    button:nth-of-type(3) {
-        //지우개 아이콘 위치 수정
-        svg {
-            transform: translate(3px, 3px);
-        }
-    }
 `;
 
 const Tool = styled.button<{ isSelected: boolean }>`
@@ -93,6 +73,25 @@ const Tool = styled.button<{ isSelected: boolean }>`
     border: 1px solid
         ${(props) => (props.isSelected ? props.theme.color.primaryDark : props.theme.color.brown)};
     box-shadow: ${({ theme }) => theme.shadow.btn};
+    &:first-of-type {
+        //펜 아이콘 위치 수정
+        img {
+            transform: translateY(2px);
+        }
+    }
+    &:nth-of-type(2) {
+        //페인트 아이콘 위치 수정
+        img {
+            transform: translateX(-1px);
+        }
+    }
+
+    &:nth-of-type(3) {
+        //지우개 아이콘 위치 수정
+        img {
+            transform: translate(3px, 4px);
+        }
+    }
 `;
 
 const ColorPicker = styled.div`
