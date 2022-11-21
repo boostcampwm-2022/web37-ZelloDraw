@@ -14,6 +14,8 @@ function SketchbookCard() {
     const word = useRecoilValue(roundWordState);
     const roundNum = useRecoilValue(roundNumberState);
 
+    // TODO: 첫라운드 일때만 스케치북에 설명 보여주기
+
     return (
         <Card>
             <Container>
@@ -28,6 +30,13 @@ function SketchbookCard() {
                         <Keyword>
                             <span>{word}</span>
                         </Keyword>
+                    )}
+                    {roundNum === 0 && (
+                        <FirstRoundGuide>
+                            나만의 문장을 만들어 입력해보세요!
+                            <br />
+                            다른 사람들이 어떤 그림을 그리게 될까요?
+                        </FirstRoundGuide>
                     )}
                 </SketchbookWrapper>
                 <DrawingTools rest={rest} />
@@ -67,6 +76,17 @@ const GameTurn = styled.div`
 const SketchbookWrapper = styled.div`
     position: relative;
     margin: 0 30px;
+`;
+
+const FirstRoundGuide = styled(Center)`
+    width: 742px;
+    height: 420px;
+    position: absolute;
+    top: 60px;
+    left: 18px;
+    color: ${({ theme }) => theme.color.primaryLight};
+    font-size: ${({ theme }) => theme.typo.h3};
+    font-weight: 600;
 `;
 
 const Canvas = styled.canvas`
