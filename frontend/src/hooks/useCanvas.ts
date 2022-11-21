@@ -4,7 +4,9 @@ import {
     CANVAS_HEIGHT,
     PEN_LINE_WIDTH,
     PEN_DEFAULT_COLOR,
-} from './../utils/constants';
+    ERASER_COLOR,
+    ERASER_LINE_WIDTH,
+} from '@utils/constants';
 
 interface Coordinate {
     x: number;
@@ -30,10 +32,30 @@ function useCanvas() {
         ctxRef.current.stroke();
     };
 
+    const onClickPen = (selectedColor: string) => {
+        ctxRef.current.strokeStyle = selectedColor;
+        ctxRef.current.lineWidth = PEN_LINE_WIDTH;
+    };
+
+    const onColorChange = (color: string) => {
+        ctxRef.current.strokeStyle = color;
+        ctxRef.current.fillStyle = color;
+        ctxRef.current.lineWidth = PEN_LINE_WIDTH;
+    };
+
+    const onClickEraser = () => {
+        ctxRef.current.strokeStyle = ERASER_COLOR;
+        ctxRef.current.lineWidth = ERASER_LINE_WIDTH;
+    };
+
+    const onClickReset = () => {
+        ctxRef.current.clearRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
+    };
+
     const onMove = useCallback(
         (event: MouseEvent): void => {
-            event.preventDefault(); // drag 방지
-            event.stopPropagation(); // drag 방지
+            event.preventDefault();
+            event.stopPropagation();
 
             if (isPainting) {
                 const newPos = getCoordinates(event);
@@ -81,14 +103,14 @@ function useCanvas() {
         canvas.width = CANVAS_WIDTH;
         canvas.height = CANVAS_HEIGHT;
 
-        const ctx = canvas.getContext('2d');
+        const ctx: CanvasRenderingContext2D | null = canvas.getContext('2d');
         if (!ctx) return;
         ctx.strokeStyle = PEN_DEFAULT_COLOR;
         ctx.lineWidth = PEN_LINE_WIDTH;
         ctxRef.current = ctx;
     }, []);
 
-    return [canvasRef, ctxRef];
+    return { canvasRef, onClickPen, onColorChange, onClickEraser, onClickReset };
 }
 
 export default useCanvas;
