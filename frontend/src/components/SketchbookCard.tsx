@@ -1,46 +1,45 @@
-import { useEffect, useState } from 'react';
 import styled from 'styled-components';
+import { Center } from '@styles/styled';
+import { ReactComponent as Sketchbook } from '@assets/sketchbook.svg';
+import { useRecoilValue } from 'recoil';
+import { roundDrawState, roundNumberState, roundWordState } from '@atoms/game';
+import useCanvas from '@hooks/useCanvas';
 import Card from '@components/Card';
 import Timer from '@components/Timer';
 import DrawingTools from '@components/DrawingTools';
-import { Center } from '@styles/styled';
-import useCanvas from '@hooks/useCanvas';
-import { ReactComponent as Sketchbook } from '@assets/sketchbook.svg';
-import { roundInfoState, roundInfoType } from '@atoms/game';
-import { useRecoilValue } from 'recoil';
 
-function SketchbookCard({ drawState }: { drawState: boolean }) {
+function SketchbookCard() {
     const { canvasRef, ...rest } = useCanvas();
-    const roundInfo = useRecoilValue<roundInfoType>(roundInfoState);
-    const [word, setWord] = useState('');
-    const [round, setRound] = useState(0);
+    const isDraw = useRecoilValue(roundDrawState);
+    const word = useRecoilValue(roundWordState);
+    const roundNum = useRecoilValue(roundNumberState);
 
-    useEffect(() => {
-        if (roundInfo === undefined) return;
-
-        if (roundInfo.type === 'DRAW' && roundInfo.word !== undefined) {
-            setWord(roundInfo.word);
-        }
-        setRound(roundInfo.round);
-    }, [roundInfo]);
+    // TODO: 첫라운드 일때만 스케치북에 설명 보여주기
 
     return (
         <Card>
             <Container>
                 <GameStateSection>
-                    <GameTurn>{round}/8</GameTurn>
+                    <GameTurn>{roundNum}/8</GameTurn>
                     <Timer />
                 </GameStateSection>
                 <SketchbookWrapper>
                     <Sketchbook />
                     <Canvas ref={canvasRef} />
-                    {drawState && (
+                    {isDraw && (
                         <Keyword>
                             <span>{word}</span>
                         </Keyword>
                     )}
+                    {roundNum === 0 && (
+                        <FirstRoundGuide>
+                            나만의 문장을 만들어 입력해보세요!
+                            <br />
+                            다른 사람들이 어떤 그림을 그리게 될까요?
+                        </FirstRoundGuide>
+                    )}
                 </SketchbookWrapper>
-                <DrawingTools drawState={drawState} rest={rest} />
+                <DrawingTools rest={rest} />
             </Container>
         </Card>
     );
@@ -77,6 +76,17 @@ const GameTurn = styled.div`
 const SketchbookWrapper = styled.div`
     position: relative;
     margin: 0 30px;
+`;
+
+const FirstRoundGuide = styled(Center)`
+    width: 742px;
+    height: 420px;
+    position: absolute;
+    top: 60px;
+    left: 18px;
+    color: ${({ theme }) => theme.color.primaryLight};
+    font-size: ${({ theme }) => theme.typo.h3};
+    font-weight: 600;
 `;
 
 const Canvas = styled.canvas`

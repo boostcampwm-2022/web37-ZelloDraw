@@ -1,25 +1,14 @@
 import styled from 'styled-components';
-import { useEffect, useState } from 'react';
-import { Center } from '@styles/styled';
-import { useRecoilValue } from 'recoil';
-import { roundInfoState, roundInfoType } from '@atoms/game';
 import SketchbookCard from '@components/SketchbookCard';
 import GameUsers from '@components/GameUsers';
-import PrimaryButton from '@components/PrimaryButton';
 import MicButton from '@components/MicButton';
 import CameraButton from '@components/CameraButton';
 import SmallLogo from '@assets/logo-s.png';
 import useMovePage from '@hooks/useMovePage';
+import SubmitSection from '@components/SubmitSection';
 
 function Game() {
     const [setPage] = useMovePage();
-    const roundInfo = useRecoilValue<roundInfoType>(roundInfoState);
-    const [drawState, setDrawState] = useState(false);
-
-    useEffect(() => {
-        if (roundInfo === undefined) return;
-        setDrawState(roundInfo.type === 'DRAW');
-    }, [roundInfo]);
 
     // TODO: 유저리스트 가져와서 GameUsers 컴포넌트 구성하기
 
@@ -27,15 +16,8 @@ function Game() {
         <Container>
             <GameUsers />
             <SketchbookSection>
-                <SketchbookCard drawState={drawState} />
-                <SubmitSection>
-                    {!drawState ? (
-                        <AnswerInput placeholder={'그림을 보고 답을 맞춰보세요!'} />
-                    ) : (
-                        <div />
-                    )}
-                    <PrimaryButton topText={'SUBMIT'} bottomText={'제출하기'} />
-                </SubmitSection>
+                <SketchbookCard />
+                <SubmitSection />
             </SketchbookSection>
             <CamAndMicWrapper>
                 <CameraButton />
@@ -64,37 +46,6 @@ const Container = styled.div`
 
 const SketchbookSection = styled.div`
     transform: translateY(-80px);
-`;
-
-const SubmitSection = styled(Center)`
-    width: 1120px;
-    margin-top: 26px;
-
-    > div {
-        width: 100%;
-    }
-`;
-
-const AnswerInput = styled.input`
-    flex-grow: 1;
-    height: 48px;
-    padding: 4px 20px;
-    margin-right: 16px;
-    background-color: ${({ theme }) => theme.color.blackT1};
-    color: ${({ theme }) => theme.color.green};
-    border: 1px solid ${({ theme }) => theme.color.yellow};
-    border-radius: 20px;
-    font-size: ${({ theme }) => theme.typo.h4};
-    font-weight: 800;
-
-    &::placeholder {
-        color: ${({ theme }) => theme.color.gray1};
-        font-weight: 500;
-    }
-
-    &:focus {
-        border-color: ${({ theme }) => theme.color.green};
-    }
 `;
 
 const CamAndMicWrapper = styled.div`
