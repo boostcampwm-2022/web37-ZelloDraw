@@ -1,9 +1,8 @@
 import styled from 'styled-components';
 import { useEffect, useState } from 'react';
 import { Center } from '@styles/styled';
-import { useRecoilState } from 'recoil';
+import { useRecoilValue } from 'recoil';
 import { roundInfoState, roundInfoType } from '@atoms/game';
-import { getRoundInfo } from '@game/NetworkServiceUtils';
 import SketchbookCard from '@components/SketchbookCard';
 import GameUsers from '@components/GameUsers';
 import PrimaryButton from '@components/PrimaryButton';
@@ -14,20 +13,15 @@ import useMovePage from '@hooks/useMovePage';
 
 function Game() {
     const [setPage] = useMovePage();
-    const [roundInfo, setRoundInfo] = useRecoilState<roundInfoType>(roundInfoState);
+    const roundInfo = useRecoilValue<roundInfoType>(roundInfoState);
     const [drawState, setDrawState] = useState(false);
-
-    // useEffect(() => {
-    // TODO: useEffect 안에서는 동작하지 않는 이유는 무엇일까?
-    getRoundInfo()
-        .then((res) => setRoundInfo(res))
-        .catch((err) => console.log(err));
-    // });
 
     useEffect(() => {
         if (roundInfo === undefined) return;
         setDrawState(roundInfo.type === 'DRAW');
     }, [roundInfo]);
+
+    // TODO: 유저리스트 가져와서 GameUsers 컴포넌트 구성하기
 
     return (
         <Container>

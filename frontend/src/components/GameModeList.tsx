@@ -1,17 +1,20 @@
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
+import { ReactComponent as GirlWithPencilChar } from '@assets/girl-with-pencil 1.svg';
+import { onStartGame } from '@game/NetworkServiceUtils';
+import { useSetRecoilState, useRecoilValue } from 'recoil';
+import { userState, userStateType } from '@atoms/user';
+import { roundInfoState, roundInfoType } from '@atoms/game';
+import useMovePage from '@hooks/useMovePage';
 import Card from '@components/Card';
 import GameModeItem from '@components/GameModeItem';
-import { ReactComponent as GirlWithPencilChar } from '@assets/girl-with-pencil 1.svg';
-import PrimaryButton from '@components/PrimaryButton';
-import { emitStartGame, onStartGame } from '@game/NetworkServiceUtils';
-import useMovePage from '@hooks/useMovePage';
-import { useRecoilValue } from 'recoil';
-import { userState, userStateType } from '@atoms/user';
+import GameStartButton from '@components/GameStartButton';
 
 function GameModeList({ lobbyId }: { lobbyId: string }) {
     const user = useRecoilValue<userStateType>(userState);
+    const setRoundInfo = useSetRecoilState<roundInfoType>(roundInfoState);
     const [setPage] = useMovePage();
+
     const modes = [
         {
             title: 'RANDOM KEYWORD',
@@ -20,14 +23,8 @@ function GameModeList({ lobbyId }: { lobbyId: string }) {
         },
     ];
 
-    const onClickStartBtn = () => {
-        // 게임시작 이벤트 발생
-        emitStartGame(lobbyId);
-        console.log('게임시작');
-    };
-
     useEffect(() => {
-        onStartGame(setPage);
+        onStartGame(setPage, setRoundInfo);
     }, []);
 
     return (
@@ -37,9 +34,7 @@ function GameModeList({ lobbyId }: { lobbyId: string }) {
                     <GameModeItem mode={mode} key={mode.title} isSelected={idx === 0} />
                 ))}
                 {user.isHost ? (
-                    <ButtonWrapper onClick={onClickStartBtn}>
-                        <PrimaryButton topText='START GAME' bottomText='시작하기' />
-                    </ButtonWrapper>
+                    <GameStartButton lobbyId={lobbyId} />
                 ) : (
                     <TextWrapper>
                         <span>*</span> 게임 시작을 기다리고 있어요... <span>*</span>
@@ -57,10 +52,6 @@ const CardInner = styled.div`
     height: 616px;
     display: flex;
     flex-direction: column;
-`;
-
-const ButtonWrapper = styled.div`
-    margin: auto 0 0 auto;
 `;
 
 const TextWrapper = styled.div`
