@@ -1,7 +1,4 @@
 import styled from 'styled-components';
-import { useEffect, useState } from 'react';
-import { useRecoilValue } from 'recoil';
-import { roundInfoState, roundInfoType } from '@atoms/game';
 import SketchbookCard from '@components/SketchbookCard';
 import GameUsers from '@components/GameUsers';
 import MicButton from '@components/MicButton';
@@ -12,14 +9,6 @@ import SubmitWord from '@components/SubmitWord';
 
 function Game() {
     const [setPage] = useMovePage();
-    const roundInfo = useRecoilValue<roundInfoType>(roundInfoState);
-    const [drawState, setDrawState] = useState(false);
-
-    useEffect(() => {
-        if (roundInfo === undefined) return;
-        // 인풋 확인을 위해 임시로 !==(반대로) 해놓음
-        setDrawState(roundInfo.type !== 'DRAW');
-    }, [roundInfo]);
 
     // TODO: 유저리스트 가져와서 GameUsers 컴포넌트 구성하기
 
@@ -27,8 +16,8 @@ function Game() {
         <Container>
             <GameUsers />
             <SketchbookSection>
-                <SketchbookCard drawState={drawState} />
-                <SubmitWord drawState={drawState} />
+                <SketchbookCard />
+                <SubmitWord />
             </SketchbookSection>
             <CamAndMicWrapper>
                 <CameraButton />

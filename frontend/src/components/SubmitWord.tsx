@@ -1,11 +1,15 @@
 import styled from 'styled-components';
 import { Center } from '@styles/styled';
 import PrimaryButton from '@components/PrimaryButton';
+import { useRecoilValue } from 'recoil';
+import { drawState } from '@atoms/game';
 
-export default function SubmitWord({ drawState }: { drawState: boolean }) {
+export default function SubmitWord() {
+    const isDraw = useRecoilValue(drawState);
+
     return (
         <Container>
-            {!drawState ? <AnswerInput placeholder={'그림을 보고 답을 맞춰보세요!'} /> : <div />}
+            {!isDraw ? <AnswerInput placeholder={'그림을 보고 답을 맞춰보세요!'} /> : <div />}
             <PrimaryButton topText={'SUBMIT'} bottomText={'제출하기'} />
         </Container>
     );

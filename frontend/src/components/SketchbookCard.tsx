@@ -3,15 +3,16 @@ import styled from 'styled-components';
 import { Center } from '@styles/styled';
 import { ReactComponent as Sketchbook } from '@assets/sketchbook.svg';
 import { useRecoilValue } from 'recoil';
-import { roundInfoState, roundInfoType } from '@atoms/game';
+import { drawState, roundInfoState, roundInfoType } from '@atoms/game';
 import useCanvas from '@hooks/useCanvas';
 import Card from '@components/Card';
 import Timer from '@components/Timer';
 import DrawingTools from '@components/DrawingTools';
 
-function SketchbookCard({ drawState }: { drawState: boolean }) {
+function SketchbookCard() {
     const { canvasRef, ...rest } = useCanvas();
     const roundInfo = useRecoilValue<roundInfoType>(roundInfoState);
+    const isDraw = useRecoilValue(drawState);
     const [word, setWord] = useState('');
     const [round, setRound] = useState(0);
 
@@ -34,13 +35,13 @@ function SketchbookCard({ drawState }: { drawState: boolean }) {
                 <SketchbookWrapper>
                     <Sketchbook />
                     <Canvas ref={canvasRef} />
-                    {drawState && (
+                    {isDraw && (
                         <Keyword>
                             <span>{word}</span>
                         </Keyword>
                     )}
                 </SketchbookWrapper>
-                <DrawingTools drawState={drawState} rest={rest} />
+                <DrawingTools rest={rest} />
             </Container>
         </Card>
     );
