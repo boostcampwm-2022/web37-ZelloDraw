@@ -1,13 +1,13 @@
 import { useEffect, useState } from 'react';
 import styled from 'styled-components';
+import { Center } from '@styles/styled';
+import { ReactComponent as Sketchbook } from '@assets/sketchbook.svg';
+import { useRecoilValue } from 'recoil';
+import { roundInfoState, roundInfoType } from '@atoms/game';
+import useCanvas from '@hooks/useCanvas';
 import Card from '@components/Card';
 import Timer from '@components/Timer';
 import DrawingTools from '@components/DrawingTools';
-import { Center } from '@styles/styled';
-import useCanvas from '@hooks/useCanvas';
-import { ReactComponent as Sketchbook } from '@assets/sketchbook.svg';
-import { roundInfoState, roundInfoType } from '@atoms/game';
-import { useRecoilValue } from 'recoil';
 
 function SketchbookCard({ drawState }: { drawState: boolean }) {
     const { canvasRef, ...rest } = useCanvas();
