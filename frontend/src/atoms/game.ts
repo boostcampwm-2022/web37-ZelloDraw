@@ -34,8 +34,8 @@ export const roundDrawState = selector({
         const roundInfo = get(roundInfoState);
 
         if (roundInfo === undefined) return false;
-        // 인풋 확인을 위해 임시로 !==(반대로) 해놓음
-        return roundInfo.type !== 'DRAW';
+
+        return roundInfo.type === 'DRAW';
     },
 });
 
@@ -63,4 +63,9 @@ export const roundNumberState = selector({
 
         return roundInfo.round;
     },
+});
+
+export const submitState = atom<boolean>({
+    key: 'submitState',
+    default: false,
 });

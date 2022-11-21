@@ -4,8 +4,6 @@ import { colorName } from '@utils/constants';
 import HexColorPicker from './HexColorPicker';
 import { colors } from '@styles/ZelloTheme';
 import usePalette from '@hooks/usePalette';
-import { useRecoilValue } from 'recoil';
-import { roundDrawState } from '@atoms/game';
 
 interface PaletteType {
     onClickPen: (color: string) => void;
@@ -20,10 +18,9 @@ interface DrawingToolsType {
 
 function DrawingTools({ rest }: DrawingToolsType) {
     const { tools, selectedColor, selectedTool, onClickColor, onChangeTool } = usePalette(rest);
-    const isDraw = useRecoilValue(roundDrawState);
 
     return (
-        <Container isDraw={isDraw}>
+        <Container>
             <Tools>
                 {tools.map((tool, index) => (
                     <Tool
@@ -53,16 +50,15 @@ function DrawingTools({ rest }: DrawingToolsType) {
 
 export default DrawingTools;
 
-const Container = styled(Center)<{ isDraw: boolean }>`
+const Container = styled(Center)`
     flex-direction: column;
-    opacity: ${({ isDraw }) => (isDraw ? 1 : 0)};
 `;
 
 const Tools = styled.div`
     display: grid;
     grid-template-columns: repeat(2, 1fr);
     grid-template-rows: repeat(2, 1fr);
-    grid-gap: 8px;
+    grid-gap: 7px;
     margin-bottom: 44px;
 
     button {

@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { Center } from '@styles/styled';
-import { useRecoilValue } from 'recoil';
-import { roundDrawState, roundNumberState, roundWordState } from '@atoms/game';
+import { useRecoilState, useRecoilValue } from 'recoil';
+import { roundDrawState, roundNumberState, roundWordState, submitState } from '@atoms/game';
 import PrimaryButton from '@components/PrimaryButton';
 
 function SubmitSection() {
@@ -11,8 +11,7 @@ function SubmitSection() {
     const roundWord = useRecoilValue(roundWordState);
     const [placeholder, setPlaceholder] = useState('그림을 보고 답을 맞춰보세요!');
     const [userAnswer, setUserAnswer] = useState('');
-    // TODO: recoil로 변경하고 DRAW 모드일때도 적용하기
-    const [isSubmit, setIsSubmit] = useState(false);
+    const [isSubmit, setIsSubmit] = useRecoilState(submitState);
 
     useEffect(() => {
         setRandomWordToPlaceholder();
