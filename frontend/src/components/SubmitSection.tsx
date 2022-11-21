@@ -5,12 +5,13 @@ import { useRecoilValue } from 'recoil';
 import { roundDrawState, roundNumberState, roundWordState } from '@atoms/game';
 import PrimaryButton from '@components/PrimaryButton';
 
-function SubmitWord() {
+function SubmitSection() {
     const isDraw = useRecoilValue(roundDrawState);
     const roundNum = useRecoilValue(roundNumberState);
     const roundWord = useRecoilValue(roundWordState);
     const [placeholder, setPlaceholder] = useState('그림을 보고 답을 맞춰보세요!');
     const [userAnswer, setUserAnswer] = useState('');
+    // TODO: recoil로 변경하고 DRAW 모드일때도 적용하기
     const [isSubmit, setIsSubmit] = useState(false);
 
     useEffect(() => {
@@ -69,7 +70,7 @@ function SubmitWord() {
     );
 }
 
-export default SubmitWord;
+export default SubmitSection;
 
 const Container = styled(Center)`
     width: 1120px;
