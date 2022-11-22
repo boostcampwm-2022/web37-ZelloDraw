@@ -1,5 +1,6 @@
 import React, { useEffect } from 'react';
 import styled from 'styled-components';
+import { ScaledDiv, ScaledSection } from '@styles/styled';
 import UserCard from '@components/UserCard';
 import Logo from '@assets/logo-l.png';
 import InfoCard from '@components/InfoCard';
@@ -10,7 +11,6 @@ import { useRecoilValue } from 'recoil';
 import { userState, userStateType } from '@atoms/user';
 import { networkServiceInstance as NetworkService } from '../services/socketService';
 import { getParam } from '@utils/common';
-import { ScaledSection } from '@styles/styled';
 
 function Main() {
     const [setPage] = useMovePage();
@@ -66,7 +66,7 @@ const LogoWrapper = styled.div`
     cursor: pointer;
 `;
 
-const BottomWrapper = styled.div`
+const BottomWrapper = styled(ScaledDiv)`
     position: absolute;
     bottom: 20px;
     right: 16px;

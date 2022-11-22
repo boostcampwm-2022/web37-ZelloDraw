@@ -22,5 +22,5 @@ const Container = styled(Center)`
     width: 100%;
     max-width: 1820px;
     grid-gap: 8px;
-    margin-bottom: 48px;
+    margin-bottom: 40px;
 `;

@@ -71,6 +71,7 @@ export const ZelloTheme = {
         icon: '0px 1px 3px 1px rgba(0, 29, 46, 0.5)',
         btn: '0px 1px 3px 1px rgba(0, 29, 46, 0.3)',
     },
+
     layout: {
         maxWidth: `${MAX_WIDTH}px`,
         maxHeight: `${MAX_HEIGHT}px`,

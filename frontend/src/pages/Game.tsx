@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import { ScaledSection } from '@styles/styled';
+import { ScaledDiv, ScaledSection } from '@styles/styled';
 import SketchbookCard from '@components/SketchbookCard';
 import GameUsers from '@components/GameUsers';
 import MicButton from '@components/MicButton';
@@ -35,14 +35,14 @@ export default Game;
 
 const Container = styled(ScaledSection)`
     position: relative;
-    padding: 0 36px 40px 36px;
+    padding: 48px 36px 40px 36px;
 `;
 
 const SketchbookSection = styled.div`
     margin-bottom: 140px;
 `;
 
-const CamAndMicWrapper = styled.div`
+const CamAndMicWrapper = styled(ScaledDiv)`
     display: flex;
     position: absolute;
     bottom: 24px;
@@ -53,7 +53,7 @@ const CamAndMicWrapper = styled.div`
     }
 `;
 
-const LogoWrapper = styled.div`
+const LogoWrapper = styled(ScaledDiv)`
     justify-self: center;
     position: absolute;
     bottom: 40px;
