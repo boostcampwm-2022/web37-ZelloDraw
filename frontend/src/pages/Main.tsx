@@ -32,19 +32,21 @@ function Main() {
     };
 
     return (
-        <MainContainer>
-            <LogoWrapper onClick={() => setPage('/')}>
-                <img src={Logo} alt={'Logo, Move to main page'} />
-            </LogoWrapper>
-            <CardContainer>
-                <UserCard />
-                <InfoCard onHandleEnterLobby={onClickEnterBtn} />
-            </CardContainer>
-            {!user.isHost && <GuestEntranceMessage />}
+        <>
+            <MainContainer>
+                <LogoWrapper onClick={() => setPage('/')}>
+                    <img src={Logo} alt={'Logo, Move to main page'} />
+                </LogoWrapper>
+                <CardContainer>
+                    <UserCard />
+                    <InfoCard onHandleEnterLobby={onClickEnterBtn} />
+                </CardContainer>
+                {!user.isHost && <GuestEntranceMessage />}
+            </MainContainer>
             <BottomWrapper>
                 <MadeByText />
             </BottomWrapper>
-        </MainContainer>
+        </>
     );
 }
 
@@ -66,6 +68,6 @@ const LogoWrapper = styled.div`
 
 const BottomWrapper = styled.div`
     position: absolute;
-    bottom: -40px;
-    right: 0;
+    bottom: 20px;
+    right: 16px;
 `;

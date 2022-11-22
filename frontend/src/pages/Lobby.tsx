@@ -55,10 +55,10 @@ function Lobby() {
 
     return (
         <>
+            <LogoWrapper onClick={() => setPage('/')}>
+                <img src={SmallLogo} />
+            </LogoWrapper>
             <LobbyContainer>
-                <LogoWrapper onClick={() => setPage('/')}>
-                    <img src={SmallLogo} />
-                </LogoWrapper>
                 <FlexBox>
                     <UserList />
                     <GameModeList lobbyId={lobbyId} />

@@ -12,12 +12,14 @@ function Game() {
     const [setPage] = useMovePage();
 
     return (
-        <Container>
-            <GameUsers />
-            <SketchbookSection>
-                <SketchbookCard />
-                <QuizReplySection />
-            </SketchbookSection>
+        <>
+            <Container>
+                <GameUsers />
+                <SketchbookSection>
+                    <SketchbookCard />
+                    <QuizReplySection />
+                </SketchbookSection>
+            </Container>{' '}
             <CamAndMicWrapper>
                 <CameraButton />
                 <MicButton />
@@ -25,21 +27,19 @@ function Game() {
             <LogoWrapper onClick={() => setPage('/')}>
                 <img src={SmallLogo} />
             </LogoWrapper>
-            <div />
-        </Container>
+        </>
     );
 }
 
 export default Game;
 
 const Container = styled(ScaledSection)`
-    justify-content: space-between;
     position: relative;
-    padding: 40px 36px;
+    padding: 0 36px 40px 36px;
 `;
 
 const SketchbookSection = styled.div`
-    margin-bottom: 120px;
+    margin-bottom: 140px;
 `;
 
 const CamAndMicWrapper = styled.div`
