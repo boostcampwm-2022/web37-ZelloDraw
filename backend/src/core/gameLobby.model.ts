@@ -5,12 +5,12 @@ import { QuizReplyChain } from './quizReplyChain.model';
 import { User } from './user.model';
 
 export class GameLobby implements Lobby, Game {
-    id: string;
-    host: User;
+    readonly id: string;
+    readonly host: User;
     users: User[];
     maxRound: number;
     curRound: number;
-    roundType: 'DRAW' | 'ANSWER';
+    readonly roundType: 'DRAW' | 'ANSWER';
     roundLimitTime: number;
     quizReplyChains: QuizReplyChain[];
     isPlaying: boolean;
@@ -25,6 +25,18 @@ export class GameLobby implements Lobby, Game {
         this.roundLimitTime = 0;
         this.quizReplyChains = [];
         this.isPlaying = false;
+    }
+
+    getId(): string {
+        return this.id;
+    }
+
+    getUsers(): User[] {
+        return this.users;
+    }
+
+    getHost(): User {
+        return this.host;
     }
 
     joinLobby(user: User) {
