@@ -3,7 +3,7 @@ import { QuizReplyChain } from './quizReplyChain.model';
 import { User } from './user.model';
 
 export interface Game {
-    startGame: (user: User) => any;
+    startGame: (maxRound: number, roundLimitTime: number) => any;
     getPrevQuizReply: (user: User) => QuizReply;
     submitQuizReply: (user: User, quizReply: QuizReply) => any;
     proceedRound: () => any;
