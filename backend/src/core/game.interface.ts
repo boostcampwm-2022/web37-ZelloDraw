@@ -7,5 +7,5 @@ export interface Game {
     getCurrentRoundQuizReplyChain: (user: User) => QuizReplyChain;
     submitQuizReply: (user: User, quizReply: QuizReply) => any;
     proceedRound: () => any;
-    getQuizReplyChain: () => QuizReplyChain;
+    getQuizReplyChains: () => QuizReplyChain[];
 }

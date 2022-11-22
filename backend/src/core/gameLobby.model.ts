@@ -59,12 +59,14 @@ export class GameLobby implements Lobby, Game {
     }
 
     proceedRound() {
-        console.error('proceedRound is not implemented');
+        this.curRound += 1;
+        if (this.curRound >= this.maxRound) {
+            this.isPlaying = false;
+        }
     }
 
-    getQuizReplyChain(): QuizReplyChain {
-        console.error('getQuizReplyChain is not implemented');
-        return new QuizReplyChain();
+    getQuizReplyChains(): QuizReplyChain[] {
+        return this.quizReplyChains;
     }
 
     private getUserIndex(user: User): number {
