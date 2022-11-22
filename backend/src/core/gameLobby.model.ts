@@ -48,9 +48,14 @@ export class GameLobby implements Lobby, Game {
         });
     }
 
-    getPrevQuizReply(user: User): QuizReply {
-        console.error('getPrevQuizReply is not implemented');
-        return undefined;
+    getNextRoundQuizReplyChain(user: User): QuizReplyChain {
+        const userIndex = this.getUserIndex(user);
+        const nextRoundQuizReplyChainIndex = (userIndex + this.curRound) % this.users.length;
+        return this.quizReplyChains[nextRoundQuizReplyChainIndex];
+    }
+
+    private getUserIndex(user: User): number {
+        return this.users.findIndex((iUser) => iUser.socketId === user.socketId);
     }
 
     submitQuizReply(user: User, quizReply: QuizReply) {
