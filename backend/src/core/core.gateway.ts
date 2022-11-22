@@ -10,12 +10,9 @@ import {
 } from '@nestjs/websockets';
 import { Socket } from 'socket.io';
 import { LobbyService } from './lobby.service';
-import { RoundService } from './round.service';
 import { UseFilters, UsePipes, ValidationPipe } from '@nestjs/common';
 import { JoinLobbyRequest, JoinLobbyResponse, JoinLobbyReEmitRequest } from './user.dto';
 import { UserService } from './user.service';
-import { Round } from './round.model';
-import { StartRoundResponse } from './round.dto';
 import { SocketException } from './socket.exception';
 import { SocketExceptionFilter } from './socket.filter';
 
@@ -26,8 +23,8 @@ import { SocketExceptionFilter } from './socket.filter';
 export class CoreGateway implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect {
     constructor(
         private readonly lobbyService: LobbyService,
+        private readonly gameService: GameService,
         private readonly userService: UserService,
-        private readonly roundService: RoundService,
     ) {}
 
     handleConnection(client: any) {
@@ -112,40 +109,6 @@ export class CoreGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 
         const gameMock = {
             lobbyId,
-            users: lobby.host,
-        };
-        client.nsp.to(lobbyId).emit('start-game', gameMock);
-    }
-
-    @SubscribeMessage('start-round')
-    async handleStartRound(@ConnectedSocket() client: Socket, @MessageBody() lobbyId: string) {
-        // const user = this.userService.getUser(client.id);
-        //
-        // if (!this.lobbyService.isLobbyHost(user, lobbyId)) {
-        //     throw new Error('Only host can start game');
-        // }
-        //
-        // const lobby = this.lobbyService.getLobby(lobbyId);
-        // if (!lobby.isPlaying) throw new Error('게임중이 아닙니다.');
-        //
-        // if (!lobby.isPlaying) {
-        //     throw new Error('게임중이 아닙니다.');
-        // }
-        //
-        // const round: StartRoundResponse[] = [];
-        // lobby.users.forEach((user) => {
-        //     const userRound = this.roundService.startRound(lobby);
-        //     round.push(userRound);
-        //
-        //     client.nsp.to(user.socketId).emit('start-round', userRound);
-        // });
-        //
-        // lobby.rounds.push(new Round(round));
-        //
-        // setTimeout(() => {
-        //     console.log('발송');
-        //     client.nsp.to(lobbyId).emit('complete-round', { round: lobby.rounds.length, lobbyId });
-        // }, 6000);
-        // return null;
+        });
     }
 }
