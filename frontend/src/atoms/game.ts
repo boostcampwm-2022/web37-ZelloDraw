@@ -65,7 +65,7 @@ export const roundNumberState = selector({
     },
 });
 
-export const submitState = atom<boolean>({
-    key: 'submitState',
+export const quizSubmitState = atom<boolean>({
+    key: 'quizSubmitState',
     default: false,
 });
