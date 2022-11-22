@@ -26,3 +26,7 @@ export const ScaledSection = styled.section`
     height: ${({ theme }) => theme.layout.maxHeight};
     transform: ${({ theme }) => theme.layout.sectionScale};
 `;
+
+export const ScaledDiv = styled.div`
+    transform: ${({ theme }) => theme.layout.sectionScale};
+`;

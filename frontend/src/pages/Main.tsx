@@ -1,5 +1,6 @@
 import React, { useEffect } from 'react';
 import styled from 'styled-components';
+import { ScaledDiv, ScaledSection } from '@styles/styled';
 import UserCard from '@components/UserCard';
 import Logo from '@assets/logo-l.png';
 import InfoCard from '@components/InfoCard';
@@ -10,7 +11,6 @@ import { useRecoilValue } from 'recoil';
 import { userState, userStateType } from '@atoms/user';
 import { networkServiceInstance as NetworkService } from '../services/socketService';
 import { getParam } from '@utils/common';
-import { ScaledSection } from '@styles/styled';
 
 function Main() {
     const [setPage] = useMovePage();
@@ -32,19 +32,21 @@ function Main() {
     };
 
     return (
-        <MainContainer>
-            <LogoWrapper onClick={() => setPage('/')}>
-                <img src={Logo} alt={'Logo, Move to main page'} />
-            </LogoWrapper>
-            <CardContainer>
-                <UserCard />
-                <InfoCard onHandleEnterLobby={onClickEnterBtn} />
-            </CardContainer>
-            {!user.isHost && <GuestEntranceMessage />}
+        <>
+            <MainContainer>
+                <LogoWrapper onClick={() => setPage('/')}>
+                    <img src={Logo} alt={'Logo, Move to main page'} />
+                </LogoWrapper>
+                <CardContainer>
+                    <UserCard />
+                    <InfoCard onHandleEnterLobby={onClickEnterBtn} />
+                </CardContainer>
+                {!user.isHost && <GuestEntranceMessage />}
+            </MainContainer>
             <BottomWrapper>
                 <MadeByText />
             </BottomWrapper>
-        </MainContainer>
+        </>
     );
 }
 
@@ -64,8 +66,8 @@ const LogoWrapper = styled.div`
     cursor: pointer;
 `;
 
-const BottomWrapper = styled.div`
+const BottomWrapper = styled(ScaledDiv)`
     position: absolute;
-    bottom: -40px;
-    right: 0;
+    bottom: 20px;
+    right: 16px;
 `;

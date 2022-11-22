@@ -1,5 +1,6 @@
 import { useEffect } from 'react';
 import styled from 'styled-components';
+import { ScaledDiv, ScaledSection } from '@styles/styled';
 import GameModeList from '@components/GameModeList';
 import UserList from '@components/UserList';
 import CameraButton from '@components/CameraButton';
@@ -14,7 +15,6 @@ import { useRecoilState } from 'recoil';
 import { userListState } from '@atoms/game';
 import { getParam } from '@utils/common';
 import { JoinLobbyReEmitRequest, JoinLobbyRequest } from '@backend/core/user.dto';
-import { ScaledSection } from '@styles/styled';
 
 function Lobby() {
     const [userList, setUserList] = useRecoilState(userListState);
@@ -55,10 +55,10 @@ function Lobby() {
 
     return (
         <>
+            <LogoWrapper onClick={() => setPage('/')}>
+                <img src={SmallLogo} />
+            </LogoWrapper>
             <LobbyContainer>
-                <LogoWrapper onClick={() => setPage('/')}>
-                    <img src={SmallLogo} />
-                </LogoWrapper>
                 <FlexBox>
                     <UserList />
                     <GameModeList lobbyId={lobbyId} />
@@ -76,13 +76,21 @@ export default Lobby;
 
 const LobbyContainer = styled(ScaledSection)``;
 
-const LogoWrapper = styled.div`
+const LogoWrapper = styled(ScaledDiv)`
     position: absolute;
     top: 12px;
-    left: 24px;
+    left: -12px;
 
     img {
         cursor: pointer;
+    }
+
+    @media (min-width: 2000px) {
+        left: 24px;
+    }
+    @media (min-width: 2500px) {
+        top: 24px;
+        left: 60px;
     }
 `;
 
