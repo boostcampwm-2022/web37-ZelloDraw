@@ -15,6 +15,8 @@ import { JoinLobbyRequest, JoinLobbyResponse, JoinLobbyReEmitRequest } from './u
 import { UserService } from './user.service';
 import { SocketException } from './socket.exception';
 import { SocketExceptionFilter } from './socket.filter';
+import { GameService } from './game.service';
+import { StartRoundEmitRequest } from './game.dto';
 
 // TODO: Validation Pipe 관련 내용 학습 + 소켓에서 에러 처리 어케할건지 학습 하고 적용하기
 // @UsePipes(new ValidationPipe())
@@ -104,11 +106,27 @@ export class CoreGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
         }
         // TODO: GameStart 로직 처리 (게임 시작시 게임의 상태 정보 변경)
         // TODO: gameMock 데이터 대신 실제 게임 데이터로 변경 필요
-        const lobby = this.lobbyService.getLobby(lobbyId);
-        lobby.isPlaying = true;
+        const game = this.gameService.getGame(lobbyId);
+        game.isPlaying = true;
 
-        const gameMock = {
+        client.nsp.to(lobbyId).emit('start-game', {
+            users: game.getHost(),
             lobbyId,
+        });
+
+        this.gameService.startGame(lobbyId);
+
+        console.log(game.getUsers());
+        game.getUsers().forEach((user) => {
+            const quizReply = this.gameService
+                .getCurrentRoundQuizReplyChain(lobbyId, user)
+                .getLastQuizReply();
+            const payload: StartRoundEmitRequest = {
+                quizReply,
+                round: game.curRound,
+                limitTime: game.roundLimitTime,
+            };
+            client.nsp.to(user.socketId).emit('start-round', payload);
         });
     }
 }

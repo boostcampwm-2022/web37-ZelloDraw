@@ -5,6 +5,7 @@ import { GameLobbyRepository } from './gamelobby.repository';
 import { QuizReply } from './quizReply.model';
 import { QuizReplyRequest } from './game.dto';
 import { QuizReplyChain } from './quizReplyChain.model';
+import { GameLobby } from './gameLobby.model';
 
 @Injectable()
 export class GameService {
@@ -41,5 +42,10 @@ export class GameService {
     getQuizReplyChainsWhenGameEnd(lobbyId: string): undefined | QuizReplyChain[] {
         const game = this.gameLobbyRepository.findById(lobbyId);
         return game.getQuizReplyChains();
+    }
+
+    getGame(lobbyId: string): GameLobby {
+        const game = this.gameLobbyRepository.findById(lobbyId);
+        return game;
     }
 }
