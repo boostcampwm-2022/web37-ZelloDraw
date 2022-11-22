@@ -2,12 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { User } from './user.model';
 import { UserService } from './user.service';
 import { GameLobby } from './gameLobby.model';
-import { Lobby } from './lobby.interface';
 import { GameLobbyRepository } from './gamelobby.repository';
-
-export interface LobbyStore {
-    [key: string]: Lobby;
-}
 
 @Injectable()
 export class LobbyService {
