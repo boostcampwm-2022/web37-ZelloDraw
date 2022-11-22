@@ -47,8 +47,8 @@ export class GameLobby implements Lobby, Game {
         this.users = this.users.filter((iUser) => iUser.socketId !== user.socketId);
     }
 
-    startGame(maxRound: number, roundLimitTime: number) {
-        this.maxRound = maxRound;
+    startGame(roundLimitTime: number) {
+        this.maxRound = this.users.length - 1;
         this.roundLimitTime = roundLimitTime;
         this.isPlaying = true;
         this.quizReplyChains = this.users.map(() => {
@@ -72,7 +72,7 @@ export class GameLobby implements Lobby, Game {
 
     proceedRound() {
         this.curRound += 1;
-        if (this.curRound >= this.maxRound) {
+        if (this.curRound > this.maxRound) {
             this.isPlaying = false;
         }
     }
