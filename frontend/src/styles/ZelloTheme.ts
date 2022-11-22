@@ -1,3 +1,5 @@
+import { MAX_HEIGHT, MAX_WIDTH, SCALE } from '@utils/constants';
+
 interface ColorsType {
     [key: string]: string;
 }
@@ -68,5 +70,11 @@ export const ZelloTheme = {
         card: '0px 6px 9px 2px rgba(0, 29, 46, 0.2)',
         icon: '0px 1px 3px 1px rgba(0, 29, 46, 0.5)',
         btn: '0px 1px 3px 1px rgba(0, 29, 46, 0.3)',
+    },
+
+    layout: {
+        maxWidth: `${MAX_WIDTH}px`,
+        maxHeight: `${MAX_HEIGHT}px`,
+        sectionScale: SCALE,
     },
 };

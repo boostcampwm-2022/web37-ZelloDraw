@@ -1,5 +1,6 @@
 import { useEffect } from 'react';
 import styled from 'styled-components';
+import { ScaledDiv, ScaledSection } from '@styles/styled';
 import GameModeList from '@components/GameModeList';
 import UserList from '@components/UserList';
 import CameraButton from '@components/CameraButton';
@@ -54,10 +55,10 @@ function Lobby() {
 
     return (
         <>
+            <LogoWrapper onClick={() => setPage('/')}>
+                <img src={SmallLogo} />
+            </LogoWrapper>
             <LobbyContainer>
-                <LogoWrapper onClick={() => setPage('/')}>
-                    <img src={SmallLogo} />
-                </LogoWrapper>
                 <FlexBox>
                     <UserList />
                     <GameModeList lobbyId={lobbyId} />
@@ -73,22 +74,16 @@ function Lobby() {
 
 export default Lobby;
 
-const LogoWrapper = styled.div`
+const LobbyContainer = styled(ScaledSection)``;
+
+const LogoWrapper = styled(ScaledDiv)`
     position: absolute;
     top: 12px;
-    left: 24px;
+    left: 12px;
 
     img {
         cursor: pointer;
     }
-`;
-
-const LobbyContainer = styled.section`
-    display: flex;
-    height: 100%;
-    align-items: center;
-    justify-content: center;
-    flex-direction: column;
 `;
 
 const FlexBox = styled.div`

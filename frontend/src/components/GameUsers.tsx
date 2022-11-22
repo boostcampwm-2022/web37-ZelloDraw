@@ -1,21 +1,16 @@
 import VideoCallUser from '@components/VideoCallUser';
 import styled from 'styled-components';
+import { useRecoilValue } from 'recoil';
+import { userListState } from '@atoms/game';
+import { Center } from '@styles/styled';
 
 function GameUsers() {
-    const testUsers = [
-        '젤로조아13579',
-        '젤로조아23579',
-        '젤로조아33579',
-        '젤로조아43579',
-        '젤로조아53579',
-        '젤로조아63579',
-        '젤로조아73579',
-        '젤로조아83579',
-    ];
+    const userList = useRecoilValue(userListState);
+
     return (
         <Container>
-            {testUsers.map((userName, index) => (
-                <VideoCallUser userName={userName} key={`${userName} ${index}`} />
+            {userList.map((user: string, idx: number) => (
+                <VideoCallUser key={`${user} ${idx}`} userName={user} />
             ))}
         </Container>
     );
@@ -23,11 +18,9 @@ function GameUsers() {
 
 export default GameUsers;
 
-const Container = styled.div`
+const Container = styled(Center)`
     width: 100%;
-    max-width: 1728px;
-    display: grid;
-    grid-template-columns: repeat(8, 1fr);
+    max-width: 1820px;
     grid-gap: 8px;
-    margin-bottom: 68px;
+    margin-bottom: 40px;
 `;

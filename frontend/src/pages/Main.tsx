@@ -1,5 +1,6 @@
 import React, { useEffect } from 'react';
 import styled from 'styled-components';
+import { ScaledDiv, ScaledSection } from '@styles/styled';
 import UserCard from '@components/UserCard';
 import Logo from '@assets/logo-l.png';
 import InfoCard from '@components/InfoCard';
@@ -31,30 +32,28 @@ function Main() {
     };
 
     return (
-        <MainContainer>
-            <LogoWrapper onClick={() => setPage('/')}>
-                <img src={Logo} />
-            </LogoWrapper>
-            <CardContainer>
-                <UserCard />
-                <InfoCard onHandleEnterLobby={onClickEnterBtn} />
-            </CardContainer>
-            {!user.isHost && <GuestEntranceMessage />}
+        <>
+            <MainContainer>
+                <LogoWrapper onClick={() => setPage('/')}>
+                    <img src={Logo} alt={'Logo, Move to main page'} />
+                </LogoWrapper>
+                <CardContainer>
+                    <UserCard />
+                    <InfoCard onHandleEnterLobby={onClickEnterBtn} />
+                </CardContainer>
+                {!user.isHost && <GuestEntranceMessage />}
+            </MainContainer>
             <BottomWrapper>
                 <MadeByText />
             </BottomWrapper>
-        </MainContainer>
+        </>
     );
 }
 
 export default Main;
 
-const MainContainer = styled.section`
-    display: flex;
-    height: 100%;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
+const MainContainer = styled(ScaledSection)`
+    margin-top: -120px;
     gap: 16px;
 `;
 
@@ -67,8 +66,8 @@ const LogoWrapper = styled.div`
     cursor: pointer;
 `;
 
-const BottomWrapper = styled.div`
+const BottomWrapper = styled(ScaledDiv)`
     position: absolute;
-    bottom: 0px;
-    right: 0px;
+    bottom: 20px;
+    right: 16px;
 `;

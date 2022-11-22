@@ -1,4 +1,5 @@
 import styled from 'styled-components';
+import { ScaledDiv, ScaledSection } from '@styles/styled';
 import SketchbookCard from '@components/SketchbookCard';
 import GameUsers from '@components/GameUsers';
 import MicButton from '@components/MicButton';
@@ -10,15 +11,15 @@ import QuizReplySection from '@components/QuizReplySection';
 function Game() {
     const [setPage] = useMovePage();
 
-    // TODO: 유저리스트 가져와서 GameUsers 컴포넌트 구성하기
-
     return (
-        <Container>
-            <GameUsers />
-            <SketchbookSection>
-                <SketchbookCard />
-                <QuizReplySection />
-            </SketchbookSection>
+        <>
+            <Container>
+                <GameUsers />
+                <SketchbookSection>
+                    <SketchbookCard />
+                    <QuizReplySection />
+                </SketchbookSection>
+            </Container>{' '}
             <CamAndMicWrapper>
                 <CameraButton />
                 <MicButton />
@@ -26,29 +27,22 @@ function Game() {
             <LogoWrapper onClick={() => setPage('/')}>
                 <img src={SmallLogo} />
             </LogoWrapper>
-            <div />
-        </Container>
+        </>
     );
 }
 
 export default Game;
 
-const Container = styled.div`
-    width: 100%;
-    height: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    flex-direction: column;
+const Container = styled(ScaledSection)`
     position: relative;
-    padding: 40px 36px;
+    padding: 48px 36px 40px 36px;
 `;
 
 const SketchbookSection = styled.div`
-    transform: translateY(-80px);
+    margin-bottom: 140px;
 `;
 
-const CamAndMicWrapper = styled.div`
+const CamAndMicWrapper = styled(ScaledDiv)`
     display: flex;
     position: absolute;
     bottom: 24px;
@@ -59,7 +53,7 @@ const CamAndMicWrapper = styled.div`
     }
 `;
 
-const LogoWrapper = styled.div`
+const LogoWrapper = styled(ScaledDiv)`
     justify-self: center;
     position: absolute;
     bottom: 40px;

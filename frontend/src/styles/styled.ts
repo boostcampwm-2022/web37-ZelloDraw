@@ -16,3 +16,18 @@ export const Color = styled.input<{ colorName: string; isSelected: boolean }>`
     border: ${({ isSelected }) => (isSelected ? `3px solid rgba(246, 245, 248, 0.6)` : ``)};
     cursor: pointer;
 `;
+
+export const ScaledSection = styled.section`
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    width: ${({ theme }) => theme.layout.maxWidth};
+    height: ${({ theme }) => theme.layout.maxHeight};
+    transform: scale(${({ theme }) => theme.layout.sectionScale});
+`;
+
+export const ScaledDiv = styled.div`
+    transform: ${({ theme }) =>
+        theme.layout.sectionScale < 1 ? `scale(${theme.layout.sectionScale})` : 'scale(1)'};
+`;
