@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { Center } from '@styles/styled';
 import { useRecoilState, useRecoilValue } from 'recoil';
-import { roundDrawState, roundNumberState, roundWordState, submitState } from '@atoms/game';
+import { roundDrawState, roundNumberState, roundWordState, quizSubmitState } from '@atoms/game';
 import PrimaryButton from '@components/PrimaryButton';
 
 function QuizReplySection() {
@@ -11,7 +11,7 @@ function QuizReplySection() {
     const roundWord = useRecoilValue(roundWordState);
     const [placeholder, setPlaceholder] = useState('그림을 보고 답을 맞춰보세요!');
     const [userAnswer, setUserAnswer] = useState('');
-    const [isSubmit, setIsSubmit] = useRecoilState(submitState);
+    const [quizSubmitted, setQuizSubmitted] = useRecoilState(quizSubmitState);
 
     useEffect(() => {
         setRandomWordToPlaceholder();
@@ -29,11 +29,11 @@ function QuizReplySection() {
     }
 
     function submitBtnHandler() {
-        if (isSubmit) {
-            setIsSubmit(false);
+        if (quizSubmitted) {
+            setQuizSubmitted(false);
             return;
         }
-        setIsSubmit(true);
+        setQuizSubmitted(true);
 
         // TODO: 몇명이나 제출했는지 확인하기 위해서 서버로 우선 전송, 내용 변경 후 다시 제출하면 다시 서버로 전송
         // 유저가 입력한 값이 없을 경우 전전 유저가 답한 word가 제출된다. (첫텀에는 랜덤 단어가 제출된다.)
@@ -52,14 +52,14 @@ function QuizReplySection() {
                 <AnswerInput
                     placeholder={placeholder}
                     onChange={writeAnswer}
-                    readOnly={isSubmit}
-                    isSubmit={isSubmit}
+                    readOnly={quizSubmitted}
+                    quizSubmitted={quizSubmitted}
                 />
             ) : (
                 <div />
             )}
             <div onClick={submitBtnHandler}>
-                {isSubmit ? (
+                {quizSubmitted ? (
                     <PrimaryButton topText={'EDIT'} bottomText={'변경하기'} />
                 ) : (
                     <PrimaryButton topText={'SUBMIT'} bottomText={'제출하기'} />
@@ -80,13 +80,13 @@ const Container = styled(Center)`
     }
 `;
 
-const AnswerInput = styled.input<{ isSubmit: boolean }>`
+const AnswerInput = styled.input<{ quizSubmitted: boolean }>`
     flex-grow: 1;
     height: 48px;
     padding: 4px 20px;
     margin-right: 16px;
     background-color: ${({ theme }) => theme.color.blackT1};
-    color: ${(props) => (props.isSubmit ? props.theme.color.gray1 : props.theme.color.green)};
+    color: ${(props) => (props.quizSubmitted ? props.theme.color.gray1 : props.theme.color.green)};
     border: 1px solid ${({ theme }) => theme.color.yellow};
     border-radius: 20px;
     font-size: ${({ theme }) => theme.typo.h4};
@@ -99,6 +99,6 @@ const AnswerInput = styled.input<{ isSubmit: boolean }>`
 
     &:focus {
         border-color: ${(props) =>
-            props.isSubmit ? props.theme.color.yellow : props.theme.color.green};
+            props.quizSubmitted ? props.theme.color.yellow : props.theme.color.green};
     }
 `;

@@ -8,7 +8,7 @@ import {
     ERASER_LINE_WIDTH,
 } from '@utils/constants';
 import { useRecoilValue } from 'recoil';
-import { submitState } from '@atoms/game';
+import { quizSubmitState } from '@atoms/game';
 
 interface Coordinate {
     x: number;
@@ -21,7 +21,7 @@ function useCanvas() {
 
     const [pos, setPos] = useState<Coordinate | undefined>({ x: 0, y: 0 });
     const [isPainting, setIsPainting] = useState<boolean>(false);
-    const isSubmit = useRecoilValue(submitState);
+    const quizSubmitted = useRecoilValue(quizSubmitState);
 
     const getCoordinates = (event: MouseEvent): Coordinate | undefined => {
         return { x: event.offsetX, y: event.offsetY };
@@ -60,7 +60,7 @@ function useCanvas() {
             event.preventDefault();
             event.stopPropagation();
 
-            if (isSubmit) return;
+            if (quizSubmitted) return;
 
             if (isPainting) {
                 const newPos = getCoordinates(event);
