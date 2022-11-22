@@ -12,12 +12,12 @@ export class GameLobby implements Lobby, Game {
     isPlaying: boolean;
     rounds: Round[];
 
-    joinLobby(user: User, lobbyId: string) {
-        console.error('join-lobby is not implemented');
+    joinLobby(user: User) {
+        this.users.push(user);
     }
 
     leaveLobby(user: User) {
-        console.error('leave-lobby is not implemented');
+        this.users = this.users.filter((iUser) => iUser.socketId !== user.socketId);
     }
 
     startGame(user: User) {
