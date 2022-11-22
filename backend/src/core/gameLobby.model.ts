@@ -48,18 +48,14 @@ export class GameLobby implements Lobby, Game {
         });
     }
 
-    getNextRoundQuizReplyChain(user: User): QuizReplyChain {
-        const userIndex = this.getUserIndex(user);
-        const nextRoundQuizReplyChainIndex = (userIndex + this.curRound) % this.users.length;
-        return this.quizReplyChains[nextRoundQuizReplyChainIndex];
-    }
-
-    private getUserIndex(user: User): number {
-        return this.users.findIndex((iUser) => iUser.socketId === user.socketId);
+    getCurrentRoundQuizReplyChain(user: User): QuizReplyChain {
+        const currentRoundQuizReplyChainIndex = this.currentRoundQuizReplyChainIndex(user);
+        return this.quizReplyChains[currentRoundQuizReplyChainIndex];
     }
 
     submitQuizReply(user: User, quizReply: QuizReply) {
-        console.error('submitQuizReply is not implemented');
+        const currentRoundQuizReplyChainIndex = this.currentRoundQuizReplyChainIndex(user);
+        this.quizReplyChains[currentRoundQuizReplyChainIndex].add(quizReply);
     }
 
     proceedRound() {
@@ -69,5 +65,14 @@ export class GameLobby implements Lobby, Game {
     getQuizReplyChain(): QuizReplyChain {
         console.error('getQuizReplyChain is not implemented');
         return new QuizReplyChain();
+    }
+
+    private getUserIndex(user: User): number {
+        return this.users.findIndex((iUser) => iUser.socketId === user.socketId);
+    }
+
+    // TODO: 유저별 가져가야 할 ReplyChainIndex를 따로 관리 하도록 하여 다른 메서드 에서는 유저가 각라운드에 가져가야 할 ReplyChainIndex 계산식을 모르게 하도록 수정
+    private currentRoundQuizReplyChainIndex(user: User): number {
+        return (this.getUserIndex(user) + this.curRound) % this.users.length;
     }
 }
