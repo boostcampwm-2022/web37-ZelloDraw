@@ -119,33 +119,33 @@ export class CoreGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 
     @SubscribeMessage('start-round')
     async handleStartRound(@ConnectedSocket() client: Socket, @MessageBody() lobbyId: string) {
-        const user = this.userService.getUser(client.id);
-
-        if (!this.lobbyService.isLobbyHost(user, lobbyId)) {
-            throw new Error('Only host can start game');
-        }
-
-        const lobby = this.lobbyService.getLobby(lobbyId);
-        if (!lobby.isPlaying) throw new Error('게임중이 아닙니다.');
-
-        if (!lobby.isPlaying) {
-            throw new Error('게임중이 아닙니다.');
-        }
-
-        const round: StartRoundResponse[] = [];
-        lobby.users.forEach((user) => {
-            const userRound = this.roundService.startRound(lobby);
-            round.push(userRound);
-
-            client.nsp.to(user.socketId).emit('start-round', userRound);
-        });
-
-        lobby.rounds.push(new Round(round));
-
-        setTimeout(() => {
-            console.log('발송');
-            client.nsp.to(lobbyId).emit('complete-round', { round: lobby.rounds.length, lobbyId });
-        }, 6000);
-        return null;
+        // const user = this.userService.getUser(client.id);
+        //
+        // if (!this.lobbyService.isLobbyHost(user, lobbyId)) {
+        //     throw new Error('Only host can start game');
+        // }
+        //
+        // const lobby = this.lobbyService.getLobby(lobbyId);
+        // if (!lobby.isPlaying) throw new Error('게임중이 아닙니다.');
+        //
+        // if (!lobby.isPlaying) {
+        //     throw new Error('게임중이 아닙니다.');
+        // }
+        //
+        // const round: StartRoundResponse[] = [];
+        // lobby.users.forEach((user) => {
+        //     const userRound = this.roundService.startRound(lobby);
+        //     round.push(userRound);
+        //
+        //     client.nsp.to(user.socketId).emit('start-round', userRound);
+        // });
+        //
+        // lobby.rounds.push(new Round(round));
+        //
+        // setTimeout(() => {
+        //     console.log('발송');
+        //     client.nsp.to(lobbyId).emit('complete-round', { round: lobby.rounds.length, lobbyId });
+        // }, 6000);
+        // return null;
     }
 }
