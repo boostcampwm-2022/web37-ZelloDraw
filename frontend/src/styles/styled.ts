@@ -24,9 +24,10 @@ export const ScaledSection = styled.section`
     flex-direction: column;
     width: ${({ theme }) => theme.layout.maxWidth};
     height: ${({ theme }) => theme.layout.maxHeight};
-    transform: ${({ theme }) => theme.layout.sectionScale};
+    transform: scale(${({ theme }) => theme.layout.sectionScale});
 `;
 
 export const ScaledDiv = styled.div`
-    transform: ${({ theme }) => theme.layout.sectionScale};
+    transform: ${({ theme }) =>
+        theme.layout.sectionScale < 1 ? `scale(${theme.layout.sectionScale})` : 'scale(1)'};
 `;

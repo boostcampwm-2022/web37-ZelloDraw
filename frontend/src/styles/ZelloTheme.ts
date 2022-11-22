@@ -1,4 +1,4 @@
-import { MAX_HEIGHT, MAX_WIDTH } from '@utils/constants';
+import { MAX_HEIGHT, MAX_WIDTH, SCALE } from '@utils/constants';
 
 interface ColorsType {
     [key: string]: string;
@@ -75,6 +75,6 @@ export const ZelloTheme = {
     layout: {
         maxWidth: `${MAX_WIDTH}px`,
         maxHeight: `${MAX_HEIGHT}px`,
-        sectionScale: `scale(${(window.innerWidth / MAX_WIDTH).toFixed(2)})`,
+        sectionScale: SCALE,
     },
 };

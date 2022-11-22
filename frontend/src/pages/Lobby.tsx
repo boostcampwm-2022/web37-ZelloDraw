@@ -79,18 +79,10 @@ const LobbyContainer = styled(ScaledSection)``;
 const LogoWrapper = styled(ScaledDiv)`
     position: absolute;
     top: 12px;
-    left: -12px;
+    left: 12px;
 
     img {
         cursor: pointer;
-    }
-
-    @media (min-width: 2000px) {
-        left: 24px;
-    }
-    @media (min-width: 2500px) {
-        top: 24px;
-        left: 60px;
     }
 `;
 
