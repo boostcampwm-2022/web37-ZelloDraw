@@ -5,7 +5,7 @@ import MicButton from '@components/MicButton';
 import CameraButton from '@components/CameraButton';
 import SmallLogo from '@assets/logo-s.png';
 import useMovePage from '@hooks/useMovePage';
-import SubmitSection from '@components/SubmitSection';
+import QuizReplySection from '@components/QuizReplySection';
 
 function Game() {
     const [setPage] = useMovePage();
@@ -17,7 +17,7 @@ function Game() {
             <GameUsers />
             <SketchbookSection>
                 <SketchbookCard />
-                <SubmitSection />
+                <QuizReplySection />
             </SketchbookSection>
             <CamAndMicWrapper>
                 <CameraButton />

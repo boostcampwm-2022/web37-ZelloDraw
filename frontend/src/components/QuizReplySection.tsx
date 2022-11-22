@@ -5,7 +5,7 @@ import { useRecoilState, useRecoilValue } from 'recoil';
 import { roundDrawState, roundNumberState, roundWordState, submitState } from '@atoms/game';
 import PrimaryButton from '@components/PrimaryButton';
 
-function SubmitSection() {
+function QuizReplySection() {
     const isDraw = useRecoilValue(roundDrawState);
     const roundNum = useRecoilValue(roundNumberState);
     const roundWord = useRecoilValue(roundWordState);
@@ -69,7 +69,7 @@ function SubmitSection() {
     );
 }
 
-export default SubmitSection;
+export default QuizReplySection;
 
 const Container = styled(Center)`
     width: 1120px;
