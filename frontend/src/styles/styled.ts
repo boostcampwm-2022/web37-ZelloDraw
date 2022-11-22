@@ -16,3 +16,9 @@ export const Color = styled.input<{ colorName: string; isSelected: boolean }>`
     border: ${({ isSelected }) => (isSelected ? `3px solid rgba(246, 245, 248, 0.6)` : ``)};
     cursor: pointer;
 `;
+
+export const ScaledSection = styled.section`
+    width: ${({ theme }) => theme.layout.maxWidth};
+    height: ${({ theme }) => theme.layout.maxHeight};
+    transform: ${({ theme }) => theme.layout.sectionScale};
+`;

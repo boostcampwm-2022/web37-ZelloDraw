@@ -25,3 +25,5 @@ export const PEN_LINE_WIDTH = 5;
 export const PEN_DEFAULT_COLOR = '#001D2E';
 export const ERASER_COLOR = '#F6F5F8';
 export const ERASER_LINE_WIDTH = 20;
+export const MAX_WIDTH = 2400;
+export const MAX_HEIGHT = 1200;

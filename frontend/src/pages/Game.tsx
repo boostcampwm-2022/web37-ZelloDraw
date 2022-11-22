@@ -1,4 +1,5 @@
 import styled from 'styled-components';
+import { ScaledSection } from '@styles/styled';
 import SketchbookCard from '@components/SketchbookCard';
 import GameUsers from '@components/GameUsers';
 import MicButton from '@components/MicButton';
@@ -9,8 +10,6 @@ import QuizReplySection from '@components/QuizReplySection';
 
 function Game() {
     const [setPage] = useMovePage();
-
-    // TODO: 유저리스트 가져와서 GameUsers 컴포넌트 구성하기
 
     return (
         <Container>
@@ -33,9 +32,7 @@ function Game() {
 
 export default Game;
 
-const Container = styled.div`
-    width: 100%;
-    height: 100%;
+const Container = styled(ScaledSection)`
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -45,7 +42,7 @@ const Container = styled.div`
 `;
 
 const SketchbookSection = styled.div`
-    transform: translateY(-80px);
+    margin-bottom: 120px;
 `;
 
 const CamAndMicWrapper = styled.div`
