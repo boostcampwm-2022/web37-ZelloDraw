@@ -10,6 +10,7 @@ import { useRecoilValue } from 'recoil';
 import { userState, userStateType } from '@atoms/user';
 import { networkServiceInstance as NetworkService } from '../services/socketService';
 import { getParam } from '@utils/common';
+import { ScaledSection } from '@styles/styled';
 
 function Main() {
     const [setPage] = useMovePage();
@@ -33,7 +34,7 @@ function Main() {
     return (
         <MainContainer>
             <LogoWrapper onClick={() => setPage('/')}>
-                <img src={Logo} />
+                <img src={Logo} alt={'Logo, Move to main page'} />
             </LogoWrapper>
             <CardContainer>
                 <UserCard />
@@ -49,12 +50,8 @@ function Main() {
 
 export default Main;
 
-const MainContainer = styled.section`
-    display: flex;
-    height: 100%;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
+const MainContainer = styled(ScaledSection)`
+    margin-top: -120px;
     gap: 16px;
 `;
 
@@ -69,6 +66,6 @@ const LogoWrapper = styled.div`
 
 const BottomWrapper = styled.div`
     position: absolute;
-    bottom: 0px;
-    right: 0px;
+    bottom: -40px;
+    right: 0;
 `;

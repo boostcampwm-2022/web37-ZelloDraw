@@ -18,6 +18,10 @@ export const Color = styled.input<{ colorName: string; isSelected: boolean }>`
 `;
 
 export const ScaledSection = styled.section`
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
     width: ${({ theme }) => theme.layout.maxWidth};
     height: ${({ theme }) => theme.layout.maxHeight};
     transform: ${({ theme }) => theme.layout.sectionScale};

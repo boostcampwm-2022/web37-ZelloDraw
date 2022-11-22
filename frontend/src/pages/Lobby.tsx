@@ -14,6 +14,7 @@ import { useRecoilState } from 'recoil';
 import { userListState } from '@atoms/game';
 import { getParam } from '@utils/common';
 import { JoinLobbyReEmitRequest, JoinLobbyRequest } from '@backend/core/user.dto';
+import { ScaledSection } from '@styles/styled';
 
 function Lobby() {
     const [userList, setUserList] = useRecoilState(userListState);
@@ -73,6 +74,8 @@ function Lobby() {
 
 export default Lobby;
 
+const LobbyContainer = styled(ScaledSection)``;
+
 const LogoWrapper = styled.div`
     position: absolute;
     top: 12px;
@@ -81,14 +84,6 @@ const LogoWrapper = styled.div`
     img {
         cursor: pointer;
     }
-`;
-
-const LobbyContainer = styled.section`
-    display: flex;
-    height: 100%;
-    align-items: center;
-    justify-content: center;
-    flex-direction: column;
 `;
 
 const FlexBox = styled.div`

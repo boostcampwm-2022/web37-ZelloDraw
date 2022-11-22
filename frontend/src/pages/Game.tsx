@@ -33,10 +33,7 @@ function Game() {
 export default Game;
 
 const Container = styled(ScaledSection)`
-    display: flex;
-    align-items: center;
     justify-content: space-between;
-    flex-direction: column;
     position: relative;
     padding: 40px 36px;
 `;
