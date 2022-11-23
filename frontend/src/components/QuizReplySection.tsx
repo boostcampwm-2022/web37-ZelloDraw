@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { Center } from '@styles/styled';
 import { useRecoilState, useRecoilValue } from 'recoil';
@@ -13,6 +13,10 @@ function QuizReplySection() {
     const [userAnswer, setUserAnswer] = useState('');
     const [quizSubmitted, setQuizSubmitted] = useRecoilState(quizSubmitState);
     const { placeholder, sendRandomWordReplyToServer } = useZeroRound(curRound);
+
+    useEffect(() => {
+        setQuizSubmitted(false);
+    }, [curRound]);
 
     function submitBtnHandler() {
         setQuizSubmitted(!quizSubmitted);
