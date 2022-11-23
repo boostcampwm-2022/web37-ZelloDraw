@@ -15,7 +15,9 @@ function QuizReplySection() {
     const { placeholder, sendRandomWordReplyToServer } = useZeroRound(curRound);
 
     function submitBtnHandler() {
-        submittedStateHandler();
+        setQuizSubmitted(!quizSubmitted);
+        // 변경하기 버튼을 누른 경우에는 return.
+        if (quizSubmitted) return;
 
         if (userAnswer === '' && curRound === 0) {
             sendRandomWordReplyToServer();
@@ -23,14 +25,6 @@ function QuizReplySection() {
         }
 
         sendUserWordReplyToServer();
-    }
-
-    function submittedStateHandler() {
-        if (quizSubmitted) {
-            setQuizSubmitted(false);
-            return;
-        }
-        setQuizSubmitted(true);
     }
 
     function sendUserWordReplyToServer() {
