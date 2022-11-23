@@ -98,32 +98,22 @@ export class CoreGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 
     @SubscribeMessage('start-game')
     async handleStartGame(@ConnectedSocket() client: Socket, @MessageBody() lobbyId: string) {
-        console.log('start-game');
         const user = this.userService.getUser(client.id);
-
-        if (!this.lobbyService.isLobbyHost(user, lobbyId)) {
+        if (!this.lobbyService.isLobbyHost(user, lobbyId))
             throw new Error('Only host can start game');
-        }
-        // TODO: GameStart 로직 처리 (게임 시작시 게임의 상태 정보 변경)
-        // TODO: gameMock 데이터 대신 실제 게임 데이터로 변경 필요
+
         const game = this.gameService.getGame(lobbyId);
-        game.isPlaying = true;
-
-        client.nsp.to(lobbyId).emit('start-game', {
-            users: game.getHost(),
-            lobbyId,
-        });
-
         this.gameService.startGame(lobbyId);
 
-        console.log(game.getUsers());
+        client.nsp.to(lobbyId).emit('start-game');
         game.getUsers().forEach((user) => {
             const quizReply = this.gameService
                 .getCurrentRoundQuizReplyChain(lobbyId, user)
                 .getLastQuizReply();
             const payload: StartRoundEmitRequest = {
                 quizReply,
-                round: game.curRound,
+                curRound: game.curRound,
+                maxRound: game.maxRound,
                 limitTime: game.roundLimitTime,
             };
             client.nsp.to(user.socketId).emit('start-round', payload);
