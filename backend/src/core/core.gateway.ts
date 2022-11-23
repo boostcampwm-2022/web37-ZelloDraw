@@ -119,13 +119,18 @@ export class CoreGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
         @MessageBody() request: SubmitQuizReplyRequest,
     ) {
         const user = this.userService.getUser(client.id);
-        // TODO: 모든 인원이 제출 | 시간 초과 시 라운드 넘어가는 로직 추가 필요
+        // TODO: 시간 초과 시 라운드 넘어가는 로직 추가 필요
         this.gameService.submitQuizReply(user.lobbyId, user, request.quizReply);
-
-        const payload: SubmitQuizReplyEmitRequest = {
-            submittedQuizReplyCount: this.gameService.getSubmittedQuizRepliesCount(user.lobbyId),
-        };
-        client.nsp.to(user.lobbyId).emit('submit-quiz-reply', payload);
+        const repliesCount = this.gameService.getSubmittedQuizRepliesCount(user.lobbyId);
+        if (this.gameService.isAllUserSubmittedQuizReply(user.lobbyId)) {
+            this.gameService.proceedRound(user.lobbyId);
+            this.emitStartRound(client, user.lobbyId);
+        } else {
+            const payload: SubmitQuizReplyEmitRequest = {
+                submittedQuizReplyCount: repliesCount,
+            };
+            client.nsp.to(user.lobbyId).emit('submit-quiz-reply', payload);
+        }
     }
 
     emitStartRound(client: Socket, lobbyId: string) {
