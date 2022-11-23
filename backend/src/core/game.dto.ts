@@ -7,6 +7,7 @@ export interface QuizReplyRequest {
 
 export interface StartRoundEmitRequest {
     quizReply: QuizReply;
-    round: number;
+    curRound: number;
+    maxRound: number;
     limitTime: number;
 }
