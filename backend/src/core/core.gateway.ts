@@ -110,18 +110,7 @@ export class CoreGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
         this.gameService.startGame(lobbyId);
 
         client.nsp.to(lobbyId).emit('start-game');
-        game.getUsers().forEach((user) => {
-            const quizReply = this.gameService
-                .getCurrentRoundQuizReplyChain(lobbyId, user)
-                .getLastQuizReply();
-            const payload: StartRoundEmitRequest = {
-                quizReply,
-                curRound: game.curRound,
-                maxRound: game.maxRound,
-                limitTime: game.roundLimitTime,
-            };
-            client.nsp.to(user.socketId).emit('start-round', payload);
-        });
+        this.emitStartRound(client, lobbyId);
     }
 
     @SubscribeMessage('submit-quiz-reply')
@@ -137,5 +126,21 @@ export class CoreGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
             submittedQuizReplyCount: this.gameService.getSubmittedQuizRepliesCount(user.lobbyId),
         };
         client.nsp.to(user.lobbyId).emit('submit-quiz-reply', payload);
+    }
+
+    emitStartRound(client: Socket, lobbyId: string) {
+        const game = this.gameService.getGame(lobbyId);
+        game.getUsers().forEach((user) => {
+            const quizReply = this.gameService
+                .getCurrentRoundQuizReplyChain(lobbyId, user)
+                .getLastQuizReply();
+            const payload: StartRoundEmitRequest = {
+                quizReply,
+                curRound: game.curRound,
+                maxRound: game.maxRound,
+                limitTime: game.roundLimitTime,
+            };
+            client.nsp.to(user.socketId).emit('start-round', payload);
+        });
     }
 }
