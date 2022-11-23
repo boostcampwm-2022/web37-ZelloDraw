@@ -1,51 +1,28 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
 import { Center } from '@styles/styled';
 import { useRecoilState, useRecoilValue } from 'recoil';
-import {
-    isQuizTypeDrawState,
-    quizReplyState,
-    quizSubmitState,
-    roundNumberState,
-} from '@atoms/game';
+import { isQuizTypeDrawState, quizSubmitState, roundNumberState } from '@atoms/game';
 import PrimaryButton from '@components/PrimaryButton';
 import { emitSubmitQuizReply } from '@game/NetworkServiceUtils';
-import { QuizReplyRequest } from '@backend/core/game.dto';
+import useZeroRound from '@hooks/useZeroRound';
 
 function QuizReplySection() {
     const isDraw = useRecoilValue(isQuizTypeDrawState);
     const { curRound } = useRecoilValue(roundNumberState);
-    const quizReplyContent = useRecoilValue(quizReplyState);
-    const [placeholder, setPlaceholder] = useState('그림을 보고 답을 맞춰보세요!');
     const [userAnswer, setUserAnswer] = useState('');
     const [quizSubmitted, setQuizSubmitted] = useRecoilState(quizSubmitState);
-
-    useEffect(() => {
-        setRandomWordToPlaceholder();
-    }, [quizReplyContent]);
-
-    function setRandomWordToPlaceholder() {
-        // 0번 라운드일때만 인풋 플레이스홀더에서 유저에게 랜덤 단어를 보여준다.
-        if (curRound === 0 && quizReplyContent !== '') {
-            setPlaceholder(quizReplyContent);
-        }
-    }
+    const { placeholder, sendRandomWordReplyToServer } = useZeroRound(curRound);
 
     function submitBtnHandler() {
         submittedStateHandler();
 
         if (userAnswer === '' && curRound === 0) {
-            sendRandomWordToServer();
+            sendRandomWordReplyToServer();
             return;
         }
 
-        // 유저가 입력한 값이 제출된다.
-        emitSubmitQuizReply(getSubmitQuizReplyObj({ type: 'ANSWER', content: userAnswer }));
-    }
-
-    function sendRandomWordToServer() {
-        // 유저가 출제한 퀴즈의 값이 없을 경우 이전에 받았던 랜덤 단어가 제출된다.
-        emitSubmitQuizReply(getSubmitQuizReplyObj({ type: 'ANSWER', content: quizReplyContent }));
+        sendUserWordReplyToServer();
     }
 
     function submittedStateHandler() {
@@ -56,8 +33,9 @@ function QuizReplySection() {
         setQuizSubmitted(true);
     }
 
-    function getSubmitQuizReplyObj(quizReply: QuizReplyRequest) {
-        return { quizReply };
+    function sendUserWordReplyToServer() {
+        // 유저가 입력한 값이 서버로 제출된다.
+        emitSubmitQuizReply({ quizReply: { type: 'ANSWER', content: userAnswer } });
     }
 
     return (
