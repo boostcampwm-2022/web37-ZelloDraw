@@ -7,6 +7,7 @@ import usePalette from '@hooks/usePalette';
 
 interface PaletteType {
     onClickPen: (color: string) => void;
+    onClickPaint: () => void;
     onColorChange: (color: string) => void;
     onClickEraser: () => void;
     onClickReset: () => void;
