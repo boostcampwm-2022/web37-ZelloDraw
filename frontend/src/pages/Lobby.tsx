@@ -11,15 +11,18 @@ import {
     networkServiceInstance as NetworkService,
     SocketException,
 } from '../services/socketService';
-import { useRecoilState } from 'recoil';
-import { userListState } from '@atoms/game';
+import { useRecoilState, useSetRecoilState } from 'recoil';
+import { roundInfoState, userListState } from '@atoms/game';
 import { getParam } from '@utils/common';
 import { JoinLobbyReEmitRequest, JoinLobbyRequest } from '@backend/core/user.dto';
+import { StartRoundEmitRequest } from '@backend/core/game.dto';
+import { onStartGame } from '@game/NetworkServiceUtils';
 
 function Lobby() {
     const [userList, setUserList] = useRecoilState(userListState);
     const [setPage] = useMovePage();
     const lobbyId = getParam('id');
+    const setRoundInfo = useSetRecoilState<StartRoundEmitRequest>(roundInfoState);
 
     useEffect(() => {
         const payload: JoinLobbyRequest = { lobbyId };
@@ -52,6 +55,10 @@ function Lobby() {
             NetworkService.off('join-lobby');
         };
     }, [userList]);
+
+    useEffect(() => {
+        onStartGame(setPage, setRoundInfo);
+    }, []);
 
     return (
         <>
