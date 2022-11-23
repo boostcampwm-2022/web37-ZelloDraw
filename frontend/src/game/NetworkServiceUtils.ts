@@ -1,5 +1,5 @@
 import { networkServiceInstance as NetworkService } from '@services/socketService';
-import { StartRoundEmitRequest } from '@backend/core/game.dto';
+import { StartRoundEmitRequest, SubmitQuizReplyEmitRequest } from '@backend/core/game.dto';
 import { SetterOrUpdater } from 'recoil';
 
 export const emitStartGame = (lobbyId: string) => {
@@ -17,4 +17,8 @@ export const onStartGame = (
     NetworkService.on('start-round', (roundInfo: StartRoundEmitRequest) => {
         setRoundInfo(roundInfo);
     });
+};
+
+export const emitSubmitQuizReply = (quizReply: string) => {
+    NetworkService.emit('submit-quiz-reply', quizReply);
 };
