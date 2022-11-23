@@ -32,12 +32,11 @@ function SketchbookCard() {
                 <SketchbookWrapper>
                     <Sketchbook />
                     <Canvas ref={canvasRef} />
-                    {isDraw && (
+                    {isDraw ? (
                         <Keyword>
                             <span>{quizReply}</span>
                         </Keyword>
-                    )}
-                    {curRound === 0 ? (
+                    ) : curRound === 0 ? (
                         <FirstRoundGuide>
                             나만의 문장을 만들어 입력해보세요!
                             <br />
@@ -111,6 +110,15 @@ const Canvas = styled.canvas`
     border-radius: 40px;
 `;
 
+const UserDrawing = styled.div`
+    width: 742px;
+    height: 468px;
+    position: absolute;
+    top: 60px;
+    left: 18px;
+    border-radius: 40px;
+`;
+
 const Keyword = styled.div`
     position: absolute;
     top: 71px;
@@ -129,8 +137,4 @@ const Keyword = styled.div`
         text-fill-color: transparent;
         font-size: ${({ theme }) => theme.typo.h4};
     }
-`;
-
-const UserDrawing = styled.div`
-    position: absolute;
 `;

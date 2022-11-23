@@ -27,7 +27,7 @@ export const isQuizTypeDrawState = selector({
 
         if (roundInfo === undefined) return false;
 
-        return roundInfo.quizReply.type === 'DRAW';
+        return roundInfo.roundType === 'DRAW';
     },
 });
 
