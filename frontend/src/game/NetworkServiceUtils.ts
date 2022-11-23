@@ -1,5 +1,5 @@
 import { networkServiceInstance as NetworkService } from '@services/socketService';
-import { roundInfoType } from '@atoms/game';
+import { StartRoundEmitRequest } from '@backend/core/game.dto';
 import { SetterOrUpdater } from 'recoil';
 
 export const emitStartGame = (lobbyId: string) => {
@@ -8,13 +8,13 @@ export const emitStartGame = (lobbyId: string) => {
 
 export const onStartGame = (
     setPage: (url: string) => void,
-    setRoundInfo: SetterOrUpdater<roundInfoType>,
+    setRoundInfo: SetterOrUpdater<StartRoundEmitRequest>,
 ) => {
     NetworkService.on('start-game', () => {
         setPage('/game');
     });
 
-    NetworkService.on('start-round', (userRound: roundInfoType) => {
-        setRoundInfo(userRound);
+    NetworkService.on('start-round', (roundInfo: StartRoundEmitRequest) => {
+        setRoundInfo(roundInfo);
     });
 };

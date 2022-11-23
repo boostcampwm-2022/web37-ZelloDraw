@@ -1,13 +1,5 @@
 import { atom, selector } from 'recoil';
-
-export interface roundInfoType {
-    type: 'DRAW' | 'ANSWER';
-    round: number;
-    lobbyId: string;
-    limitTime: number;
-    word?: string;
-    image?: any;
-}
+import { StartRoundEmitRequest } from '@backend/core/game.dto';
 
 /**
  * 로비(게임)에 접속한 유저 리스트
@@ -20,7 +12,7 @@ export const userListState = atom<string[]>({
 /**
  * 라운드 정보
  */
-export const roundInfoState = atom<roundInfoType>({
+export const roundInfoState = atom<StartRoundEmitRequest>({
     key: 'roundInfoState',
     default: undefined,
 });
@@ -28,27 +20,27 @@ export const roundInfoState = atom<roundInfoType>({
 /**
  * true면 현재 그릴 차례, false면 답을 맞출 차례
  */
-export const roundDrawState = selector({
-    key: 'roundDrawState',
+export const isQuizTypeDrawState = selector({
+    key: 'isQuizTypeDrawState',
     get: ({ get }) => {
         const roundInfo = get(roundInfoState);
 
         if (roundInfo === undefined) return false;
 
-        return roundInfo.type === 'DRAW';
+        return roundInfo.quizReply.type === 'DRAW';
     },
 });
 
-export const roundWordState = selector({
-    key: 'roundWordState',
+export const quizReplyState = selector({
+    key: 'quizReplyState',
     get: ({ get }) => {
         const roundInfo = get(roundInfoState);
 
-        if (roundInfo === undefined || roundInfo.word === undefined) {
+        if (roundInfo === undefined || roundInfo.quizReply.content === undefined) {
             return '';
         }
 
-        return roundInfo.word;
+        return roundInfo.quizReply.content;
     },
 });
 
@@ -58,10 +50,10 @@ export const roundNumberState = selector({
         const roundInfo = get(roundInfoState);
 
         if (roundInfo === undefined) {
-            return 0;
+            return { curRound: 0, maxRound: 0 };
         }
 
-        return roundInfo.round;
+        return { curRound: roundInfo.curRound, maxRound: roundInfo.maxRound };
     },
 });
 

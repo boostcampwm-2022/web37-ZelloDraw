@@ -2,7 +2,12 @@ import styled from 'styled-components';
 import { Center } from '@styles/styled';
 import { ReactComponent as Sketchbook } from '@assets/sketchbook.svg';
 import { useRecoilValue } from 'recoil';
-import { roundDrawState, roundNumberState, roundWordState, quizSubmitState } from '@atoms/game';
+import {
+    isQuizTypeDrawState,
+    roundNumberState,
+    quizReplyState,
+    quizSubmitState,
+} from '@atoms/game';
 import useCanvas from '@hooks/useCanvas';
 import Card from '@components/Card';
 import Timer from '@components/Timer';
@@ -10,9 +15,9 @@ import DrawingTools from '@components/DrawingTools';
 
 function SketchbookCard() {
     const { canvasRef, ...rest } = useCanvas();
-    const isDraw = useRecoilValue(roundDrawState);
-    const word = useRecoilValue(roundWordState);
-    const roundNum = useRecoilValue(roundNumberState);
+    const isDraw = useRecoilValue(isQuizTypeDrawState);
+    const quizReply = useRecoilValue(quizReplyState);
+    const { curRound, maxRound } = useRecoilValue(roundNumberState);
     const quizSubmitted = useRecoilValue(quizSubmitState);
 
     return (
