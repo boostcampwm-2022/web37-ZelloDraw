@@ -38,6 +38,11 @@ export class GameService {
         return game.getSubmittedQuizRepliesCount();
     }
 
+    isAllUserSubmittedQuizReply(lobbyId: string): boolean {
+        const game = this.gameLobbyRepository.findById(lobbyId);
+        return game.isAllUserSubmittedQuizReply();
+    }
+
     proceedRound(lobbyId: string) {
         const game = this.gameLobbyRepository.findById(lobbyId);
         game.proceedRound();

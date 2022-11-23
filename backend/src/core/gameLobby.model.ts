@@ -90,6 +90,12 @@ export class GameLobby implements Lobby, Game {
         ).length;
     }
 
+    isAllUserSubmittedQuizReply(): boolean {
+        return this.submittedQuizRepliesOnCurrentRound.every(
+            (quizReply) => quizReply !== undefined,
+        );
+    }
+
     getQuizReplyChains(): QuizReplyChain[] {
         return this.quizReplyChains;
     }
