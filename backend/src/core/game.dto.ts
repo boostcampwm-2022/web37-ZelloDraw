@@ -14,7 +14,7 @@ export interface StartRoundEmitRequest {
 }
 
 export interface SubmitQuizReplyRequest {
-    quizReply: PartialWithoutMethods<QuizReply>;
+    quizReply: QuizReplyRequest;
 }
 
 export interface SubmitQuizReplyEmitRequest {
