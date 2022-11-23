@@ -22,3 +22,12 @@ export const onStartGame = (
 export const emitSubmitQuizReply = (quizReply: string) => {
     NetworkService.emit('submit-quiz-reply', quizReply);
 };
+
+export const onSubmitQuizReply = () => {
+    NetworkService.on(
+        'submit-quiz-reply',
+        ({ submittedQuizReplyCount }: SubmitQuizReplyEmitRequest) => {
+            console.log(submittedQuizReplyCount);
+        },
+    );
+};
