@@ -72,10 +72,7 @@ export class CoreGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 
             await this.lobbyService.joinLobby(user, lobby.id);
             await client.join(body.lobbyId);
-            client
-                .to(lobby.id)
-                // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
-                .emit('join-lobby', { userName: user.name } as JoinLobbyReEmitRequest);
+            this.emitJoinLobby(client, lobby.id, { userName: user.name });
 
             return lobby.users.map((user) => {
                 return { userName: user.name };
@@ -91,12 +88,10 @@ export class CoreGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
         if (user.lobbyId === undefined) return;
 
         const leftUsers = this.lobbyService.leaveLobby(user, user.lobbyId);
-        client.broadcast
-            .to(user.lobbyId)
-            .emit(
-                'leave-lobby',
-                leftUsers.map((user) => ({ userName: user.name })) as JoinLobbyResponse,
-            );
+        const payload: JoinLobbyReEmitRequest[] = leftUsers.map((user) => ({
+            userName: user.name,
+        }));
+        this.emitLeaveLobby(client, user.lobbyId, payload);
         await client.leave(user.lobbyId);
     }
 
@@ -106,10 +101,9 @@ export class CoreGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
         if (!this.lobbyService.isLobbyHost(user, lobbyId))
             throw new Error('Only host can start game');
 
-        const game = this.gameService.getGame(lobbyId);
         this.gameService.startGame(lobbyId);
 
-        client.nsp.to(lobbyId).emit('start-game');
+        this.emitStartGame(client, lobbyId);
         this.emitStartRound(client, lobbyId);
     }
 
@@ -129,11 +123,23 @@ export class CoreGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
             const payload: SubmitQuizReplyEmitRequest = {
                 submittedQuizReplyCount: repliesCount,
             };
-            client.nsp.to(user.lobbyId).emit('submit-quiz-reply', payload);
+            this.emitSubmitQuizReply(client, user.lobbyId, payload);
         }
     }
 
-    emitStartRound(client: Socket, lobbyId: string) {
+    private emitJoinLobby(client: Socket, lobbyId: string, payload: JoinLobbyReEmitRequest) {
+        client.to(lobbyId).emit('join-lobby', payload);
+    }
+
+    private emitLeaveLobby(client: Socket, lobbyId: string, payload: JoinLobbyReEmitRequest[]) {
+        client.broadcast.to(lobbyId).emit('leave-lobby', payload);
+    }
+
+    private emitStartGame(client: Socket, lobbyId: string) {
+        client.nsp.to(lobbyId).emit('start-game');
+    }
+
+    private emitStartRound(client: Socket, lobbyId: string) {
         const game = this.gameService.getGame(lobbyId);
         game.getUsers().forEach((user) => {
             const quizReply = this.gameService
@@ -147,5 +153,13 @@ export class CoreGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
             };
             client.nsp.to(user.socketId).emit('start-round', payload);
         });
+    }
+
+    private emitSubmitQuizReply(
+        client: Socket,
+        lobbyId: string,
+        payload: SubmitQuizReplyEmitRequest,
+    ) {
+        client.nsp.to(lobbyId).emit('submit-quiz-reply', payload);
     }
 }
