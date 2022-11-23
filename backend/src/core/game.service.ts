@@ -33,6 +33,11 @@ export class GameService {
         return game.getCurrentRoundQuizReplyChain(user);
     }
 
+    getSubmittedQuizRepliesCount(lobbyId: string) {
+        const game = this.gameLobbyRepository.findById(lobbyId);
+        return game.getSubmittedQuizRepliesCount();
+    }
+
     proceedRound(lobbyId: string) {
         const game = this.gameLobbyRepository.findById(lobbyId);
         game.proceedRound();

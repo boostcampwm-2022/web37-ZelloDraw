@@ -12,6 +12,7 @@ export class GameLobby implements Lobby, Game {
     curRound: number;
     readonly roundType: 'DRAW' | 'ANSWER';
     roundLimitTime: number;
+    submittedQuizRepliesOnCurrentRound: Array<QuizReply | undefined>;
     quizReplyChains: QuizReplyChain[];
     isPlaying: boolean;
 
@@ -47,6 +48,7 @@ export class GameLobby implements Lobby, Game {
         this.users = this.users.filter((iUser) => iUser.socketId !== user.socketId);
     }
 
+    // TODO: 게임 시작시, 혹은 게임 종료 시 프로퍼티 초기화 로직 필요.
     startGame(roundLimitTime: number) {
         this.maxRound = this.users.length - 1;
         this.roundLimitTime = roundLimitTime;
@@ -58,6 +60,7 @@ export class GameLobby implements Lobby, Game {
             quizReplyChain.add(new QuizReply('ANSWER', randomKeyword));
             return quizReplyChain;
         });
+        this.submittedQuizRepliesOnCurrentRound = this.users.map(() => undefined);
     }
 
     getCurrentRoundQuizReplyChain(user: User): QuizReplyChain {
@@ -67,7 +70,8 @@ export class GameLobby implements Lobby, Game {
 
     submitQuizReply(user: User, quizReply: QuizReply) {
         const currentRoundQuizReplyChainIndex = this.currentRoundQuizReplyChainIndex(user);
-        this.quizReplyChains[currentRoundQuizReplyChainIndex].add(quizReply);
+        this.quizReplyChains[currentRoundQuizReplyChainIndex].put(this.curRound, quizReply);
+        this.submittedQuizRepliesOnCurrentRound[this.getUserIndex(user)] = quizReply;
     }
 
     proceedRound() {
@@ -77,6 +81,13 @@ export class GameLobby implements Lobby, Game {
         if (this.curRound > this.maxRound) {
             this.isPlaying = false;
         }
+        this.submittedQuizRepliesOnCurrentRound = this.users.map(() => undefined);
+    }
+
+    getSubmittedQuizRepliesCount(): number {
+        return this.submittedQuizRepliesOnCurrentRound.filter(
+            (quizReply) => quizReply !== undefined,
+        ).length;
     }
 
     getQuizReplyChains(): QuizReplyChain[] {
