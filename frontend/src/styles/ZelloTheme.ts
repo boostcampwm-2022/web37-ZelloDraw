@@ -76,5 +76,13 @@ export const ZelloTheme = {
         maxWidth: `${MAX_WIDTH}px`,
         maxHeight: `${MAX_HEIGHT}px`,
         sectionScale: SCALE,
+        sketchBook: `
+          width: 742px;
+          height: 468px;
+          position: absolute;
+          top: 60px;
+          left: 18px;
+          border-radius: 40px;
+        `,
     },
 };

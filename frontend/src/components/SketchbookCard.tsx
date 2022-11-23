@@ -91,32 +91,19 @@ const SketchbookWrapper = styled.div`
 `;
 
 const FirstRoundGuide = styled(Center)`
-    width: 742px;
+    ${({ theme }) => theme.layout.sketchBook};
     height: 420px;
-    position: absolute;
-    top: 60px;
-    left: 18px;
     color: ${({ theme }) => theme.color.primaryLight};
     font-size: ${({ theme }) => theme.typo.h3};
     font-weight: 600;
 `;
 
 const Canvas = styled.canvas`
-    width: 742px;
-    height: 468px;
-    position: absolute;
-    top: 60px;
-    left: 18px;
-    border-radius: 40px;
+    ${({ theme }) => theme.layout.sketchBook};
 `;
 
 const UserDrawing = styled.div`
-    width: 742px;
-    height: 468px;
-    position: absolute;
-    top: 60px;
-    left: 18px;
-    border-radius: 40px;
+    ${({ theme }) => theme.layout.sketchBook};
 `;
 
 const Keyword = styled.div`
