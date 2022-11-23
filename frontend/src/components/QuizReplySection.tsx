@@ -4,9 +4,9 @@ import { Center } from '@styles/styled';
 import { useRecoilState, useRecoilValue } from 'recoil';
 import {
     isQuizTypeDrawState,
-    roundNumberState,
     quizReplyState,
     quizSubmitState,
+    roundNumberState,
 } from '@atoms/game';
 import PrimaryButton from '@components/PrimaryButton';
 import { emitSubmitQuizReply } from '@game/NetworkServiceUtils';
@@ -43,12 +43,12 @@ function QuizReplySection() {
 
         // 유저가 입력한 값이 없을 경우 전전 유저가 답한 word가 제출된다. (첫텀에는 랜덤 단어가 제출된다.)
         if (userAnswer === '') {
-            emitSubmitQuizReply(quizReplyContent);
+            emitSubmitQuizReply({ type: 'ANSWER', content: quizReplyContent });
             return;
         }
 
         // 유저가 입력한 값이 제출된다.
-        emitSubmitQuizReply(userAnswer);
+        emitSubmitQuizReply({ type: 'ANSWER', content: userAnswer });
     }
 
     return (
