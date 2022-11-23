@@ -2,25 +2,31 @@ import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { Center } from '@styles/styled';
 import { useRecoilState, useRecoilValue } from 'recoil';
-import { roundDrawState, roundNumberState, roundWordState, quizSubmitState } from '@atoms/game';
+import {
+    isQuizTypeDrawState,
+    roundNumberState,
+    quizReplyState,
+    quizSubmitState,
+} from '@atoms/game';
 import PrimaryButton from '@components/PrimaryButton';
+import { emitSubmitQuizReply } from '@game/NetworkServiceUtils';
 
 function QuizReplySection() {
-    const isDraw = useRecoilValue(roundDrawState);
-    const roundNum = useRecoilValue(roundNumberState);
-    const roundWord = useRecoilValue(roundWordState);
+    const isDraw = useRecoilValue(isQuizTypeDrawState);
+    const { curRound } = useRecoilValue(roundNumberState);
+    const quizReply = useRecoilValue(quizReplyState);
     const [placeholder, setPlaceholder] = useState('그림을 보고 답을 맞춰보세요!');
     const [userAnswer, setUserAnswer] = useState('');
     const [quizSubmitted, setQuizSubmitted] = useRecoilState(quizSubmitState);
 
     useEffect(() => {
         setRandomWordToPlaceholder();
-    }, [roundWord]);
+    }, [quizReply]);
 
     function setRandomWordToPlaceholder() {
         // 0번 라운드일때만 인풋 플레이스홀더에서 유저에게 랜덤 단어를 보여준다.
-        if (roundNum === 0 && roundWord !== '') {
-            setPlaceholder(roundWord);
+        if (curRound === 0 && quizReply !== '') {
+            setPlaceholder(quizReply);
         }
     }
 
@@ -35,15 +41,14 @@ function QuizReplySection() {
         }
         setQuizSubmitted(true);
 
-        // TODO: 몇명이나 제출했는지 확인하기 위해서 서버로 우선 전송, 내용 변경 후 다시 제출하면 다시 서버로 전송
         // 유저가 입력한 값이 없을 경우 전전 유저가 답한 word가 제출된다. (첫텀에는 랜덤 단어가 제출된다.)
         if (userAnswer === '') {
-            console.log(roundWord);
+            emitSubmitQuizReply(quizReply);
             return;
         }
 
         // 유저가 입력한 값이 제출된다.
-        console.log(userAnswer);
+        emitSubmitQuizReply(userAnswer);
     }
 
     return (
