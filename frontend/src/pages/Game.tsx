@@ -1,4 +1,3 @@
-import { useEffect } from 'react';
 import styled from 'styled-components';
 import { ScaledDiv, ScaledSection } from '@styles/styled';
 import SketchbookCard from '@components/SketchbookCard';
@@ -8,17 +7,9 @@ import CameraButton from '@components/CameraButton';
 import SmallLogo from '@assets/logo-s.png';
 import useMovePage from '@hooks/useMovePage';
 import QuizReplySection from '@components/QuizReplySection';
-import { onStartGame } from '@game/NetworkServiceUtils';
-import { useSetRecoilState } from 'recoil';
-import { roundInfoState, roundInfoType } from '@atoms/game';
 
 function Game() {
     const [setPage] = useMovePage();
-    const setRoundInfo = useSetRecoilState<roundInfoType>(roundInfoState);
-
-    useEffect(() => {
-        onStartGame(setPage, setRoundInfo);
-    }, []);
 
     return (
         <>
