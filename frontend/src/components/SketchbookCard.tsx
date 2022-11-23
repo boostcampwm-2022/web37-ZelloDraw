@@ -44,7 +44,9 @@ function SketchbookCard() {
                         </FirstRoundGuide>
                     ) : (
                         <UserDrawing>
-                            <img src={quizReply} alt='quiz reply drawing' />
+                            {quizReply.length > 100 && (
+                                <img src={quizReply} alt='quiz reply drawing' />
+                            )}
                         </UserDrawing>
                     )}
                 </SketchbookWrapper>

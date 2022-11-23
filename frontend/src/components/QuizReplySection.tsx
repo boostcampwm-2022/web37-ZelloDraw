@@ -2,7 +2,12 @@ import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { Center } from '@styles/styled';
 import { useRecoilState, useRecoilValue } from 'recoil';
-import { isQuizTypeDrawState, quizSubmitState, roundNumberState } from '@atoms/game';
+import {
+    isQuizTypeDrawState,
+    quizSubmitState,
+    roundNumberState,
+    userReplyState,
+} from '@atoms/game';
 import PrimaryButton from '@components/PrimaryButton';
 import { emitSubmitQuizReply } from '@game/NetworkServiceUtils';
 import useZeroRound from '@hooks/useZeroRound';
@@ -10,7 +15,7 @@ import useZeroRound from '@hooks/useZeroRound';
 function QuizReplySection() {
     const isDraw = useRecoilValue(isQuizTypeDrawState);
     const { curRound } = useRecoilValue(roundNumberState);
-    const [userAnswer, setUserAnswer] = useState('');
+    const [userReply, setUserReply] = useRecoilState(userReplyState);
     const [quizSubmitted, setQuizSubmitted] = useRecoilState(quizSubmitState);
     const { placeholder, sendRandomWordReplyToServer } = useZeroRound(curRound);
 
@@ -23,17 +28,17 @@ function QuizReplySection() {
         // 변경하기 버튼을 누른 경우에는 return.
         if (quizSubmitted) return;
 
-        if (userAnswer === '' && curRound === 0) {
+        if (curRound === 0 && userReply === '') {
             sendRandomWordReplyToServer();
             return;
         }
 
-        sendUserWordReplyToServer();
+        sendUserReplyToServer();
     }
 
-    function sendUserWordReplyToServer() {
+    function sendUserReplyToServer() {
         // 유저가 입력한 값이 서버로 제출된다.
-        emitSubmitQuizReply({ quizReply: { type: 'ANSWER', content: userAnswer } });
+        emitSubmitQuizReply({ quizReply: { type: 'ANSWER', content: userReply } });
     }
 
     return (
@@ -41,7 +46,7 @@ function QuizReplySection() {
             {!isDraw ? (
                 <AnswerInput
                     placeholder={placeholder}
-                    onChange={(e) => setUserAnswer(e.target.value)}
+                    onChange={(e) => setUserReply(e.target.value)}
                     readOnly={quizSubmitted}
                     quizSubmitted={quizSubmitted}
                 />

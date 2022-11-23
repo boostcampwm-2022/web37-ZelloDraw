@@ -36,7 +36,11 @@ export const quizReplyState = selector({
     get: ({ get }) => {
         const roundInfo = get(roundInfoState);
 
-        if (roundInfo === undefined || roundInfo.quizReply.content === undefined) {
+        if (
+            roundInfo === undefined ||
+            roundInfo.quizReply.content === undefined ||
+            (roundInfo.roundType === 'DRAW' && roundInfo.quizReply.content.length > 100) // 100자 이상이면 그림 => 이전 유저가 답변을 안한 경우
+        ) {
             return '';
         }
 
@@ -60,4 +64,9 @@ export const roundNumberState = selector({
 export const quizSubmitState = atom<boolean>({
     key: 'quizSubmitState',
     default: false,
+});
+
+export const userReplyState = atom<string>({
+    key: 'userReplyState',
+    default: '',
 });
