@@ -10,6 +10,7 @@ import {
 } from '@atoms/game';
 import PrimaryButton from '@components/PrimaryButton';
 import { emitSubmitQuizReply } from '@game/NetworkServiceUtils';
+import { QuizReplyRequest } from '@backend/core/game.dto';
 
 function QuizReplySection() {
     const isDraw = useRecoilValue(isQuizTypeDrawState);
@@ -43,12 +44,16 @@ function QuizReplySection() {
 
         // 유저가 입력한 값이 없을 경우 전전 유저가 답한 word가 제출된다. (첫텀에는 랜덤 단어가 제출된다.)
         if (userAnswer === '') {
-            emitSubmitQuizReply({ type: 'ANSWER', content: quizReplyContent });
+            emitSubmitQuizReply(getSubmitQuizReplyObj({ type: 'ANSWER', content: userAnswer }));
             return;
         }
 
         // 유저가 입력한 값이 제출된다.
-        emitSubmitQuizReply({ type: 'ANSWER', content: userAnswer });
+        emitSubmitQuizReply(getSubmitQuizReplyObj({ type: 'ANSWER', content: userAnswer }));
+    }
+
+    function getSubmitQuizReplyObj({ type, content }: QuizReplyRequest) {
+        return { quizReply: { type, content } };
     }
 
     return (

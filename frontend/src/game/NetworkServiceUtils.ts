@@ -1,8 +1,8 @@
 import { networkServiceInstance as NetworkService } from '@services/socketService';
 import {
-    QuizReplyRequest,
     StartRoundEmitRequest,
     SubmitQuizReplyEmitRequest,
+    SubmitQuizReplyRequest,
 } from '@backend/core/game.dto';
 import { SetterOrUpdater } from 'recoil';
 
@@ -23,8 +23,8 @@ export const onStartGame = (
     });
 };
 
-export const emitSubmitQuizReply = (quizReplyRequest: QuizReplyRequest) => {
-    NetworkService.emit('submit-quiz-reply', quizReplyRequest);
+export const emitSubmitQuizReply = (submitReply: SubmitQuizReplyRequest) => {
+    NetworkService.emit('submit-quiz-reply', submitReply);
 };
 
 export const onSubmitQuizReply = () => {
