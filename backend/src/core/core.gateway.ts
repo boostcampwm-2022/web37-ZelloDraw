@@ -10,14 +10,13 @@ import {
 } from '@nestjs/websockets';
 import { Socket } from 'socket.io';
 import { LobbyService } from './lobby.service';
-import { RoundService } from './round.service';
 import { UseFilters, UsePipes, ValidationPipe } from '@nestjs/common';
 import { JoinLobbyRequest, JoinLobbyResponse, JoinLobbyReEmitRequest } from './user.dto';
 import { UserService } from './user.service';
-import { Round } from './round.model';
-import { StartRoundResponse } from './round.dto';
 import { SocketException } from './socket.exception';
 import { SocketExceptionFilter } from './socket.filter';
+import { GameService } from './game.service';
+import { StartRoundEmitRequest } from './game.dto';
 
 // TODO: Validation Pipe 관련 내용 학습 + 소켓에서 에러 처리 어케할건지 학습 하고 적용하기
 // @UsePipes(new ValidationPipe())
@@ -26,8 +25,8 @@ import { SocketExceptionFilter } from './socket.filter';
 export class CoreGateway implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect {
     constructor(
         private readonly lobbyService: LobbyService,
+        private readonly gameService: GameService,
         private readonly userService: UserService,
-        private readonly roundService: RoundService,
     ) {}
 
     handleConnection(client: any) {
@@ -107,45 +106,27 @@ export class CoreGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
         }
         // TODO: GameStart 로직 처리 (게임 시작시 게임의 상태 정보 변경)
         // TODO: gameMock 데이터 대신 실제 게임 데이터로 변경 필요
-        const lobby = this.lobbyService.getLobby(lobbyId);
-        lobby.isPlaying = true;
+        const game = this.gameService.getGame(lobbyId);
+        game.isPlaying = true;
 
-        const gameMock = {
+        client.nsp.to(lobbyId).emit('start-game', {
+            users: game.getHost(),
             lobbyId,
-            users: lobby.host,
-        };
-        client.nsp.to(lobbyId).emit('start-game', gameMock);
-    }
+        });
 
-    @SubscribeMessage('start-round')
-    async handleStartRound(@ConnectedSocket() client: Socket, @MessageBody() lobbyId: string) {
-        // const user = this.userService.getUser(client.id);
-        //
-        // if (!this.lobbyService.isLobbyHost(user, lobbyId)) {
-        //     throw new Error('Only host can start game');
-        // }
-        //
-        // const lobby = this.lobbyService.getLobby(lobbyId);
-        // if (!lobby.isPlaying) throw new Error('게임중이 아닙니다.');
-        //
-        // if (!lobby.isPlaying) {
-        //     throw new Error('게임중이 아닙니다.');
-        // }
-        //
-        // const round: StartRoundResponse[] = [];
-        // lobby.users.forEach((user) => {
-        //     const userRound = this.roundService.startRound(lobby);
-        //     round.push(userRound);
-        //
-        //     client.nsp.to(user.socketId).emit('start-round', userRound);
-        // });
-        //
-        // lobby.rounds.push(new Round(round));
-        //
-        // setTimeout(() => {
-        //     console.log('발송');
-        //     client.nsp.to(lobbyId).emit('complete-round', { round: lobby.rounds.length, lobbyId });
-        // }, 6000);
-        // return null;
+        this.gameService.startGame(lobbyId);
+
+        console.log(game.getUsers());
+        game.getUsers().forEach((user) => {
+            const quizReply = this.gameService
+                .getCurrentRoundQuizReplyChain(lobbyId, user)
+                .getLastQuizReply();
+            const payload: StartRoundEmitRequest = {
+                quizReply,
+                round: game.curRound,
+                limitTime: game.roundLimitTime,
+            };
+            client.nsp.to(user.socketId).emit('start-round', payload);
+        });
     }
 }

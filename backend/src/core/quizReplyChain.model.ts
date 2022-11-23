@@ -10,4 +10,8 @@ export class QuizReplyChain {
     add(QuizReply: QuizReply) {
         this.quizReplyList.push(QuizReply);
     }
+
+    getLastQuizReply() {
+        return this.quizReplyList[this.quizReplyList.length - 1];
+    }
 }

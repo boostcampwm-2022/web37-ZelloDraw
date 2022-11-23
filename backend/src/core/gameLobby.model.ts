@@ -71,6 +71,8 @@ export class GameLobby implements Lobby, Game {
     }
 
     proceedRound() {
+        // TODO: Round Type 바꾸는 로직 추가
+        // TODO: Round Type에 맞게 RoundLimitTime 바뀌는 로직 추가
         this.curRound += 1;
         if (this.curRound > this.maxRound) {
             this.isPlaying = false;
