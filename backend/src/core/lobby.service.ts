@@ -27,9 +27,13 @@ export class LobbyService {
         return lobby.getUsers();
     }
 
-    leaveLobby(user: User, lobbyId: string) {
+    leaveLobby(user: User, lobbyId: string): User[] {
         const lobby = this.getLobby(lobbyId);
         lobby.leaveLobby(user);
+        if (lobby.users.length === 0) {
+            this.gameLobbyRepository.delete(lobby);
+            return [];
+        }
         this.userService.updateUser(user.socketId, { lobbyId: undefined });
         this.gameLobbyRepository.save(lobby);
         return lobby.getUsers();

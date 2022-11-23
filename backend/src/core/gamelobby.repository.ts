@@ -16,6 +16,11 @@ export class GameLobbyRepository {
         return gameLobby.getId();
     }
 
+    delete(gameLobby: GameLobby) {
+        // eslint-disable-next-line @typescript-eslint/no-dynamic-delete
+        delete this.gameLobbyStore[gameLobby.getId()];
+    }
+
     findByUser(user: User): GameLobby {
         return this.gameLobbyStore[user.lobbyId];
     }
