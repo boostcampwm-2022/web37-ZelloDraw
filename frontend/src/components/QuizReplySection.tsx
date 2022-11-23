@@ -31,27 +31,29 @@ function QuizReplySection() {
         }
     }
 
-    function writeAnswer(e: React.ChangeEvent<HTMLInputElement>) {
-        setUserAnswer(e.target.value);
-    }
-
     function submitBtnHandler() {
-        if (quizSubmitted) {
-            setQuizSubmitted(false);
-            return;
-        }
-        setQuizSubmitted(true);
+        submittedStateHandler();
 
-        // 유저가 출제한 퀴즈의 값이 없을 경우 랜덤 단어가 제출된다.
         if (userAnswer === '' && curRound === 0) {
-            emitSubmitQuizReply(
-                getSubmitQuizReplyObj({ type: 'ANSWER', content: quizReplyContent }),
-            );
+            sendRandomWordToServer();
             return;
         }
 
         // 유저가 입력한 값이 제출된다.
         emitSubmitQuizReply(getSubmitQuizReplyObj({ type: 'ANSWER', content: userAnswer }));
+    }
+
+    function sendRandomWordToServer() {
+        // 유저가 출제한 퀴즈의 값이 없을 경우 이전에 받았던 랜덤 단어가 제출된다.
+        emitSubmitQuizReply(getSubmitQuizReplyObj({ type: 'ANSWER', content: quizReplyContent }));
+    }
+
+    function submittedStateHandler() {
+        if (quizSubmitted) {
+            setQuizSubmitted(false);
+            return;
+        }
+        setQuizSubmitted(true);
     }
 
     function getSubmitQuizReplyObj(quizReply: QuizReplyRequest) {
@@ -63,7 +65,7 @@ function QuizReplySection() {
             {!isDraw ? (
                 <AnswerInput
                     placeholder={placeholder}
-                    onChange={writeAnswer}
+                    onChange={(e) => setUserAnswer(e.target.value)}
                     readOnly={quizSubmitted}
                     quizSubmitted={quizSubmitted}
                 />
