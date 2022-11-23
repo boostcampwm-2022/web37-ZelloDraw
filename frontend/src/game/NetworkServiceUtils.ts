@@ -11,14 +11,9 @@ export const onStartGame = (
     setRoundInfo: SetterOrUpdater<roundInfoType>,
 ) => {
     NetworkService.on('start-game', (payload: any) => {
-        emitStartRound(payload.lobbyId);
         getRoundInfo(setRoundInfo);
         setPage('/game');
     });
-};
-
-export const emitStartRound = (lobbyId: string) => {
-    NetworkService.emit('start-round', lobbyId);
 };
 
 export const getRoundInfo = (setRoundInfo: SetterOrUpdater<roundInfoType>) => {
