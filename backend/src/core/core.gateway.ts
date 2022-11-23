@@ -147,6 +147,7 @@ export class CoreGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
                 .getLastQuizReply();
             const payload: StartRoundEmitRequest = {
                 quizReply,
+                roundType: game.getRoundType(),
                 curRound: game.curRound,
                 maxRound: game.maxRound,
                 limitTime: game.roundLimitTime,

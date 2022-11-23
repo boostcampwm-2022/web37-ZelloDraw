@@ -7,6 +7,7 @@ export interface QuizReplyRequest {
 }
 
 export interface StartRoundEmitRequest {
+    roundType: QuizReplyType;
     quizReply: PartialWithoutMethods<QuizReply>;
     curRound: number;
     maxRound: number;

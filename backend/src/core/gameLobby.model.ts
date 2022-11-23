@@ -10,7 +10,7 @@ export class GameLobby implements Lobby, Game {
     users: User[];
     maxRound: number;
     curRound: number;
-    readonly roundType: 'DRAW' | 'ANSWER';
+    roundType: 'DRAW' | 'ANSWER';
     roundLimitTime: number;
     submittedQuizRepliesOnCurrentRound: Array<QuizReply | undefined>;
     quizReplyChains: QuizReplyChain[];
@@ -36,6 +36,10 @@ export class GameLobby implements Lobby, Game {
         return this.users;
     }
 
+    getRoundType(): 'DRAW' | 'ANSWER' {
+        return this.roundType;
+    }
+
     getHost(): User {
         return this.host;
     }
@@ -53,6 +57,7 @@ export class GameLobby implements Lobby, Game {
         this.maxRound = this.users.length - 1;
         this.roundLimitTime = roundLimitTime;
         this.isPlaying = true;
+        this.roundType = 'ANSWER';
         this.quizReplyChains = this.users.map(() => {
             const quizReplyChain = new QuizReplyChain();
             // TODO: 랜덤 키워드는 외부 모듈에 의존하도록 수정
@@ -81,6 +86,7 @@ export class GameLobby implements Lobby, Game {
         if (this.curRound > this.maxRound) {
             this.isPlaying = false;
         }
+        this.swapRoundType();
         this.submittedQuizRepliesOnCurrentRound = this.users.map(() => undefined);
     }
 
@@ -98,6 +104,10 @@ export class GameLobby implements Lobby, Game {
 
     getQuizReplyChains(): QuizReplyChain[] {
         return this.quizReplyChains;
+    }
+
+    private swapRoundType() {
+        this.roundType = this.roundType === 'DRAW' ? 'ANSWER' : 'DRAW';
     }
 
     private getUserIndex(user: User): number {
