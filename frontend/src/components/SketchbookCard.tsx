@@ -24,7 +24,9 @@ function SketchbookCard() {
         <Card>
             <Container>
                 <GameStateSection>
-                    <GameTurn>{roundNum}/8</GameTurn>
+                    <GameTurn>
+                        {curRound}/{maxRound}
+                    </GameTurn>
                     <Timer />
                 </GameStateSection>
                 <SketchbookWrapper>
@@ -32,15 +34,19 @@ function SketchbookCard() {
                     <Canvas ref={canvasRef} />
                     {isDraw && (
                         <Keyword>
-                            <span>{word}</span>
+                            <span>{quizReply}</span>
                         </Keyword>
                     )}
-                    {roundNum === 0 && (
+                    {curRound === 0 ? (
                         <FirstRoundGuide>
                             나만의 문장을 만들어 입력해보세요!
                             <br />
                             다른 사람들이 어떤 그림을 그리게 될까요?
                         </FirstRoundGuide>
+                    ) : (
+                        <UserDrawing>
+                            <img src={quizReply} alt='quiz reply drawing' />
+                        </UserDrawing>
                     )}
                 </SketchbookWrapper>
                 {isDraw && !quizSubmitted ? <DrawingTools rest={rest} /> : <div />}
@@ -123,4 +129,8 @@ const Keyword = styled.div`
         text-fill-color: transparent;
         font-size: ${({ theme }) => theme.typo.h4};
     }
+`;
+
+const UserDrawing = styled.div`
+    position: absolute;
 `;
