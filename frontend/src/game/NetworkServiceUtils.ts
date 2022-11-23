@@ -10,13 +10,10 @@ export const onStartGame = (
     setPage: (url: string) => void,
     setRoundInfo: SetterOrUpdater<roundInfoType>,
 ) => {
-    NetworkService.on('start-game', (payload: any) => {
-        getRoundInfo(setRoundInfo);
+    NetworkService.on('start-game', () => {
         setPage('/game');
     });
-};
 
-export const getRoundInfo = (setRoundInfo: SetterOrUpdater<roundInfoType>) => {
     NetworkService.on('start-round', (userRound: roundInfoType) => {
         setRoundInfo(userRound);
     });

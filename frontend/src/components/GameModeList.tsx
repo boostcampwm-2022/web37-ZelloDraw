@@ -1,19 +1,14 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import styled from 'styled-components';
 import { ReactComponent as GirlWithPencilChar } from '@assets/girl-with-pencil 1.svg';
-import { onStartGame } from '@game/NetworkServiceUtils';
-import { useSetRecoilState, useRecoilValue } from 'recoil';
+import { useRecoilValue } from 'recoil';
 import { userState, userStateType } from '@atoms/user';
-import { roundInfoState, roundInfoType } from '@atoms/game';
-import useMovePage from '@hooks/useMovePage';
 import Card from '@components/Card';
 import GameModeItem from '@components/GameModeItem';
 import GameStartButton from '@components/GameStartButton';
 
 function GameModeList({ lobbyId }: { lobbyId: string }) {
     const user = useRecoilValue<userStateType>(userState);
-    const setRoundInfo = useSetRecoilState<roundInfoType>(roundInfoState);
-    const [setPage] = useMovePage();
 
     const modes = [
         {
@@ -22,10 +17,6 @@ function GameModeList({ lobbyId }: { lobbyId: string }) {
             illustration: <GirlWithPencilChar />,
         },
     ];
-
-    useEffect(() => {
-        onStartGame(setPage, setRoundInfo);
-    }, []);
 
     return (
         <Card>
