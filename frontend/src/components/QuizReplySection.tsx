@@ -42,9 +42,11 @@ function QuizReplySection() {
         }
         setQuizSubmitted(true);
 
-        // 유저가 입력한 값이 없을 경우 전전 유저가 답한 word가 제출된다. (첫텀에는 랜덤 단어가 제출된다.)
-        if (userAnswer === '') {
-            emitSubmitQuizReply(getSubmitQuizReplyObj({ type: 'ANSWER', content: userAnswer }));
+        // 유저가 출제한 퀴즈의 값이 없을 경우 랜덤 단어가 제출된다.
+        if (userAnswer === '' && curRound === 0) {
+            emitSubmitQuizReply(
+                getSubmitQuizReplyObj({ type: 'ANSWER', content: quizReplyContent }),
+            );
             return;
         }
 
@@ -52,8 +54,8 @@ function QuizReplySection() {
         emitSubmitQuizReply(getSubmitQuizReplyObj({ type: 'ANSWER', content: userAnswer }));
     }
 
-    function getSubmitQuizReplyObj({ type, content }: QuizReplyRequest) {
-        return { quizReply: { type, content } };
+    function getSubmitQuizReplyObj(quizReply: QuizReplyRequest) {
+        return { quizReply };
     }
 
     return (
