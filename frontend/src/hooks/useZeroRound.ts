@@ -4,18 +4,24 @@ import { useRecoilValue } from 'recoil';
 import { quizReplyState } from '@atoms/game';
 
 function useZeroRound(curRound: number) {
+    const placeholderDefault = '그림을 보고 답을 맞춰보세요!';
     const quizReplyContent = useRecoilValue(quizReplyState);
-    const [placeholder, setPlaceholder] = useState('그림을 보고 답을 맞춰보세요!');
+    const [placeholder, setPlaceholder] = useState(placeholderDefault);
 
     useEffect(() => {
         setRandomWordToPlaceholder();
-    }, [quizReplyContent]);
+    }, [curRound, quizReplyContent]);
 
     function setRandomWordToPlaceholder() {
+        if (curRound > 1) return;
+
         // 0번 라운드일 때만 인풋 플레이스홀더에서 유저에게 랜덤 단어를 보여준다.
         if (curRound === 0 && quizReplyContent !== '') {
             setPlaceholder(quizReplyContent);
+            return;
         }
+
+        setPlaceholder(placeholderDefault);
     }
 
     function sendRandomWordReplyToServer() {
