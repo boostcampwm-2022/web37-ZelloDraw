@@ -17,15 +17,23 @@ export class LobbyService {
 
     async joinLobby(user: User, lobbyId: string) {
         const lobby = this.getLobby(lobbyId);
+        // TODO: Define 파일을 통해 상수 관리하기
+        if (lobby.users.length >= 8) {
+            throw Error('초대받은 방이 꽉 차버렸네요!');
+        }
         lobby.joinLobby(user);
         this.userService.updateUser(user.socketId, { lobbyId });
         this.gameLobbyRepository.save(lobby);
         return lobby.getUsers();
     }
 
-    leaveLobby(user: User, lobbyId: string) {
+    leaveLobby(user: User, lobbyId: string): User[] {
         const lobby = this.getLobby(lobbyId);
         lobby.leaveLobby(user);
+        if (lobby.users.length === 0) {
+            this.gameLobbyRepository.delete(lobby);
+            return [];
+        }
         this.userService.updateUser(user.socketId, { lobbyId: undefined });
         this.gameLobbyRepository.save(lobby);
         return lobby.getUsers();
