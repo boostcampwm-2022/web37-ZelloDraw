@@ -9,7 +9,7 @@ import {
 } from '@utils/constants';
 import { useRecoilValue } from 'recoil';
 import { quizSubmitState } from '@atoms/game';
-import { convertHexToRgba, getPixelColor, getPixelOffset, isSameColor } from '@utils/canvas';
+import { convertHexToRgba, getPixelColor, isSameColor, setPixel } from '@utils/canvas';
 
 interface Coordinate {
     x: number;
@@ -45,14 +45,6 @@ function useCanvas() {
         ctxRef.current.lineWidth = PEN_LINE_WIDTH;
     };
 
-    const setPixel = (imageData: any, x: number, y: number, color: Uint8ClampedArray) => {
-        const offset = getPixelOffset(imageData, x, y);
-        imageData.data[offset + 0] = color[0];
-        imageData.data[offset + 1] = color[1];
-        imageData.data[offset + 2] = color[2];
-        imageData.data[offset + 3] = color[0];
-    };
-
     const floodFill = (x: number, y: number, fillColor: Uint8ClampedArray) => {
         const imageData = ctxRef.current.getImageData(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
         const visited = new Uint8Array(imageData.width, imageData.height);
@@ -83,13 +75,13 @@ function useCanvas() {
 
     const paintCanvas = useCallback(
         (event: MouseEvent) => {
-            if (isFilling) {
+            if (isFilling && !isPainting) {
                 const curPos = getCoordinates(event);
                 if (!curPos) return;
                 floodFill(curPos.y, curPos.x, color);
             }
         },
-        [isFilling, pos],
+        [isFilling],
     );
 
     const onClickPaint = () => {
@@ -177,8 +169,6 @@ function useCanvas() {
         ctx.strokeStyle = PEN_DEFAULT_COLOR;
         ctx.lineWidth = PEN_LINE_WIDTH;
         ctxRef.current = ctx;
-        ctx.fillStyle = '#F6F5F8';
-        ctx.fillRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
     }, []);
 
     return { canvasRef, onClickPen, onClickPaint, onColorChange, onClickEraser, onClickReset };
