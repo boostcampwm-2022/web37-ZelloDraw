@@ -14,11 +14,12 @@ interface PaletteType {
 }
 
 interface DrawingToolsType {
-    rest: PaletteType;
+    restProps: PaletteType;
 }
 
-function DrawingTools({ rest }: DrawingToolsType) {
-    const { tools, selectedColor, selectedTool, onClickColor, onChangeTool } = usePalette(rest);
+function DrawingTools({ restProps }: DrawingToolsType) {
+    const { tools, selectedColor, selectedTool, onClickColor, onChangeTool } =
+        usePalette(restProps);
 
     return (
         <Container>
