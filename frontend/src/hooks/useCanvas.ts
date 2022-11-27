@@ -19,11 +19,11 @@ interface Coordinate {
 function useCanvas() {
     const canvasRef = useRef<HTMLCanvasElement>(null);
     const ctxRef = useRef<any>(null);
+    const curColor = useRef<Uint8ClampedArray>(convertHexToRgba('#001D2E'));
 
     const [pos, setPos] = useState<Coordinate | undefined>({ x: 0, y: 0 });
     const [isPainting, setIsPainting] = useState<boolean>(false);
     const [isFilling, setIsFilling] = useState<boolean>(false);
-    const [color, setColor] = useState<Uint8ClampedArray>(convertHexToRgba('#001D2E'));
     const quizSubmitted = useRecoilValue(quizSubmitState);
 
     const getCoordinates = (event: MouseEvent): Coordinate | undefined => {
@@ -54,7 +54,6 @@ function useCanvas() {
             const stack = [{ x, y }];
             while (stack.length > 0) {
                 const child = stack.pop();
-
                 if (!child) return;
                 const currentColor = getPixelColor(imageData, child.x, child.y);
                 if (
@@ -78,7 +77,7 @@ function useCanvas() {
             if (isFilling && !isPainting) {
                 const curPos = getCoordinates(event);
                 if (!curPos) return;
-                floodFill(curPos.y, curPos.x, color);
+                floodFill(curPos.x, curPos.y, curColor.current);
             }
         },
         [isFilling],
@@ -90,9 +89,8 @@ function useCanvas() {
     };
 
     const onColorChange = (color: string) => {
-        setColor(convertHexToRgba(color));
+        curColor.current = convertHexToRgba(color);
         ctxRef.current.strokeStyle = color;
-        ctxRef.current.fillStyle = color;
         ctxRef.current.lineWidth = PEN_LINE_WIDTH;
     };
 

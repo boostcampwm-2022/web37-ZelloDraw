@@ -6,6 +6,7 @@ export const convertHexToRgba = (color: string) => {
         .substring(5, rgbaStr.length - 1)
         .split(',')
         .map((str: string) => Number(str));
+    rgba[3] = (rgba[3] / 1) * 255;
     return new Uint8ClampedArray(rgba);
 };
 
@@ -31,9 +32,9 @@ export function isSameColor(a: Uint8ClampedArray, b: Uint8ClampedArray) {
 }
 
 export const setPixel = (imageData: any, x: number, y: number, color: Uint8ClampedArray) => {
-    const offset = getPixelOffset(imageData, x, y);
+    const offset = (y * imageData.width + x) * 4;
     imageData.data[offset + 0] = color[0];
     imageData.data[offset + 1] = color[1];
     imageData.data[offset + 2] = color[2];
-    imageData.data[offset + 3] = color[0];
+    imageData.data[offset + 3] = color[3];
 };

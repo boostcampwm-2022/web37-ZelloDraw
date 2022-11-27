@@ -61,7 +61,7 @@ function usePalette({
 
     const onClickColor = (color: string) => {
         setSelectedColor(color);
-        setSelectedTool(ToolsType.PEN);
+        if (selectedTool === ToolsType.ERASER) setSelectedTool(ToolsType.PEN);
         onColorChange(color);
     };
 
@@ -70,6 +70,7 @@ function usePalette({
         if (tool === ToolsType.RESET) {
             setTimeout(() => {
                 setSelectedTool(ToolsType.PEN);
+                onClickPen(selectedColor);
             }, 200);
         }
     };
