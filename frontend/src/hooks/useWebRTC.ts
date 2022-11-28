@@ -123,6 +123,3 @@ function useWebRTC() {
 }
 
 export default useWebRTC;
-function asnyc() {
-    throw new Error('Function not implemented.');
-}

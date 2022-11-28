@@ -8,6 +8,7 @@ import { useRecoilState } from 'recoil';
 import { networkServiceInstance as NetworkService } from '../services/socketService';
 import { debounce } from 'lodash';
 import useWebRTC from '@hooks/useWebRTC';
+import { VideoProperty } from '@styles/styled';
 
 function UserCard() {
     const [user, setUserState] = useRecoilState(userState);
@@ -34,7 +35,7 @@ function UserCard() {
         <Card>
             <CardInner>
                 <UserVideo>
-                    <video ref={selfVideoRef} autoPlay playsInline width='328' height='183.69' />
+                    <Video ref={selfVideoRef} autoPlay playsInline></Video>
                 </UserVideo>
                 <UserName>
                     <span>&#123;</span>
@@ -69,6 +70,10 @@ const UserVideo = styled.div`
     border-radius: 32px;
     background: ${({ theme }) => theme.gradation.purplePrimary};
     margin-bottom: 7.31px;
+`;
+
+const Video = styled(VideoProperty)`
+    border-radius: 32px;
 `;
 
 const UserName = styled.div`

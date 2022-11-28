@@ -4,18 +4,22 @@ import { ReactComponent as MicOffIcon } from '@assets/icons/mic-off-video-icon.s
 import { ReactComponent as MicOnIcon } from '@assets/icons/mic-on-video-icon.svg';
 import { ReactComponent as HostIconS } from '@assets/icons/host-icon-s.svg';
 import { ReactComponent as HostIconL } from '@assets/icons/host-icon-l.svg';
-import { Center } from '@styles/styled';
+import { Center, VideoProperty } from '@styles/styled';
 
-function VideoCallUser({ userName }: { userName: string }) {
-    const [videoStream, setVideoStream] = useState<boolean>(false);
+interface VideoCallProps {
+    userName: string;
+    video?: React.RefObject<HTMLVideoElement> | undefined;
+}
+
+function VideoCallUser({ userName, video }: VideoCallProps) {
     const [hostState, setHostState] = useState<boolean>(false);
     const [micState, setMicState] = useState<boolean>(true);
 
     return (
         <Container>
-            {videoStream ? (
+            {video ? (
                 <>
-                    <Video />
+                    <Video ref={video} autoPlay playsInline></Video>
                     <CameraOnUserName>
                         <span>{userName}</span>
                         {hostState && <HostIconS />}
@@ -95,10 +99,7 @@ const CameraOnUserName = styled(Center)`
     }
 `;
 
-const Video = styled.video`
-    width: 100%;
-    height: 100%;
-    background-color: ${({ theme }) => theme.color.gray1}; //테스트용
+const Video = styled(VideoProperty)`
     border-radius: 22px;
 `;
 

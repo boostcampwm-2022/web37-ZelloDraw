@@ -72,9 +72,8 @@ function Lobby() {
             </LogoWrapper>
             <LobbyContainer>
                 <FlexBox>
-                    <UserList />
+                    <UserList selfVideoRef={selfVideoRef} />
                     <GameModeList lobbyId={lobbyId} />
-                    <video ref={selfVideoRef}></video>
                 </FlexBox>
                 <ButtonWrapper>
                     <CameraButton />

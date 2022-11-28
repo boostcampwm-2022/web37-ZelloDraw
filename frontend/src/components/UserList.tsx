@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { forwardRef, RefObject, useState, useEffect } from 'react';
 import styled from 'styled-components';
 import Card from '@components/Card';
 import InviteButton from '@components/InviteButton';
@@ -6,9 +6,11 @@ import EmptyVideoCall from '@components/EmptyVideoCall';
 import VideoCallUser from '@components/VideoCallUser';
 import { useRecoilValue } from 'recoil';
 import { userListState } from '@atoms/game';
+import { userState } from '@atoms/user';
 
-function UserList() {
+function UserList({ selfVideoRef }: { selfVideoRef: React.RefObject<HTMLVideoElement> }) {
     const userList = useRecoilValue(userListState);
+    const currentUser = useRecoilValue(userState);
 
     return (
         <Card>
@@ -22,9 +24,13 @@ function UserList() {
                     <InviteButton />
                 </FlexBox>
                 <UserGridList>
-                    {userList.map((user: string, idx: number) => (
-                        <VideoCallUser key={idx} userName={user} />
-                    ))}
+                    {userList.map((user: string, idx: number) =>
+                        currentUser.name === user ? (
+                            <VideoCallUser key={idx} userName={user} video={selfVideoRef} />
+                        ) : (
+                            <VideoCallUser key={idx} userName={user} />
+                        ),
+                    )}
                     {new Array(8 - userList.length)
                         .fill('empty')
                         .map((item: string, idx: number) => (
