@@ -160,9 +160,13 @@ export class CoreGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
     private emitRoundTimeout(client: Socket, lobbyId: string) {
         const game = this.gameService.getGame(lobbyId);
         setTimeout(() => {
-            this.gameService.getNotSubmittedUsers(lobbyId).forEach((user) => {
-                client.nsp.to(user.socketId).emit('round-timeout');
-            });
+            try {
+                this.gameService.getNotSubmittedUsers(lobbyId).forEach((user) => {
+                    client.nsp.to(user.socketId).emit('round-timeout');
+                });
+            } catch (e) {
+                console.log('종료된 게임입니다.');
+            }
         }, game.getRoundLimitTime() * 1000);
     }
 
