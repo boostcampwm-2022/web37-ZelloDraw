@@ -38,7 +38,9 @@ function QuizReplySection() {
 
     function sendUserReplyToServer() {
         // 유저가 입력한 값이 서버로 제출된다.
-        emitSubmitQuizReply({ quizReply: { type: 'ANSWER', content: userReply } });
+        emitSubmitQuizReply({
+            quizReply: { type: isDraw ? 'DRAW' : 'ANSWER', content: userReply },
+        });
     }
 
     return (
