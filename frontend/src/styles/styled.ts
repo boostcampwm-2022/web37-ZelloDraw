@@ -29,5 +29,6 @@ export const ScaledSection = styled.section`
 
 export const ScaledDiv = styled.div`
     transform: ${({ theme }) =>
+        // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
         theme.layout.sectionScale < 1 ? `scale(${theme.layout.sectionScale})` : 'scale(1)'};
 `;

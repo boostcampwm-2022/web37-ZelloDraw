@@ -1,11 +1,14 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import cameraOffImg from '@assets/buttons/camera-off-btn.svg';
 import cameraOnImg from '@assets/buttons/camera-on-btn.svg';
 import styled from 'styled-components';
 
-function CameraButton() {
+function CameraButton({ setCamState }: { setCamState: any }) {
     const [isOn, setIsOn] = useState<boolean>(true);
-    const onBtnClick = () => setIsOn(!isOn);
+    const onBtnClick = () => {
+        setIsOn(!isOn);
+        setCamState(isOn);
+    };
 
     return (
         <CameraBtnSet>

@@ -27,8 +27,8 @@ function Game() {
                 </SketchbookSection>
             </Container>
             <CamAndMicWrapper>
-                <CameraButton />
-                <MicButton />
+                {/* <CameraButton />
+                <MicButton /> */}
             </CamAndMicWrapper>
             <LogoWrapper onClick={() => setPage('/')}>
                 <img src={SmallLogo} />

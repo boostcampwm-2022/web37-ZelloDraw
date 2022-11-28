@@ -39,8 +39,8 @@ function UserCard() {
                     <span>&#125;</span>
                 </UserName>
                 <ButtonWrapper>
-                    <CameraButton />
-                    <MicButton />
+                    {/* <CameraButton />
+                    <MicButton /> */}
                 </ButtonWrapper>
             </CardInner>
         </Card>

@@ -1,11 +1,14 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import micOffImg from '@assets/buttons/mic-off-btn.svg';
 import micOnImg from '@assets/buttons/mic-on-btn.svg';
 import styled from 'styled-components';
 
-function MicButton() {
+function MicButton({ setMicState }: { setMicState: any }) {
     const [isOn, setIsOn] = useState<boolean>(true);
-    const onBtnClick = () => setIsOn(!isOn);
+    const onBtnClick = () => {
+        setIsOn(!isOn);
+        setMicState(isOn);
+    };
 
     return (
         <MicBtnSet>

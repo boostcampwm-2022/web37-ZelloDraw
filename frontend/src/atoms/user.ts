@@ -5,6 +5,11 @@ export interface userStateType {
     isHost: boolean | null;
 }
 
+export interface userMicCamType {
+    isMicOn: boolean;
+    isCamOn: boolean;
+}
+
 const getRandUserName = (): string => {
     const curTime = new Date().getTime().toString();
     return `유저${curTime.substring(curTime.length - 5, curTime.length)}`;
@@ -18,5 +23,17 @@ export const userState = atom<userStateType>({
     default: {
         name: getRandUserName(),
         isHost: null,
+    },
+});
+
+/**
+ * 사용자 카메라, 마이크 정보
+ */
+
+export const userMicCamState = atom<userMicCamType>({
+    key: 'userMicCamState',
+    default: {
+        isMicOn: true,
+        isCamOn: false,
     },
 });
