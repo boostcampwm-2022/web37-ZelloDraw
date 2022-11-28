@@ -8,13 +8,17 @@ import SmallLogo from '@assets/logo-s.png';
 import useMovePage from '@hooks/useMovePage';
 import QuizReplySection from '@components/QuizReplySection';
 import { useEffect } from 'react';
-import { onSubmitQuizReply } from '@game/NetworkServiceUtils';
+import { onCompleteGame, onCountSubmittedQuiz } from '@game/NetworkServiceUtils';
+import { useSetRecoilState } from 'recoil';
+import { gameResultState } from '@atoms/game';
 
 function Game() {
     const [setPage] = useMovePage();
+    const setGameResult = useSetRecoilState(gameResultState);
 
     useEffect(() => {
-        onSubmitQuizReply();
+        onCountSubmittedQuiz();
+        onCompleteGame(setGameResult);
     }, []);
 
     return (
