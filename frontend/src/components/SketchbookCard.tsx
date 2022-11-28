@@ -2,23 +2,19 @@ import styled from 'styled-components';
 import { Center } from '@styles/styled';
 import { ReactComponent as Sketchbook } from '@assets/sketchbook.svg';
 import { useRecoilValue } from 'recoil';
-import {
-    isQuizTypeDrawState,
-    roundNumberState,
-    quizReplyState,
-    quizSubmitState,
-} from '@atoms/game';
+import { isQuizTypeDrawState, roundNumberState, quizSubmitState } from '@atoms/game';
 import useCanvas from '@hooks/useCanvas';
 import Card from '@components/Card';
 import Timer from '@components/Timer';
 import DrawingTools from '@components/DrawingTools';
+import usePrevQuizReply from '@hooks/usePrevQuizReply';
 
 function SketchbookCard() {
     const { canvasRef, ...rest } = useCanvas();
     const isDraw = useRecoilValue(isQuizTypeDrawState);
-    const quizReply = useRecoilValue(quizReplyState);
     const { curRound, maxRound } = useRecoilValue(roundNumberState);
     const quizSubmitted = useRecoilValue(quizSubmitState);
+    const { renderPrevUserQuizReply } = usePrevQuizReply();
 
     return (
         <Card>
@@ -32,23 +28,7 @@ function SketchbookCard() {
                 <SketchbookWrapper>
                     <Sketchbook />
                     <Canvas ref={canvasRef} />
-                    {isDraw ? (
-                        <Keyword>
-                            <span>{quizReply}</span>
-                        </Keyword>
-                    ) : curRound === 0 ? (
-                        <FirstRoundGuide>
-                            나만의 문장을 만들어 입력해보세요!
-                            <br />
-                            다른 사람들이 어떤 그림을 그리게 될까요?
-                        </FirstRoundGuide>
-                    ) : (
-                        <UserDrawing>
-                            {quizReply.length > 100 && (
-                                <img src={quizReply} alt='quiz reply drawing' />
-                            )}
-                        </UserDrawing>
-                    )}
+                    {renderPrevUserQuizReply()}
                 </SketchbookWrapper>
                 {isDraw && !quizSubmitted ? <DrawingTools rest={rest} /> : <div />}
             </Container>
@@ -60,6 +40,7 @@ export default SketchbookCard;
 
 const Container = styled(Center)`
     padding: 44px 38px 0 28px;
+
     > div:last-of-type {
         width: 100%;
     }
@@ -92,38 +73,6 @@ const SketchbookWrapper = styled.div`
     margin: 0 30px;
 `;
 
-const FirstRoundGuide = styled(Center)`
-    ${({ theme }) => theme.layout.sketchBook};
-    height: 420px;
-    color: ${({ theme }) => theme.color.primaryLight};
-    font-size: ${({ theme }) => theme.typo.h3};
-    font-weight: 600;
-`;
-
 const Canvas = styled.canvas`
     ${({ theme }) => theme.layout.sketchBook};
-`;
-
-const UserDrawing = styled.div`
-    ${({ theme }) => theme.layout.sketchBook};
-`;
-
-const Keyword = styled.div`
-    position: absolute;
-    top: 71px;
-    left: 50%;
-    padding: 2px 8px;
-    transform: translateX(-50%);
-    background-color: ${({ theme }) => theme.color.blackT1};
-    border-radius: 12px;
-    border: 1px solid ${({ theme }) => theme.color.purple};
-
-    span {
-        background: ${({ theme }) => theme.gradation.whitePurple};
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        background-clip: text;
-        text-fill-color: transparent;
-        font-size: ${({ theme }) => theme.typo.h4};
-    }
 `;

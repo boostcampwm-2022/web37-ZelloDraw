@@ -18,7 +18,7 @@ function QuizReplySection() {
     const { curRound } = useRecoilValue(roundNumberState);
     const [userReply, setUserReply] = useRecoilState(userReplyState);
     const [quizSubmitted, setQuizSubmitted] = useRecoilState(quizSubmitState);
-    const { placeholder, sendRandomWordReplyToServer } = useZeroRound(curRound);
+    const { placeholder, sendRandomWordReplyToServer } = useZeroRound();
     const { isRoundTimeout } = useRoundTimeout();
 
     useEffect(() => {
