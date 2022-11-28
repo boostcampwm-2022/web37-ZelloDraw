@@ -11,6 +11,10 @@ export class QuizReplyChain {
         this.quizReplyList.push(QuizReply);
     }
 
+    put(index: number, quizReply: QuizReply) {
+        this.quizReplyList[index] = quizReply;
+    }
+
     getLastQuizReply() {
         return this.quizReplyList[this.quizReplyList.length - 1];
     }

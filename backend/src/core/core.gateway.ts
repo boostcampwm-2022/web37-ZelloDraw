@@ -16,7 +16,11 @@ import { UserService } from './user.service';
 import { SocketException } from './socket.exception';
 import { SocketExceptionFilter } from './socket.filter';
 import { GameService } from './game.service';
-import { StartRoundEmitRequest } from './game.dto';
+import {
+    StartRoundEmitRequest,
+    SubmitQuizReplyEmitRequest,
+    SubmitQuizReplyRequest,
+} from './game.dto';
 
 // TODO: Validation Pipe 관련 내용 학습 + 소켓에서 에러 처리 어케할건지 학습 하고 적용하기
 // @UsePipes(new ValidationPipe())
@@ -68,10 +72,7 @@ export class CoreGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 
             await this.lobbyService.joinLobby(user, lobby.id);
             await client.join(body.lobbyId);
-            client
-                .to(lobby.id)
-                // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
-                .emit('join-lobby', { userName: user.name } as JoinLobbyReEmitRequest);
+            this.emitJoinLobby(client, lobby.id, { userName: user.name });
 
             return lobby.users.map((user) => {
                 return { userName: user.name };
@@ -87,46 +88,93 @@ export class CoreGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
         if (user.lobbyId === undefined) return;
 
         const leftUsers = this.lobbyService.leaveLobby(user, user.lobbyId);
-        client.broadcast
-            .to(user.lobbyId)
-            .emit(
-                'leave-lobby',
-                leftUsers.map((user) => ({ userName: user.name })) as JoinLobbyResponse,
-            );
+        const payload: JoinLobbyReEmitRequest[] = leftUsers.map((user) => ({
+            userName: user.name,
+        }));
+        this.emitLeaveLobby(client, user.lobbyId, payload);
         await client.leave(user.lobbyId);
     }
 
     @SubscribeMessage('start-game')
     async handleStartGame(@ConnectedSocket() client: Socket, @MessageBody() lobbyId: string) {
-        console.log('start-game');
         const user = this.userService.getUser(client.id);
-
-        if (!this.lobbyService.isLobbyHost(user, lobbyId)) {
+        if (!this.lobbyService.isLobbyHost(user, lobbyId))
             throw new Error('Only host can start game');
-        }
-        // TODO: GameStart 로직 처리 (게임 시작시 게임의 상태 정보 변경)
-        // TODO: gameMock 데이터 대신 실제 게임 데이터로 변경 필요
-        const game = this.gameService.getGame(lobbyId);
-        game.isPlaying = true;
-
-        client.nsp.to(lobbyId).emit('start-game', {
-            users: game.getHost(),
-            lobbyId,
-        });
 
         this.gameService.startGame(lobbyId);
 
-        console.log(game.getUsers());
+        this.emitStartGame(client, lobbyId);
+        this.emitStartRound(client, lobbyId);
+    }
+
+    @SubscribeMessage('submit-quiz-reply')
+    async handleSubmitQuizReply(
+        @ConnectedSocket() client: Socket,
+        @MessageBody() request: SubmitQuizReplyRequest,
+    ) {
+        const user = this.userService.getUser(client.id);
+        // TODO: 시간 초과 시 라운드 넘어가는 로직 추가 필요
+        this.gameService.submitQuizReply(user.lobbyId, user, request.quizReply);
+        const repliesCount = this.gameService.getSubmittedQuizRepliesCount(user.lobbyId);
+        if (this.gameService.isAllUserSubmittedQuizReply(user.lobbyId)) {
+            this.gameService.proceedRound(user.lobbyId);
+            this.emitStartRound(client, user.lobbyId);
+        } else {
+            const payload: SubmitQuizReplyEmitRequest = {
+                submittedQuizReplyCount: repliesCount,
+            };
+            this.emitSubmitQuizReply(client, user.lobbyId, payload);
+        }
+    }
+
+    private emitJoinLobby(client: Socket, lobbyId: string, payload: JoinLobbyReEmitRequest) {
+        client.to(lobbyId).emit('join-lobby', payload);
+    }
+
+    private emitLeaveLobby(client: Socket, lobbyId: string, payload: JoinLobbyReEmitRequest[]) {
+        client.broadcast.to(lobbyId).emit('leave-lobby', payload);
+    }
+
+    private emitStartGame(client: Socket, lobbyId: string) {
+        client.nsp.to(lobbyId).emit('start-game');
+    }
+
+    private emitStartRound(client: Socket, lobbyId: string) {
+        const game = this.gameService.getGame(lobbyId);
         game.getUsers().forEach((user) => {
             const quizReply = this.gameService
                 .getCurrentRoundQuizReplyChain(lobbyId, user)
                 .getLastQuizReply();
             const payload: StartRoundEmitRequest = {
                 quizReply,
-                round: game.curRound,
+                roundType: game.getRoundType(),
+                curRound: game.curRound,
+                maxRound: game.maxRound,
                 limitTime: game.roundLimitTime,
             };
             client.nsp.to(user.socketId).emit('start-round', payload);
         });
+        this.emitRoundTimeout(client, lobbyId);
+    }
+
+    private emitRoundTimeout(client: Socket, lobbyId: string) {
+        const game = this.gameService.getGame(lobbyId);
+        setTimeout(() => {
+            try {
+                this.gameService.getNotSubmittedUsers(lobbyId).forEach((user) => {
+                    client.nsp.to(user.socketId).emit('round-timeout');
+                });
+            } catch (e) {
+                console.log('종료된 게임입니다.');
+            }
+        }, game.getRoundLimitTime() * 1000);
+    }
+
+    private emitSubmitQuizReply(
+        client: Socket,
+        lobbyId: string,
+        payload: SubmitQuizReplyEmitRequest,
+    ) {
+        client.nsp.to(lobbyId).emit('submit-quiz-reply', payload);
     }
 }

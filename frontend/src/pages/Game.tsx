@@ -7,9 +7,15 @@ import CameraButton from '@components/CameraButton';
 import SmallLogo from '@assets/logo-s.png';
 import useMovePage from '@hooks/useMovePage';
 import QuizReplySection from '@components/QuizReplySection';
+import { useEffect } from 'react';
+import { onSubmitQuizReply } from '@game/NetworkServiceUtils';
 
 function Game() {
     const [setPage] = useMovePage();
+
+    useEffect(() => {
+        onSubmitQuizReply();
+    }, []);
 
     return (
         <>
@@ -19,7 +25,7 @@ function Game() {
                     <SketchbookCard />
                     <QuizReplySection />
                 </SketchbookSection>
-            </Container>{' '}
+            </Container>
             <CamAndMicWrapper>
                 <CameraButton />
                 <MicButton />

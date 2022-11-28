@@ -1,49 +1,56 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import styled from 'styled-components';
 import { Center } from '@styles/styled';
 import { useRecoilState, useRecoilValue } from 'recoil';
-import { roundDrawState, roundNumberState, roundWordState, quizSubmitState } from '@atoms/game';
+import {
+    isQuizTypeDrawState,
+    quizSubmitState,
+    roundNumberState,
+    userReplyState,
+} from '@atoms/game';
 import PrimaryButton from '@components/PrimaryButton';
+import { emitSubmitQuizReply } from '@game/NetworkServiceUtils';
+import useZeroRound from '@hooks/useZeroRound';
+import useRoundTimeout from '@hooks/useRoundTimeout';
 
 function QuizReplySection() {
-    const isDraw = useRecoilValue(roundDrawState);
-    const roundNum = useRecoilValue(roundNumberState);
-    const roundWord = useRecoilValue(roundWordState);
-    const [placeholder, setPlaceholder] = useState('그림을 보고 답을 맞춰보세요!');
-    const [userAnswer, setUserAnswer] = useState('');
+    const isDraw = useRecoilValue(isQuizTypeDrawState);
+    const { curRound } = useRecoilValue(roundNumberState);
+    const [userReply, setUserReply] = useRecoilState(userReplyState);
     const [quizSubmitted, setQuizSubmitted] = useRecoilState(quizSubmitState);
+    const { placeholder, sendRandomWordReplyToServer } = useZeroRound(curRound);
+    const { isRoundTimeout } = useRoundTimeout();
 
     useEffect(() => {
-        setRandomWordToPlaceholder();
-    }, [roundWord]);
+        // 라운드가 새로 시작하면 제출 상태와 유저 답변을 초기화한다.
+        setQuizSubmitted(false);
+        setUserReply('');
+    }, [curRound]);
 
-    function setRandomWordToPlaceholder() {
-        // 0번 라운드일때만 인풋 플레이스홀더에서 유저에게 랜덤 단어를 보여준다.
-        if (roundNum === 0 && roundWord !== '') {
-            setPlaceholder(roundWord);
+    useEffect(() => {
+        if (isRoundTimeout) {
+            sendUserReplyToServer();
         }
-    }
-
-    function writeAnswer(e: React.ChangeEvent<HTMLInputElement>) {
-        setUserAnswer(e.target.value);
-    }
+    }, [isRoundTimeout]);
 
     function submitBtnHandler() {
-        if (quizSubmitted) {
-            setQuizSubmitted(false);
-            return;
-        }
-        setQuizSubmitted(true);
+        setQuizSubmitted(!quizSubmitted);
+        // 변경하기 버튼을 누른 경우에는 return.
+        if (quizSubmitted) return;
 
-        // TODO: 몇명이나 제출했는지 확인하기 위해서 서버로 우선 전송, 내용 변경 후 다시 제출하면 다시 서버로 전송
-        // 유저가 입력한 값이 없을 경우 전전 유저가 답한 word가 제출된다. (첫텀에는 랜덤 단어가 제출된다.)
-        if (userAnswer === '') {
-            console.log(roundWord);
+        if (curRound === 0 && userReply === '') {
+            sendRandomWordReplyToServer();
             return;
         }
 
-        // 유저가 입력한 값이 제출된다.
-        console.log(userAnswer);
+        sendUserReplyToServer();
+    }
+
+    function sendUserReplyToServer() {
+        // 유저가 입력한 값이 서버로 제출된다.
+        emitSubmitQuizReply({
+            quizReply: { type: isDraw ? 'DRAW' : 'ANSWER', content: userReply },
+        });
     }
 
     return (
@@ -51,7 +58,7 @@ function QuizReplySection() {
             {!isDraw ? (
                 <AnswerInput
                     placeholder={placeholder}
-                    onChange={writeAnswer}
+                    onChange={(e) => setUserReply(e.target.value)}
                     readOnly={quizSubmitted}
                     quizSubmitted={quizSubmitted}
                 />

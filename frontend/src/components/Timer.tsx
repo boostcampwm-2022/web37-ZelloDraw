@@ -15,7 +15,6 @@ function Timer() {
 
     useEffect(() => {
         if (roundInfo === undefined) return;
-        console.log('timerRound', roundInfo);
         setLimitTime(roundInfo.limitTime);
         setTimeLeft(roundInfo.limitTime);
     }, [roundInfo]);

@@ -8,9 +8,14 @@ import {
     ERASER_LINE_WIDTH,
     CanvasState,
 } from '@utils/constants';
-import { useRecoilValue } from 'recoil';
-import { quizSubmitState } from '@atoms/game';
 import { convertHexToRgba, getPixelColor, isSameColor, setPixel } from '@utils/canvas';
+import { useRecoilValue, useSetRecoilState } from 'recoil';
+import {
+    isQuizTypeDrawState,
+    quizSubmitState,
+    roundNumberState,
+    userReplyState,
+} from '@atoms/game';
 
 interface Coordinate {
     x: number;
@@ -26,6 +31,9 @@ function useCanvas() {
     const [pos, setPos] = useState<Coordinate | undefined>({ x: 0, y: 0 });
     const [isDrawing, setIsDrawing] = useState<boolean>(false);
     const quizSubmitted = useRecoilValue(quizSubmitState);
+    const { curRound } = useRecoilValue(roundNumberState);
+    const isTypeDraw = useRecoilValue(isQuizTypeDrawState);
+    const setUserDrawingReply = useSetRecoilState(userReplyState);
 
     const getCoordinates = (event: MouseEvent): Coordinate | undefined => {
         return { x: event.offsetX, y: event.offsetY };
@@ -109,7 +117,7 @@ function useCanvas() {
             event.preventDefault();
             event.stopPropagation();
 
-            if (quizSubmitted) return;
+            if (quizSubmitted || curRound === 0) return;
 
             if (drawState.current === CanvasState.DRAW && isDrawing) {
                 const newPos = getCoordinates(event);
@@ -135,6 +143,12 @@ function useCanvas() {
     const cancelPainting = useCallback(() => {
         setIsDrawing(false);
     }, []);
+
+        // 유저가 그리는 걸 멈추는 순간 recoil에 그림 저장
+        if (isTypeDraw) {
+            setUserDrawingReply(canvasRef.current!.toDataURL());
+        }
+    }, [isTypeDraw]);
 
     useEffect(() => {
         if (!canvasRef.current) return;
@@ -169,6 +183,11 @@ function useCanvas() {
         ctx.lineWidth = PEN_LINE_WIDTH;
         ctxRef.current = ctx;
     }, []);
+
+    useEffect(() => {
+        // 라운드가 바뀌면 캔바스 초기화
+        ctxRef.current.clearRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
+    }, [curRound]);
 
     return { canvasRef, onClickPen, onClickPaint, onColorChange, onClickEraser, onClickReset };
 }
