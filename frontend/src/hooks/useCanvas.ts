@@ -142,7 +142,6 @@ function useCanvas() {
 
     const cancelPainting = useCallback(() => {
         setIsDrawing(false);
-    }, []);
 
         // 유저가 그리는 걸 멈추는 순간 recoil에 그림 저장
         if (isTypeDraw) {
