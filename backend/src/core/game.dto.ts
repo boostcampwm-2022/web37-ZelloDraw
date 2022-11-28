@@ -1,6 +1,7 @@
 import { QuizReply, QuizReplyType } from './quizReply.model';
 import { PartialWithoutMethods } from '../utils/types';
 
+// TODO: user 정보에서 socketId 정보는 제외하자.
 export interface QuizReplyRequest {
     type: QuizReplyType;
     content: string;
@@ -22,6 +23,6 @@ export interface SubmitQuizReplyEmitRequest {
     submittedQuizReplyCount: number;
 }
 
-export interface CompleteGameResponse {
-    quizReplyLists: QuizReply[][];
+export interface CompleteGameEmitRequest {
+    quizReplyLists: Array<Array<PartialWithoutMethods<QuizReply>>>;
 }
