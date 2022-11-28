@@ -6,7 +6,7 @@ export const convertHexToRgba = (color: string) => {
         .substring(5, rgbaStr.length - 1)
         .split(',')
         .map((str: string) => Number(str));
-    rgba[3] = (rgba[3] / 1) * 255;
+    rgba[3] = rgba[3] * 255;
     return new Uint8ClampedArray(rgba);
 };
 
