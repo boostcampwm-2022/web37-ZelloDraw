@@ -29,7 +29,7 @@ function QuizReplySection() {
 
     useEffect(() => {
         if (isRoundTimeout) {
-            sendUserReplyToServer();
+            submitBtnHandler();
         }
     }, [isRoundTimeout]);
 
