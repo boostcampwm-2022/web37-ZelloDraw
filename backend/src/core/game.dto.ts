@@ -21,3 +21,7 @@ export interface SubmitQuizReplyRequest {
 export interface SubmitQuizReplyEmitRequest {
     submittedQuizReplyCount: number;
 }
+
+export interface CompleteGameResponse {
+    quizReplyLists: QuizReply[][];
+}
