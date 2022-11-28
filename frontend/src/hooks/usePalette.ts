@@ -18,12 +18,19 @@ interface ToolType {
 
 interface PaletteType {
     onClickPen: (color: string) => void;
+    onClickPaint: () => void;
     onColorChange: (color: string) => void;
     onClickEraser: () => void;
     onClickReset: () => void;
 }
 
-function usePalette({ onClickPen, onColorChange, onClickEraser, onClickReset }: PaletteType) {
+function usePalette({
+    onClickPen,
+    onClickPaint,
+    onColorChange,
+    onClickEraser,
+    onClickReset,
+}: PaletteType) {
     const [selectedColor, setSelectedColor] = useState<string>(colors.black);
     const [selectedTool, setSelectedTool] = useState<ToolsType>(ToolsType.PEN);
 
@@ -38,7 +45,7 @@ function usePalette({ onClickPen, onColorChange, onClickEraser, onClickReset }: 
         {
             element: isSelectedTool(ToolsType.PAINT) ? actPaint : paint,
             type: ToolsType.PAINT,
-            onclick: onClickPen,
+            onclick: onClickPaint,
         },
         {
             element: isSelectedTool(ToolsType.ERASER) ? actEraser : eraser,
@@ -54,7 +61,7 @@ function usePalette({ onClickPen, onColorChange, onClickEraser, onClickReset }: 
 
     const onClickColor = (color: string) => {
         setSelectedColor(color);
-        setSelectedTool(ToolsType.PEN);
+        if (selectedTool === ToolsType.ERASER) setSelectedTool(ToolsType.PEN);
         onColorChange(color);
     };
 
@@ -63,6 +70,7 @@ function usePalette({ onClickPen, onColorChange, onClickEraser, onClickReset }: 
         if (tool === ToolsType.RESET) {
             setTimeout(() => {
                 setSelectedTool(ToolsType.PEN);
+                onClickPen(selectedColor);
             }, 200);
         }
     };

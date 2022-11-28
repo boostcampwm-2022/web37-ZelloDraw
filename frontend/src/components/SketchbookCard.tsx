@@ -14,7 +14,7 @@ import Timer from '@components/Timer';
 import DrawingTools from '@components/DrawingTools';
 
 function SketchbookCard() {
-    const { canvasRef, ...rest } = useCanvas();
+    const { canvasRef, ...restProps } = useCanvas();
     const isDraw = useRecoilValue(isQuizTypeDrawState);
     const quizReply = useRecoilValue(quizReplyState);
     const { curRound, maxRound } = useRecoilValue(roundNumberState);
@@ -50,7 +50,7 @@ function SketchbookCard() {
                         </UserDrawing>
                     )}
                 </SketchbookWrapper>
-                {isDraw && !quizSubmitted ? <DrawingTools rest={rest} /> : <div />}
+                {isDraw && !quizSubmitted ? <DrawingTools restProps={restProps} /> : <div />}
             </Container>
         </Card>
     );
