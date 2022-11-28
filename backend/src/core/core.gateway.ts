@@ -17,10 +17,12 @@ import { SocketException } from './socket.exception';
 import { SocketExceptionFilter } from './socket.filter';
 import { GameService } from './game.service';
 import {
+    CompleteGameEmitRequest,
     StartRoundEmitRequest,
     SubmitQuizReplyEmitRequest,
     SubmitQuizReplyRequest,
 } from './game.dto';
+import { QuizReplyChain } from './quizReplyChain.model';
 
 // TODO: Validation Pipe 관련 내용 학습 + 소켓에서 에러 처리 어케할건지 학습 하고 적용하기
 // @UsePipes(new ValidationPipe())
@@ -117,8 +119,12 @@ export class CoreGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
         this.gameService.submitQuizReply(user.lobbyId, user, request.quizReply);
         const repliesCount = this.gameService.getSubmittedQuizRepliesCount(user.lobbyId);
         if (this.gameService.isAllUserSubmittedQuizReply(user.lobbyId)) {
-            this.gameService.proceedRound(user.lobbyId);
-            this.emitStartRound(client, user.lobbyId);
+            if (this.gameService.isLastRound(user.lobbyId)) {
+                this.emitCompleteGame(client, user.lobbyId);
+            } else {
+                this.gameService.proceedRound(user.lobbyId);
+                this.emitStartRound(client, user.lobbyId);
+            }
         } else {
             const payload: SubmitQuizReplyEmitRequest = {
                 submittedQuizReplyCount: repliesCount,
@@ -176,5 +182,14 @@ export class CoreGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
         payload: SubmitQuizReplyEmitRequest,
     ) {
         client.nsp.to(lobbyId).emit('submit-quiz-reply', payload);
+    }
+
+    private emitCompleteGame(client: Socket, lobbyId: string) {
+        const quizReplyChains: QuizReplyChain[] =
+            this.gameService.getQuizReplyChainsWhenGameEnd(lobbyId);
+        const payload: CompleteGameEmitRequest = {
+            quizReplyLists: quizReplyChains.map((quizReplyChain) => quizReplyChain.quizReplyList),
+        };
+        client.nsp.to(lobbyId).emit('complete-game', payload);
     }
 }

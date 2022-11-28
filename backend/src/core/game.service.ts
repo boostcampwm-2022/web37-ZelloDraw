@@ -48,6 +48,11 @@ export class GameService {
         return game.isAllUserSubmittedQuizReply();
     }
 
+    isLastRound(lobbyId: string): boolean {
+        const game = this.getGame(lobbyId);
+        return game.isLastRound();
+    }
+
     proceedRound(lobbyId: string) {
         const game = this.getGame(lobbyId);
         game.proceedRound();
