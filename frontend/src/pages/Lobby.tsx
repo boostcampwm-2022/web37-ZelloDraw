@@ -140,6 +140,7 @@ function Lobby() {
             if (!pcRef.current) return;
             console.log('on ice');
             await pcRef.current.addIceCandidate(ice);
+            console.log(pcRef.current);
         });
 
         void getMedia();
@@ -148,6 +149,7 @@ function Lobby() {
             NetworkService.off('leave-lobby');
             NetworkService.off('offer');
             NetworkService.off('answer');
+            NetworkService.off('ice');
             if (pcRef.current) pcRef.current.close();
         };
     }, []);
@@ -175,6 +177,7 @@ function Lobby() {
                 <FlexBox>
                     <UserList />
                     <GameModeList lobbyId={lobbyId} />
+                    <video ref={selfVideoRef}></video>
                 </FlexBox>
                 <ButtonWrapper>
                     <CameraButton setCamState={setCamState} />
