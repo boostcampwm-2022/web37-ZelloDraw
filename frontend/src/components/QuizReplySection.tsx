@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import styled from 'styled-components';
 import { Center } from '@styles/styled';
 import { useRecoilState, useRecoilValue } from 'recoil';
@@ -11,6 +11,7 @@ import {
 import PrimaryButton from '@components/PrimaryButton';
 import { emitSubmitQuizReply } from '@game/NetworkServiceUtils';
 import useZeroRound from '@hooks/useZeroRound';
+import useRoundTimeout from '@hooks/useRoundTimeout';
 
 function QuizReplySection() {
     const isDraw = useRecoilValue(isQuizTypeDrawState);
@@ -18,12 +19,19 @@ function QuizReplySection() {
     const [userReply, setUserReply] = useRecoilState(userReplyState);
     const [quizSubmitted, setQuizSubmitted] = useRecoilState(quizSubmitState);
     const { placeholder, sendRandomWordReplyToServer } = useZeroRound(curRound);
+    const { isRoundTimeout } = useRoundTimeout();
 
     useEffect(() => {
         // 라운드가 새로 시작하면 제출 상태와 유저 답변을 초기화한다.
         setQuizSubmitted(false);
         setUserReply('');
     }, [curRound]);
+
+    useEffect(() => {
+        if (isRoundTimeout) {
+            sendUserReplyToServer();
+        }
+    }, [isRoundTimeout]);
 
     function submitBtnHandler() {
         setQuizSubmitted(!quizSubmitted);

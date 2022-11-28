@@ -35,3 +35,7 @@ export const onSubmitQuizReply = () => {
         },
     );
 };
+
+export const onRoundTimeout = (setIsRoundTimeout: SetterOrUpdater<boolean>) => {
+    NetworkService.on('round-timeout', () => setIsRoundTimeout(true));
+};
