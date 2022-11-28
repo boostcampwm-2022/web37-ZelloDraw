@@ -24,7 +24,7 @@ function Lobby() {
     const [setPage] = useMovePage();
     const lobbyId = getParam('id');
     const setRoundInfo = useSetRecoilState<StartRoundEmitRequest>(roundInfoState);
-    const { selfVideoRef, setMicState, setCamState, getMedia, createOffer } = useWebRTC();
+    const { selfVideoRef, getMedia, createOffer } = useWebRTC();
 
     useEffect(() => {
         const payload: JoinLobbyRequest = { lobbyId };
@@ -77,8 +77,8 @@ function Lobby() {
                     <video ref={selfVideoRef}></video>
                 </FlexBox>
                 <ButtonWrapper>
-                    <CameraButton setCamState={setCamState} />
-                    <MicButton setMicState={setMicState} />
+                    <CameraButton />
+                    <MicButton />
                 </ButtonWrapper>
             </LobbyContainer>
         </>

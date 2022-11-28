@@ -1,11 +1,12 @@
 import { useEffect, useRef } from 'react';
 import { getParam } from '@utils/common';
 import { networkServiceInstance as NetworkService } from '../services/socketService';
-import { userMicCamState, userMicCamType } from '@atoms/user';
-import { useRecoilState } from 'recoil';
+import { userCamState, userMicState } from '@atoms/user';
+import { useRecoilValue } from 'recoil';
 
 function useWebRTC() {
-    const [userMicCam, setUserMicCam] = useRecoilState<userMicCamType>(userMicCamState);
+    const userCam = useRecoilValue<boolean>(userCamState);
+    const userMic = useRecoilValue<boolean>(userMicState);
 
     const selfVideoRef = useRef<HTMLVideoElement>(null);
     const selfStreamRef = useRef<MediaStream | undefined>();
@@ -13,23 +14,11 @@ function useWebRTC() {
     const pcRef = useRef<RTCPeerConnection>();
     const lobbyId = getParam('id');
 
-    const setMicState = (curState: boolean) => {
-        setUserMicCam({ ...userMicCam, isMicOn: curState });
-        if (!selfStreamRef.current) return;
-        selfStreamRef.current.getAudioTracks().forEach((track) => (track.enabled = !track.enabled));
-    };
-
-    const setCamState = (curState: boolean) => {
-        setUserMicCam({ ...userMicCam, isCamOn: curState });
-        if (!selfStreamRef.current) return;
-        selfStreamRef.current.getVideoTracks().forEach((track) => (track.enabled = !track.enabled));
-    };
-
     const getSelfMedia = async () => {
         try {
             const stream = await navigator.mediaDevices.getUserMedia({
-                video: userMicCam.isCamOn,
-                audio: userMicCam.isMicOn,
+                video: userCam,
+                audio: userMic,
             });
             selfStreamRef.current = stream;
 
@@ -90,6 +79,16 @@ function useWebRTC() {
     };
 
     useEffect(() => {
+        if (!selfStreamRef.current) return;
+        selfStreamRef.current.getVideoTracks().forEach((track) => (track.enabled = !track.enabled));
+    }, [userCam]);
+
+    useEffect(() => {
+        if (!selfStreamRef.current) return;
+        selfStreamRef.current.getAudioTracks().forEach((track) => (track.enabled = !track.enabled));
+    }, [userMic]);
+
+    useEffect(() => {
         pcRef.current = new RTCPeerConnection();
 
         NetworkService.on('offer', (sdp: RTCSessionDescription) => {
@@ -120,7 +119,7 @@ function useWebRTC() {
         };
     }, []);
 
-    return { selfVideoRef, getSelfMedia, setMicState, setCamState, getMedia, createOffer };
+    return { selfVideoRef, getSelfMedia, getMedia, createOffer };
 }
 
 export default useWebRTC;

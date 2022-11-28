@@ -1,21 +1,21 @@
-import { useState } from 'react';
 import cameraOffImg from '@assets/buttons/camera-off-btn.svg';
 import cameraOnImg from '@assets/buttons/camera-on-btn.svg';
 import styled from 'styled-components';
+import { useRecoilState } from 'recoil';
+import { userCamState } from '@atoms/user';
 
-function CameraButton({ setCamState }: { setCamState: any }) {
-    const [isOn, setIsOn] = useState<boolean>(true);
+function CameraButton() {
+    const [userCam, setUserCam] = useRecoilState(userCamState);
     const onBtnClick = () => {
-        setIsOn(!isOn);
-        setCamState(isOn);
+        setUserCam(!userCam);
     };
 
     return (
         <CameraBtnSet>
             <CameraBtn onClick={onBtnClick}>
-                <img src={isOn ? cameraOnImg : cameraOffImg} />
+                <img src={userCam ? cameraOnImg : cameraOffImg} />
             </CameraBtn>
-            <Label>CAMERA {isOn ? 'ON' : 'OFF'}</Label>
+            <Label>CAMERA {userCam ? 'ON' : 'OFF'}</Label>
         </CameraBtnSet>
     );
 }

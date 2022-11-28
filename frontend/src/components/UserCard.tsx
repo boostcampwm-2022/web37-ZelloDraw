@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useEffect } from 'react';
 import styled from 'styled-components';
 import Card from '@components/Card';
 import CameraButton from '@components/CameraButton';
@@ -7,9 +7,11 @@ import { userState } from '@atoms/user';
 import { useRecoilState } from 'recoil';
 import { networkServiceInstance as NetworkService } from '../services/socketService';
 import { debounce } from 'lodash';
+import useWebRTC from '@hooks/useWebRTC';
 
 function UserCard() {
     const [user, setUserState] = useRecoilState(userState);
+    const { getSelfMedia, selfVideoRef } = useWebRTC();
 
     const onChangeName = (e: React.ChangeEvent<HTMLInputElement>) => {
         const name = e.target.value;
@@ -24,10 +26,16 @@ function UserCard() {
         [],
     );
 
+    useEffect(() => {
+        void getSelfMedia();
+    }, []);
+
     return (
         <Card>
             <CardInner>
-                <UserVideo></UserVideo>
+                <UserVideo>
+                    <video ref={selfVideoRef} autoPlay playsInline width='328' height='183.69' />
+                </UserVideo>
                 <UserName>
                     <span>&#123;</span>
                     <NameInput
@@ -39,8 +47,8 @@ function UserCard() {
                     <span>&#125;</span>
                 </UserName>
                 <ButtonWrapper>
-                    {/* <CameraButton />
-                    <MicButton /> */}
+                    <CameraButton />
+                    <MicButton />
                 </ButtonWrapper>
             </CardInner>
         </Card>
