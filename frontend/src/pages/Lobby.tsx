@@ -64,7 +64,7 @@ function Lobby() {
             pcRef.current.onicecandidate = (e) => {
                 if (e.candidate) {
                     console.log('recv candidate');
-                    NetworkService.emit('candidate', e.candidate, lobbyId);
+                    NetworkService.emit('ice', { ice: e.candidate, lobbyId });
                 }
             };
 
@@ -83,7 +83,7 @@ function Lobby() {
         try {
             const offer = await pcRef.current.createOffer();
             void pcRef.current.setLocalDescription(offer);
-            NetworkService.emit('offer', offer, lobbyId);
+            NetworkService.emit('offer', { offer, lobbyId });
         } catch (e) {
             console.error(e);
         }
@@ -97,7 +97,7 @@ function Lobby() {
             void pcRef.current.setRemoteDescription(sdp);
             const answerSdp = await pcRef.current.createAnswer();
             void pcRef.current.setLocalDescription(answerSdp);
-            NetworkService.emit('answer', answerSdp, lobbyId);
+            NetworkService.emit('answer', { answerSdp, lobbyId });
         } catch (e) {
             console.error(e);
         }

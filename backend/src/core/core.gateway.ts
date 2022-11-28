@@ -127,6 +127,24 @@ export class CoreGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
         }
     }
 
+    @SubscribeMessage('offer')
+    async handleOffer(@ConnectedSocket() client: Socket, @MessageBody() body) {
+        console.log('offer', body);
+        client.nsp.to(body.lobbyId).emit('offer', body.offer);
+    }
+
+    @SubscribeMessage('answer')
+    async handleAnswer(@ConnectedSocket() client: Socket, @MessageBody() body) {
+        console.log('answer', body);
+        client.nsp.to(body.lobbyId).emit('answer', body.answerSdp);
+    }
+
+    @SubscribeMessage('ice')
+    async handleIce(@ConnectedSocket() client: Socket, @MessageBody() body) {
+        console.log('ice', body);
+        client.nsp.to(body.lobbyId).emit('ice', body.ice);
+    }
+
     private emitJoinLobby(client: Socket, lobbyId: string, payload: JoinLobbyReEmitRequest) {
         client.to(lobbyId).emit('join-lobby', payload);
     }
