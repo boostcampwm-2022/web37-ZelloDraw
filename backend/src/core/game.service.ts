@@ -38,6 +38,11 @@ export class GameService {
         return game.getSubmittedQuizRepliesCount();
     }
 
+    getNotSubmittedUsers(lobbyId: string): User[] {
+        const game = this.getGame(lobbyId);
+        return game.getNotSubmittedUsers();
+    }
+
     isAllUserSubmittedQuizReply(lobbyId: string): boolean {
         const game = this.getGame(lobbyId);
         return game.isAllUserSubmittedQuizReply();

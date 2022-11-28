@@ -100,6 +100,18 @@ export class GameLobby implements Lobby, Game {
         ).length;
     }
 
+    getNotSubmittedUsers() {
+        return this.submittedQuizRepliesOnCurrentRound.reduce(
+            (acc: User[], quizReply: QuizReply | undefined, idx: number) => {
+                if (quizReply === undefined) {
+                    acc.push(this.users[idx]);
+                }
+                return acc;
+            },
+            [],
+        );
+    }
+
     isAllUserSubmittedQuizReply(): boolean {
         return this.submittedQuizRepliesOnCurrentRound.every(
             (quizReply) => quizReply !== undefined,
