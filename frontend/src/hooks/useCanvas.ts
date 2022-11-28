@@ -6,6 +6,7 @@ import {
     PEN_DEFAULT_COLOR,
     ERASER_COLOR,
     ERASER_LINE_WIDTH,
+    CanvasState,
 } from '@utils/constants';
 import { useRecoilValue } from 'recoil';
 import { quizSubmitState } from '@atoms/game';
@@ -19,11 +20,11 @@ interface Coordinate {
 function useCanvas() {
     const canvasRef = useRef<HTMLCanvasElement>(null);
     const ctxRef = useRef<any>(null);
-    const curColor = useRef<Uint8ClampedArray>(convertHexToRgba('#001D2E'));
+    const curColor = useRef<Uint8ClampedArray>(convertHexToRgba(PEN_DEFAULT_COLOR));
+    const drawState = useRef<CanvasState>(CanvasState.NONE);
 
     const [pos, setPos] = useState<Coordinate | undefined>({ x: 0, y: 0 });
-    const [isPainting, setIsPainting] = useState<boolean>(false);
-    const [isFilling, setIsFilling] = useState<boolean>(false);
+    const [isDrawing, setIsDrawing] = useState<boolean>(false);
     const quizSubmitted = useRecoilValue(quizSubmitState);
 
     const getCoordinates = (event: MouseEvent): Coordinate | undefined => {
@@ -39,8 +40,7 @@ function useCanvas() {
     };
 
     const onClickPen = (selectedColor: string) => {
-        setIsFilling(false);
-        setIsPainting(true);
+        drawState.current = CanvasState.NONE;
         ctxRef.current.strokeStyle = selectedColor;
         ctxRef.current.lineWidth = PEN_LINE_WIDTH;
     };
@@ -74,18 +74,17 @@ function useCanvas() {
 
     const paintCanvas = useCallback(
         (event: MouseEvent) => {
-            if (isFilling && !isPainting) {
+            if (drawState.current === CanvasState.PAINT) {
                 const curPos = getCoordinates(event);
                 if (!curPos) return;
                 floodFill(curPos.x, curPos.y, curColor.current);
             }
         },
-        [isFilling],
+        [drawState],
     );
 
     const onClickPaint = () => {
-        setIsFilling(true);
-        setIsPainting(false);
+        drawState.current = CanvasState.PAINT;
     };
 
     const onColorChange = (color: string) => {
@@ -95,13 +94,13 @@ function useCanvas() {
     };
 
     const onClickEraser = () => {
-        setIsFilling(false);
+        drawState.current = CanvasState.NONE;
         ctxRef.current.strokeStyle = ERASER_COLOR;
         ctxRef.current.lineWidth = ERASER_LINE_WIDTH;
     };
 
     const onClickReset = () => {
-        setIsFilling(false);
+        drawState.current = CanvasState.NONE;
         ctxRef.current.clearRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
     };
 
@@ -112,7 +111,7 @@ function useCanvas() {
 
             if (quizSubmitted) return;
 
-            if (isPainting && !isFilling) {
+            if (drawState.current === CanvasState.DRAW && isDrawing) {
                 const newPos = getCoordinates(event);
                 if (pos && newPos) {
                     drawLine(pos, newPos);
@@ -120,19 +119,21 @@ function useCanvas() {
                 }
             }
         },
-        [isPainting, pos],
+        [drawState, pos],
     );
 
     const startPainting = useCallback((event: MouseEvent) => {
+        if (drawState.current === CanvasState.PAINT) return;
         const newPos = getCoordinates(event);
         if (newPos) {
-            setIsPainting(true);
+            drawState.current = CanvasState.DRAW;
+            setIsDrawing(true);
             setPos(newPos);
         }
     }, []);
 
     const cancelPainting = useCallback(() => {
-        setIsPainting(false);
+        setIsDrawing(false);
     }, []);
 
     useEffect(() => {
@@ -150,7 +151,7 @@ function useCanvas() {
             canvas.removeEventListener('mousemove', onMove);
             canvas.removeEventListener('mouseup', cancelPainting);
             canvas.removeEventListener('mouseleave', cancelPainting);
-            canvas.removeEventListener('mouseleave', paintCanvas);
+            canvas.removeEventListener('click', paintCanvas);
         };
     }, [onMove, startPainting, cancelPainting, paintCanvas]);
 
