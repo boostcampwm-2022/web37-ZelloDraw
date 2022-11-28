@@ -2,7 +2,12 @@ import styled from 'styled-components';
 import { Center } from '@styles/styled';
 import { ReactComponent as Sketchbook } from '@assets/sketchbook.svg';
 import { useRecoilValue } from 'recoil';
-import { roundDrawState, roundNumberState, roundWordState, quizSubmitState } from '@atoms/game';
+import {
+    isQuizTypeDrawState,
+    roundNumberState,
+    quizReplyState,
+    quizSubmitState,
+} from '@atoms/game';
 import useCanvas from '@hooks/useCanvas';
 import Card from '@components/Card';
 import Timer from '@components/Timer';
@@ -10,32 +15,39 @@ import DrawingTools from '@components/DrawingTools';
 
 function SketchbookCard() {
     const { canvasRef, ...rest } = useCanvas();
-    const isDraw = useRecoilValue(roundDrawState);
-    const word = useRecoilValue(roundWordState);
-    const roundNum = useRecoilValue(roundNumberState);
+    const isDraw = useRecoilValue(isQuizTypeDrawState);
+    const quizReply = useRecoilValue(quizReplyState);
+    const { curRound, maxRound } = useRecoilValue(roundNumberState);
     const quizSubmitted = useRecoilValue(quizSubmitState);
 
     return (
         <Card>
             <Container>
                 <GameStateSection>
-                    <GameTurn>{roundNum}/8</GameTurn>
+                    <GameTurn>
+                        {curRound}/{maxRound}
+                    </GameTurn>
                     <Timer />
                 </GameStateSection>
                 <SketchbookWrapper>
                     <Sketchbook />
                     <Canvas ref={canvasRef} />
-                    {isDraw && (
+                    {isDraw ? (
                         <Keyword>
-                            <span>{word}</span>
+                            <span>{quizReply}</span>
                         </Keyword>
-                    )}
-                    {roundNum === 0 && (
+                    ) : curRound === 0 ? (
                         <FirstRoundGuide>
                             나만의 문장을 만들어 입력해보세요!
                             <br />
                             다른 사람들이 어떤 그림을 그리게 될까요?
                         </FirstRoundGuide>
+                    ) : (
+                        <UserDrawing>
+                            {quizReply.length > 100 && (
+                                <img src={quizReply} alt='quiz reply drawing' />
+                            )}
+                        </UserDrawing>
                     )}
                 </SketchbookWrapper>
                 {isDraw && !quizSubmitted ? <DrawingTools rest={rest} /> : <div />}
@@ -81,23 +93,19 @@ const SketchbookWrapper = styled.div`
 `;
 
 const FirstRoundGuide = styled(Center)`
-    width: 742px;
+    ${({ theme }) => theme.layout.sketchBook};
     height: 420px;
-    position: absolute;
-    top: 60px;
-    left: 18px;
     color: ${({ theme }) => theme.color.primaryLight};
     font-size: ${({ theme }) => theme.typo.h3};
     font-weight: 600;
 `;
 
 const Canvas = styled.canvas`
-    width: 742px;
-    height: 468px;
-    position: absolute;
-    top: 60px;
-    left: 18px;
-    border-radius: 40px;
+    ${({ theme }) => theme.layout.sketchBook};
+`;
+
+const UserDrawing = styled.div`
+    ${({ theme }) => theme.layout.sketchBook};
 `;
 
 const Keyword = styled.div`

@@ -1,7 +1,7 @@
-import PrimaryButton from '@components/PrimaryButton';
 import React from 'react';
 import styled from 'styled-components';
 import { emitStartGame } from '@game/NetworkServiceUtils';
+import PrimaryButton from '@components/PrimaryButton';
 
 export default function GameStartButton({ lobbyId }: { lobbyId: string }) {
     const onClickStartBtn = () => {
