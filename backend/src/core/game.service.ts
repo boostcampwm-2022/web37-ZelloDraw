@@ -17,7 +17,7 @@ export class GameService {
     startGame(lobbyId: string) {
         const game = this.getGame(lobbyId);
         // TODO: Round 별 시간 관련 로직 추가 필요
-        game.startGame(60);
+        game.startGame();
         this.gameLobbyRepository.save(game);
     }
 
@@ -36,6 +36,11 @@ export class GameService {
     getSubmittedQuizRepliesCount(lobbyId: string) {
         const game = this.getGame(lobbyId);
         return game.getSubmittedQuizRepliesCount();
+    }
+
+    getNotSubmittedUsers(lobbyId: string): User[] {
+        const game = this.getGame(lobbyId);
+        return game.getNotSubmittedUsers();
     }
 
     isAllUserSubmittedQuizReply(lobbyId: string): boolean {

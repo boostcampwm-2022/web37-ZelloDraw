@@ -154,6 +154,16 @@ export class CoreGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
             };
             client.nsp.to(user.socketId).emit('start-round', payload);
         });
+        this.emitRoundTimeout(client, lobbyId);
+    }
+
+    private emitRoundTimeout(client: Socket, lobbyId: string) {
+        const game = this.gameService.getGame(lobbyId);
+        setTimeout(() => {
+            this.gameService.getNotSubmittedUsers(lobbyId).forEach((user) => {
+                client.nsp.to(user.socketId).emit('round-timeout');
+            });
+        }, game.getRoundLimitTime() * 1000);
     }
 
     private emitSubmitQuizReply(

@@ -44,6 +44,10 @@ export class GameLobby implements Lobby, Game {
         return this.host;
     }
 
+    getRoundLimitTime(): number {
+        return this.roundLimitTime;
+    }
+
     joinLobby(user: User) {
         this.users.push(user);
     }
@@ -53,11 +57,11 @@ export class GameLobby implements Lobby, Game {
     }
 
     // TODO: 게임 시작시, 혹은 게임 종료 시 프로퍼티 초기화 로직 필요.
-    startGame(roundLimitTime: number) {
+    startGame() {
         this.maxRound = this.users.length - 1;
-        this.roundLimitTime = roundLimitTime;
         this.isPlaying = true;
         this.roundType = 'ANSWER';
+        this.roundLimitTime = 60;
         this.quizReplyChains = this.users.map(() => {
             const quizReplyChain = new QuizReplyChain();
             // TODO: 랜덤 키워드는 외부 모듈에 의존하도록 수정
@@ -96,6 +100,18 @@ export class GameLobby implements Lobby, Game {
         ).length;
     }
 
+    getNotSubmittedUsers() {
+        return this.submittedQuizRepliesOnCurrentRound.reduce(
+            (acc: User[], quizReply: QuizReply | undefined, idx: number) => {
+                if (quizReply === undefined) {
+                    acc.push(this.users[idx]);
+                }
+                return acc;
+            },
+            [],
+        );
+    }
+
     isAllUserSubmittedQuizReply(): boolean {
         return this.submittedQuizRepliesOnCurrentRound.every(
             (quizReply) => quizReply !== undefined,
@@ -107,7 +123,13 @@ export class GameLobby implements Lobby, Game {
     }
 
     private swapRoundType() {
-        this.roundType = this.roundType === 'DRAW' ? 'ANSWER' : 'DRAW';
+        if (this.roundType === 'ANSWER') {
+            this.roundType = 'DRAW';
+            this.roundLimitTime = 60;
+        } else {
+            this.roundType = 'ANSWER';
+            this.roundLimitTime = 30;
+        }
     }
 
     private getUserIndex(user: User): number {
