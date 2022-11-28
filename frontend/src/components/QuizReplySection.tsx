@@ -20,7 +20,9 @@ function QuizReplySection() {
     const { placeholder, sendRandomWordReplyToServer } = useZeroRound(curRound);
 
     useEffect(() => {
+        // 라운드가 새로 시작하면 제출 상태와 유저 답변을 초기화한다.
         setQuizSubmitted(false);
+        setUserReply('');
     }, [curRound]);
 
     function submitBtnHandler() {
