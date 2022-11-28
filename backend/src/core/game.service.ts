@@ -17,7 +17,7 @@ export class GameService {
     startGame(lobbyId: string) {
         const game = this.getGame(lobbyId);
         // TODO: Round 별 시간 관련 로직 추가 필요
-        game.startGame(60);
+        game.startGame();
         this.gameLobbyRepository.save(game);
     }
 
