@@ -108,7 +108,6 @@ function useWebRTC() {
             if (!pcRef.current) return;
             console.log('on ice');
             await pcRef.current.addIceCandidate(ice);
-            console.log(pcRef.current);
         });
 
         return () => {
@@ -119,7 +118,7 @@ function useWebRTC() {
         };
     }, []);
 
-    return { selfVideoRef, getSelfMedia, getMedia, createOffer };
+    return { selfVideoRef, remoteVideoRef, getSelfMedia, getMedia, createOffer };
 }
 
 export default useWebRTC;

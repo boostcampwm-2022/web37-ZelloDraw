@@ -1,4 +1,4 @@
-import React, { forwardRef, RefObject, useState, useEffect } from 'react';
+import React from 'react';
 import styled from 'styled-components';
 import Card from '@components/Card';
 import InviteButton from '@components/InviteButton';
@@ -8,7 +8,12 @@ import { useRecoilValue } from 'recoil';
 import { userListState } from '@atoms/game';
 import { userState } from '@atoms/user';
 
-function UserList({ selfVideoRef }: { selfVideoRef: React.RefObject<HTMLVideoElement> }) {
+interface UserListType {
+    selfVideoRef: React.RefObject<HTMLVideoElement>;
+    remoteVideoRef: React.RefObject<HTMLVideoElement>;
+}
+
+function UserList({ selfVideoRef, remoteVideoRef }: UserListType) {
     const userList = useRecoilValue(userListState);
     const currentUser = useRecoilValue(userState);
 
@@ -28,7 +33,7 @@ function UserList({ selfVideoRef }: { selfVideoRef: React.RefObject<HTMLVideoEle
                         currentUser.name === user ? (
                             <VideoCallUser key={idx} userName={user} video={selfVideoRef} />
                         ) : (
-                            <VideoCallUser key={idx} userName={user} />
+                            <VideoCallUser key={idx} userName={user} video={remoteVideoRef} />
                         ),
                     )}
                     {new Array(8 - userList.length)
