@@ -1,13 +1,9 @@
-import { useRecoilValue } from 'recoil';
-import { roundNumberState } from '@atoms/game';
 import styled from 'styled-components';
 
-function RoundNumber() {
-    const { curRound, maxRound } = useRecoilValue(roundNumberState);
-
+function RoundNumber({ cur, max }: { cur: number; max: number }) {
     return (
         <Round>
-            {curRound}/{maxRound}
+            {cur}/{max}
         </Round>
     );
 }
