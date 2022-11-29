@@ -1,35 +1,37 @@
-import { Injectable } from '@nestjs/common';
+import { CACHE_MANAGER, Inject, Injectable } from '@nestjs/common';
+import { Cache } from 'cache-manager';
 import { GameLobby } from './gameLobby.model';
 import { User } from './user.model';
 
 @Injectable()
 export class GameLobbyRepository {
-    gameLobbyStore: { [key: string]: GameLobby };
+    constructor(@Inject(CACHE_MANAGER) private readonly redis: Cache) {}
 
-    constructor() {
-        this.gameLobbyStore = {};
-    }
-
-    create(user: User): string {
+    async create(user: User): Promise<string> {
         const gameLobby = new GameLobby(user);
-        this.gameLobbyStore[gameLobby.getId()] = gameLobby;
+        await this.save(gameLobby);
         return gameLobby.getId();
     }
 
-    delete(gameLobby: GameLobby) {
-        // eslint-disable-next-line @typescript-eslint/no-dynamic-delete
-        delete this.gameLobbyStore[gameLobby.getId()];
+    async delete(gameLobby: GameLobby) {
+        await this.redis.del(gameLobby.getId());
     }
 
-    findByUser(user: User): GameLobby {
-        return this.gameLobbyStore[user.lobbyId];
+    async findById(lobbyId: string): Promise<GameLobby> {
+        const gameLobby: string = await this.redis.get(lobbyId);
+        return this.jsonToGameLobby(gameLobby);
     }
 
-    findById(lobbyId: string): GameLobby {
-        return this.gameLobbyStore[lobbyId];
+    async save(gameLobby: GameLobby) {
+        await this.redis.set(gameLobby.getId(), this.gameLobbyToJson(gameLobby));
     }
 
-    save(gameLobby: GameLobby) {
-        this.gameLobbyStore[gameLobby.getId()] = gameLobby;
+    private jsonToGameLobby(json: string): GameLobby {
+        const obj = JSON.parse(json);
+        return GameLobby.createByJson(obj);
+    }
+
+    private gameLobbyToJson(gameLobby: GameLobby): string {
+        return JSON.stringify(gameLobby);
     }
 }
