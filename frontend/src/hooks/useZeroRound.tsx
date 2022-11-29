@@ -2,8 +2,7 @@ import { useEffect, useState } from 'react';
 import { emitSubmitQuizReply } from '@game/NetworkServiceUtils';
 import { useRecoilValue } from 'recoil';
 import { quizReplyState, roundNumberState } from '@atoms/game';
-import styled from 'styled-components';
-import { Center } from '@styles/styled';
+import { Guide } from '@styles/styled';
 
 function useZeroRound() {
     const placeholderDefault = '그림을 보고 답을 맞춰보세요!';
@@ -12,11 +11,11 @@ function useZeroRound() {
     const [placeholder, setPlaceholder] = useState(placeholderDefault);
 
     const renderZeroRoundGuide = () => (
-        <ZeroRoundGuide>
+        <Guide>
             나만의 문장을 만들어 입력해보세요!
             <br />
             다른 사람들이 어떤 그림을 그리게 될까요?
-        </ZeroRoundGuide>
+        </Guide>
     );
 
     useEffect(() => {
@@ -44,11 +43,3 @@ function useZeroRound() {
 }
 
 export default useZeroRound;
-
-const ZeroRoundGuide = styled(Center)`
-    ${({ theme }) => theme.layout.sketchBook};
-    height: 420px;
-    color: ${({ theme }) => theme.color.primaryLight};
-    font-size: ${({ theme }) => theme.typo.h3};
-    font-weight: 600;
-`;
