@@ -99,8 +99,8 @@ function ResultSketchbook() {
                     </>
                 }
             />
-            <SketchbookAuthor onClick={handleSketchbook}>
-                테스트용 글자 / {checkIsNotGuidePage() && `${sketchbookAuthorName}의 스케치북`}
+            <SketchbookAuthor>
+                {checkIsNotGuidePage() && `${sketchbookAuthorName}의 스케치북`}
             </SketchbookAuthor>
         </>
     );
