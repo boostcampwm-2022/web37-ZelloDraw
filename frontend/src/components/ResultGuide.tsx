@@ -14,7 +14,7 @@ function ResultGuide({ sketchbookNum, pageNum, isEnded }: ResultGuideType) {
     return (
         <Guide>
             {sketchbookNum === 0 && pageNum === -1 && resultStartGuide}
-            {sketchbookNum !== 0 && pageNum === -1 && nextSketchbookGuide}
+            {!isEnded && sketchbookNum !== 0 && pageNum === -1 && nextSketchbookGuide}
             {isEnded && EndGuide}
         </Guide>
     );

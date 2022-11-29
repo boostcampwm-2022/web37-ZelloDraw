@@ -6,11 +6,14 @@ import { gameResultState } from '@atoms/game';
 import SketchbookCard from '@components/SketchbookCard';
 import RoundNumber from '@components/RoundNumber';
 import ResultGuide from '@components/ResultGuide';
+import useTimer from '@hooks/useTimer';
 
 function ResultSketchbook() {
     const gameResults = useRecoilValue(gameResultState);
     const maxSketchbookNum = gameResults.length - 1;
     const maxPageNum = gameResults[0].length - 1;
+    // 스케치북 개수 * (스케치북 페이지 개수 + 가이드 페이지 개수)
+    const allResultLimitTime = gameResults.length * (gameResults[0].length + 1);
     const guidePageNum = -1;
     const [currentSketchbook, setCurrentSketchbook] = useState(gameResults[0]);
     const [sketchbookNum, setSketchbookNum] = useState(0);
@@ -18,6 +21,16 @@ function ResultSketchbook() {
     const [pageNum, setPageNum] = useState(guidePageNum);
     const [sketchbookAuthorName, setSketchbookAuthorName] = useState('');
     const [isEnded, setIsEnded] = useState(false);
+    const { timeLeft, setTimerTime } = useTimer(2000);
+
+    useEffect(() => {
+        setTimerTime(allResultLimitTime);
+    }, []);
+
+    useEffect(() => {
+        if (timeLeft === 0 || timeLeft === allResultLimitTime) return;
+        handleSketchbook();
+    }, [timeLeft]);
 
     useEffect(() => {
         if (pageNum !== 0 || currentSketchbook === undefined) return;
@@ -37,7 +50,7 @@ function ResultSketchbook() {
     }, [sketchbookNum, pageNum]);
 
     function handleSketchbook() {
-        if (isEnded) return;
+        if (currentSketchbook === undefined || isEnded) return;
 
         // 현재 스케치북의 마지막 장에 오면 새 스케치북으로 변경한다.
         if (pageNum === maxPageNum) {
@@ -52,11 +65,6 @@ function ResultSketchbook() {
         setCurrentPage(currentSketchbook[NextPageNumber]);
         setPageNum(NextPageNumber);
     }
-
-    /*
-    5. 배열을 돌며 몇초 간격으로 보여주고 author를 오른쪽 위에 표시하기
-    7. 모든 배열이 끝나면 안내메시지
-    * */
 
     function checkIsNotGuidePage() {
         return pageNum > guidePageNum && !isEnded;
