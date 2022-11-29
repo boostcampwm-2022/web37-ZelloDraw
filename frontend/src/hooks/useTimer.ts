@@ -5,7 +5,7 @@ import { roundNumberState } from '@atoms/game';
 function useTimer(interval: number) {
     const [intervalId, setIntervalId] = useState<any>(undefined);
     const [limitTime, setLimitTime] = useState(60);
-    const [timeLeft, setTimeLeft] = useState(60);
+    const [timeLeft, setTimeLeft] = useState(0);
     const [isTimeOver, setIsTimeOver] = useState(false);
     const { curRound } = useRecoilValue(roundNumberState);
 
