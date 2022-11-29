@@ -3,6 +3,7 @@ import { Lobby } from './lobby.interface';
 import { QuizReply } from './quizReply.model';
 import { QuizReplyChain } from './quizReplyChain.model';
 import { User } from './user.model';
+import { PartialWithoutMethods } from '../utils/types';
 
 export class GameLobby implements Lobby, Game {
     readonly id: string;
@@ -26,6 +27,14 @@ export class GameLobby implements Lobby, Game {
         this.roundLimitTime = 0;
         this.quizReplyChains = [];
         this.isPlaying = false;
+    }
+
+    static createByJson(json: PartialWithoutMethods<GameLobby>): GameLobby {
+        const gameLobby = Object.assign(new GameLobby(json.host), json);
+        gameLobby.quizReplyChains = gameLobby.quizReplyChains.map((quizReplyChain: any) => {
+            return QuizReplyChain.createByJson(quizReplyChain);
+        });
+        return gameLobby;
     }
 
     getId(): string {
