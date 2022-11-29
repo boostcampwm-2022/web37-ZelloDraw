@@ -2,19 +2,13 @@ import { useEffect } from 'react';
 import styled from 'styled-components';
 import { ScaledDiv, ScaledSection } from '@styles/styled';
 import { onCompleteGame, onCountSubmittedQuiz } from '@game/NetworkServiceUtils';
-import { useRecoilValue, useSetRecoilState } from 'recoil';
-import { gameResultState, isQuizTypeDrawState, quizSubmitState } from '@atoms/game';
-import QuizReplySection from '@components/QuizReplySection';
-import DrawingTools from '@components/DrawingTools';
-import RoundNumberAndTimer from '@components/RoundNumberAndTimer';
-import SketchbookCard from '@components/SketchbookCard';
+import { useSetRecoilState } from 'recoil';
+import { gameResultState } from '@atoms/game';
 import GameUsers from '@components/GameUsers';
 import MicButton from '@components/MicButton';
 import CameraButton from '@components/CameraButton';
 import useMovePage from '@hooks/useMovePage';
 import SmallLogo from '@assets/logo-s.png';
-import usePrevQuizReply from '@hooks/usePrevQuizReply';
-import useCanvas from '@hooks/useCanvas';
 import GameSketchbook from '@components/GameSketchbook';
 
 function Game() {
