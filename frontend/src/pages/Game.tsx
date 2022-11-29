@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { ScaledDiv, ScaledSection } from '@styles/styled';
 import { onCompleteGame, onCountSubmittedQuiz } from '@game/NetworkServiceUtils';
@@ -10,14 +10,16 @@ import CameraButton from '@components/CameraButton';
 import useMovePage from '@hooks/useMovePage';
 import SmallLogo from '@assets/logo-s.png';
 import GameSketchbook from '@components/GameSketchbook';
+import ResultSketchbook from '@components/ResultSketchbook';
 
 function Game() {
     const [setPage] = useMovePage();
     const setGameResult = useSetRecoilState(gameResultState);
+    const [isCompleteGame, setIsCompleteGame] = useState(false);
 
     useEffect(() => {
         onCountSubmittedQuiz();
-        onCompleteGame(setGameResult);
+        onCompleteGame(setGameResult, setIsCompleteGame);
     }, []);
 
     return (
@@ -25,7 +27,7 @@ function Game() {
             <Container>
                 <GameUsers />
                 <SketchbookSection>
-                    <GameSketchbook />
+                    {isCompleteGame ? <ResultSketchbook /> : <GameSketchbook />}
                 </SketchbookSection>
             </Container>
             <CamAndMicWrapper>
