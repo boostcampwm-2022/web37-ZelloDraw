@@ -15,14 +15,11 @@ import useMovePage from '@hooks/useMovePage';
 import SmallLogo from '@assets/logo-s.png';
 import usePrevQuizReply from '@hooks/usePrevQuizReply';
 import useCanvas from '@hooks/useCanvas';
+import GameSketchbook from '@components/GameSketchbook';
 
 function Game() {
     const [setPage] = useMovePage();
     const setGameResult = useSetRecoilState(gameResultState);
-    const { canvasRef, ...restProps } = useCanvas();
-    const { renderPrevUserQuizReply } = usePrevQuizReply();
-    const isDraw = useRecoilValue(isQuizTypeDrawState);
-    const quizSubmitted = useRecoilValue(quizSubmitState);
 
     useEffect(() => {
         onCountSubmittedQuiz();
@@ -34,17 +31,7 @@ function Game() {
             <Container>
                 <GameUsers />
                 <SketchbookSection>
-                    <SketchbookCard
-                        left={<RoundNumberAndTimer />}
-                        center={
-                            <>
-                                <Canvas ref={canvasRef} />
-                                {renderPrevUserQuizReply()}
-                            </>
-                        }
-                        right={isDraw && !quizSubmitted && <DrawingTools restProps={restProps} />}
-                    />
-                    <QuizReplySection />
+                    <GameSketchbook />
                 </SketchbookSection>
             </Container>
             <CamAndMicWrapper>
@@ -85,8 +72,4 @@ const LogoWrapper = styled(ScaledDiv)`
     position: absolute;
     bottom: 40px;
     cursor: pointer;
-`;
-
-const Canvas = styled.canvas`
-    ${({ theme }) => theme.layout.sketchBook};
 `;
