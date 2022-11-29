@@ -30,7 +30,9 @@ function ResultSketchbook() {
 
     useEffect(() => {
         if (sketchbookNum === maxSketchbookNum && pageNum === maxPageNum) {
-            setIsEnded(true);
+            setTimeout(() => {
+                setIsEnded(true);
+            }, 2000);
         }
     }, [sketchbookNum, pageNum]);
 
@@ -57,7 +59,7 @@ function ResultSketchbook() {
     * */
 
     function checkIsNotGuidePage() {
-        return pageNum > guidePageNum;
+        return pageNum > guidePageNum && !isEnded;
     }
 
     return (
@@ -74,7 +76,12 @@ function ResultSketchbook() {
                                 )}
                             </QuizResult>
                         )}
-                        <ResultGuide sketchbookNum={sketchbookNum} pageNum={pageNum} />
+                        <ResultGuide
+                            sketchbookNum={sketchbookNum}
+                            pageNum={pageNum}
+                            isEnded={isEnded}
+                        />
+                        {isEnded && <div>다시보기</div>}
                     </>
                 }
                 right={
