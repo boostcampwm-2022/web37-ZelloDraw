@@ -10,7 +10,7 @@ import DrawingTools from '@components/DrawingTools';
 import usePrevQuizReply from '@hooks/usePrevQuizReply';
 
 function SketchbookCard() {
-    const { canvasRef, ...rest } = useCanvas();
+    const { canvasRef, ...restProps } = useCanvas();
     const isDraw = useRecoilValue(isQuizTypeDrawState);
     const { curRound, maxRound } = useRecoilValue(roundNumberState);
     const quizSubmitted = useRecoilValue(quizSubmitState);
@@ -30,7 +30,7 @@ function SketchbookCard() {
                     <Canvas ref={canvasRef} />
                     {renderPrevUserQuizReply()}
                 </SketchbookWrapper>
-                {isDraw && !quizSubmitted ? <DrawingTools rest={rest} /> : <div />}
+                {isDraw && !quizSubmitted ? <DrawingTools restProps={restProps} /> : <div />}
             </Container>
         </Card>
     );
