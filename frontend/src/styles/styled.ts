@@ -34,8 +34,12 @@ export const ScaledDiv = styled.div`
 
 export const Guide = styled(Center)`
     ${({ theme }) => theme.layout.sketchBook};
+    flex-direction: column;
     height: 420px;
-    color: ${({ theme }) => theme.color.primaryLight};
-    font-size: ${({ theme }) => theme.typo.h3};
-    font-weight: 600;
+    > div {
+        color: ${({ theme }) => theme.color.primaryLight};
+        font-size: ${({ theme }) => theme.typo.h3};
+        font-weight: 600;
+        white-space: pre-line;
+    }
 `;

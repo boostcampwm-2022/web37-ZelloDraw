@@ -89,7 +89,6 @@ function ResultSketchbook() {
                             pageNum={pageNum}
                             isEnded={isEnded}
                         />
-                        {isEnded && <div>다시보기</div>}
                     </>
                 }
                 right={
@@ -120,13 +119,15 @@ const QuizResult = styled(Center)`
     }
 `;
 const QuizAuthor = styled.div`
+    position: relative;
+    top: -40px;
     color: ${({ theme }) => theme.color.yellow};
     font-size: ${({ theme }) => theme.typo.h5};
 `;
 
 const SketchbookAuthor = styled(Center)`
     width: 100%;
-    height: 56px;
+    height: 65px;
     margin-top: 26px;
     color: ${({ theme }) => theme.color.whiteT2};
     font-size: ${({ theme }) => theme.typo.h2};

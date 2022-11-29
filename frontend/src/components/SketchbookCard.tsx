@@ -43,5 +43,10 @@ const SketchbookWrapper = styled.div`
 `;
 
 const RightSide = styled.div`
+    display: flex;
+    flex-direction: column;
+    align-items: end;
+    justify-content: space-between;
     width: 100px;
+    height: 500px;
 `;

@@ -12,9 +12,10 @@ function useZeroRound() {
 
     const renderZeroRoundGuide = () => (
         <Guide>
-            나만의 문장을 만들어 입력해보세요!
-            <br />
-            다른 사람들이 어떤 그림을 그리게 될까요?
+            <div>
+                나만의 문장을 만들어 입력해보세요! <br />
+                다른 사람들이 어떤 그림을 그리게 될까요?
+            </div>
         </Guide>
     );
 
