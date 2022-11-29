@@ -104,9 +104,8 @@ export class GameLobby implements Lobby, Game {
     }
 
     getSubmittedQuizRepliesCount(): number {
-        return this.submittedQuizRepliesOnCurrentRound.filter(
-            (quizReply) => quizReply !== undefined,
-        ).length;
+        return this.submittedQuizRepliesOnCurrentRound.filter((quizReply) => quizReply == undefined)
+            .length;
     }
 
     getNotSubmittedUsers() {
@@ -122,9 +121,7 @@ export class GameLobby implements Lobby, Game {
     }
 
     isAllUserSubmittedQuizReply(): boolean {
-        return this.submittedQuizRepliesOnCurrentRound.every(
-            (quizReply) => quizReply !== undefined,
-        );
+        return this.submittedQuizRepliesOnCurrentRound.every((quizReply) => quizReply != undefined);
     }
 
     getQuizReplyChains(): QuizReplyChain[] {
