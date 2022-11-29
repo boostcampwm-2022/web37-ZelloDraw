@@ -21,6 +21,7 @@ import {
     SubmitQuizReplyEmitRequest,
     SubmitQuizReplyRequest,
 } from './game.dto';
+import { User } from './user.model';
 
 // TODO: Validation Pipe 관련 내용 학습 + 소켓에서 에러 처리 어케할건지 학습 하고 적용하기
 // @UsePipes(new ValidationPipe())
@@ -56,7 +57,7 @@ export class CoreGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
     async handleCreateLobby(@ConnectedSocket() client: Socket) {
         // TODO: socket connection 라이프 사이클에 user 생성, 삭제 로직 할당
         const user = this.userService.getUser(client.id);
-        const lobbyId = this.lobbyService.createLobby(user);
+        const lobbyId = await this.lobbyService.createLobby(user);
         await client.join(lobbyId);
         return lobbyId;
     }
@@ -67,14 +68,14 @@ export class CoreGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
         @MessageBody() body: JoinLobbyRequest,
     ) {
         try {
-            const lobby = this.lobbyService.getLobby(body.lobbyId);
+            const lobby = await this.lobbyService.getLobby(body.lobbyId);
             const user = this.userService.getUser(client.id);
 
-            await this.lobbyService.joinLobby(user, lobby.id);
+            const users: User[] = await this.lobbyService.joinLobby(user, lobby.id);
             await client.join(body.lobbyId);
             this.emitJoinLobby(client, lobby.id, { userName: user.name });
 
-            return lobby.users.map((user) => {
+            return users.map((user) => {
                 return { userName: user.name };
             }) as JoinLobbyResponse;
         } catch (e) {
@@ -87,7 +88,7 @@ export class CoreGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
         const user = this.userService.getUser(client.id);
         if (user.lobbyId === undefined) return;
 
-        const leftUsers = this.lobbyService.leaveLobby(user, user.lobbyId);
+        const leftUsers = await this.lobbyService.leaveLobby(user, user.lobbyId);
         const payload: JoinLobbyReEmitRequest[] = leftUsers.map((user) => ({
             userName: user.name,
         }));
@@ -98,13 +99,13 @@ export class CoreGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
     @SubscribeMessage('start-game')
     async handleStartGame(@ConnectedSocket() client: Socket, @MessageBody() lobbyId: string) {
         const user = this.userService.getUser(client.id);
-        if (!this.lobbyService.isLobbyHost(user, lobbyId))
+        if (!(await this.lobbyService.isLobbyHost(user, lobbyId)))
             throw new Error('Only host can start game');
 
-        this.gameService.startGame(lobbyId);
+        await this.gameService.startGame(lobbyId);
 
         this.emitStartGame(client, lobbyId);
-        this.emitStartRound(client, lobbyId);
+        await this.emitStartRound(client, lobbyId);
     }
 
     @SubscribeMessage('submit-quiz-reply')
@@ -114,11 +115,11 @@ export class CoreGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
     ) {
         const user = this.userService.getUser(client.id);
         // TODO: 시간 초과 시 라운드 넘어가는 로직 추가 필요
-        this.gameService.submitQuizReply(user.lobbyId, user, request.quizReply);
-        const repliesCount = this.gameService.getSubmittedQuizRepliesCount(user.lobbyId);
-        if (this.gameService.isAllUserSubmittedQuizReply(user.lobbyId)) {
-            this.gameService.proceedRound(user.lobbyId);
-            this.emitStartRound(client, user.lobbyId);
+        await this.gameService.submitQuizReply(user.lobbyId, user, request.quizReply);
+        const repliesCount = await this.gameService.getSubmittedQuizRepliesCount(user.lobbyId);
+        if (await this.gameService.isAllUserSubmittedQuizReply(user.lobbyId)) {
+            await this.gameService.proceedRound(user.lobbyId);
+            await this.emitStartRound(client, user.lobbyId);
         } else {
             const payload: SubmitQuizReplyEmitRequest = {
                 submittedQuizReplyCount: repliesCount,
@@ -139,12 +140,12 @@ export class CoreGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
         client.nsp.to(lobbyId).emit('start-game');
     }
 
-    private emitStartRound(client: Socket, lobbyId: string) {
-        const game = this.gameService.getGame(lobbyId);
-        game.getUsers().forEach((user) => {
-            const quizReply = this.gameService
-                .getCurrentRoundQuizReplyChain(lobbyId, user)
-                .getLastQuizReply();
+    private async emitStartRound(client: Socket, lobbyId: string) {
+        const game = await this.gameService.getGame(lobbyId);
+        for (const user of game.getUsers()) {
+            const quizReply = (
+                await this.gameService.getCurrentRoundQuizReplyChain(lobbyId, user)
+            ).getLastQuizReply();
             const payload: StartRoundEmitRequest = {
                 quizReply,
                 roundType: game.getRoundType(),
@@ -153,15 +154,16 @@ export class CoreGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
                 limitTime: game.roundLimitTime,
             };
             client.nsp.to(user.socketId).emit('start-round', payload);
-        });
-        this.emitRoundTimeout(client, lobbyId);
+        }
+        await this.emitRoundTimeout(client, lobbyId);
     }
 
-    private emitRoundTimeout(client: Socket, lobbyId: string) {
-        const game = this.gameService.getGame(lobbyId);
-        setTimeout(() => {
+    private async emitRoundTimeout(client: Socket, lobbyId: string) {
+        const game = await this.gameService.getGame(lobbyId);
+        // eslint-disable-next-line @typescript-eslint/no-misused-promises
+        setTimeout(async () => {
             try {
-                this.gameService.getNotSubmittedUsers(lobbyId).forEach((user) => {
+                (await this.gameService.getNotSubmittedUsers(lobbyId)).forEach((user) => {
                     client.nsp.to(user.socketId).emit('round-timeout');
                 });
             } catch (e) {

@@ -11,48 +11,48 @@ export class LobbyService {
         private readonly gameLobbyRepository: GameLobbyRepository,
     ) {}
 
-    createLobby(user: User): string {
-        return this.gameLobbyRepository.create(user);
+    async createLobby(user: User): Promise<string> {
+        return await this.gameLobbyRepository.create(user);
     }
 
-    async joinLobby(user: User, lobbyId: string) {
-        const lobby = this.getLobby(lobbyId);
+    async joinLobby(user: User, lobbyId: string): Promise<User[]> {
+        const lobby = await this.getLobby(lobbyId);
         // TODO: Define 파일을 통해 상수 관리하기
         if (lobby.users.length >= 8) {
             throw Error('초대받은 방이 꽉 차버렸네요!');
         }
         lobby.joinLobby(user);
         this.userService.updateUser(user.socketId, { lobbyId });
-        this.gameLobbyRepository.save(lobby);
+        await this.gameLobbyRepository.save(lobby);
         return lobby.getUsers();
     }
 
-    leaveLobby(user: User, lobbyId: string): User[] {
-        const lobby = this.getLobby(lobbyId);
+    async leaveLobby(user: User, lobbyId: string): Promise<User[]> {
+        const lobby = await this.getLobby(lobbyId);
         lobby.leaveLobby(user);
         if (lobby.users.length === 0) {
-            this.gameLobbyRepository.delete(lobby);
+            await this.gameLobbyRepository.delete(lobby);
             return [];
         }
         this.userService.updateUser(user.socketId, { lobbyId: undefined });
-        this.gameLobbyRepository.save(lobby);
+        await this.gameLobbyRepository.save(lobby);
         return lobby.getUsers();
     }
 
-    validateLobby(lobbyId: string): void {
-        const gameLobby = this.gameLobbyRepository.findById(lobbyId);
+    async validateLobby(lobbyId: string): Promise<void> {
+        const gameLobby = await this.gameLobbyRepository.findById(lobbyId);
         if (gameLobby === undefined) {
             throw Error('Lobby is not exists');
         }
     }
 
-    isLobbyHost(user: User, lobbyId: string): boolean {
-        const lobby = this.getLobby(lobbyId);
+    async isLobbyHost(user: User, lobbyId: string): Promise<boolean> {
+        const lobby = await this.getLobby(lobbyId);
         return lobby.getHost().socketId === user.socketId;
     }
 
-    getLobby(lobbyId: string): GameLobby | undefined {
-        this.validateLobby(lobbyId);
-        return this.gameLobbyRepository.findById(lobbyId);
+    async getLobby(lobbyId: string): Promise<GameLobby | undefined> {
+        await this.validateLobby(lobbyId);
+        return await this.gameLobbyRepository.findById(lobbyId);
     }
 }
