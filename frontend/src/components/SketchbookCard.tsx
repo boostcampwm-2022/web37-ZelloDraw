@@ -34,6 +34,7 @@ const Container = styled(Center)`
 const LeftSide = styled.div`
     display: flex;
     align-items: end;
+    width: 108px;
 `;
 
 const SketchbookWrapper = styled.div`
@@ -42,5 +43,5 @@ const SketchbookWrapper = styled.div`
 `;
 
 const RightSide = styled.div`
-    width: 100%;
+    width: 100px;
 `;
