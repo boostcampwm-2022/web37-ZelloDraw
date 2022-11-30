@@ -4,6 +4,7 @@ import {
     StartRoundEmitRequest,
     SubmitQuizReplyEmitRequest,
     SubmitQuizReplyRequest,
+    WatchResultSketchbookEmitRequest,
 } from '@backend/core/game.dto';
 import { SetterOrUpdater } from 'recoil';
 import { QuizReply } from '@backend/core/quizReply.model';
@@ -53,4 +54,17 @@ export const onCompleteGame = (
         setGameResult(gameResult.quizReplyLists);
         setIsCompleteGame(true);
     });
+};
+
+export const emitWatchResultSketchBook = (nextBookIdx: number) => {
+    NetworkService.emit('watch-result-sketchbook', { bookIdx: nextBookIdx });
+};
+
+export const onWatchResultSketchBook = () => {
+    NetworkService.on(
+        'watch-result-sketchbook',
+        (bookIdxInfo: WatchResultSketchbookEmitRequest) => {
+            console.log('스케치북 인포', bookIdxInfo);
+        },
+    );
 };

@@ -1,7 +1,9 @@
+import { useEffect } from 'react';
 import styled from 'styled-components';
 import { Center } from '@styles/styled';
 import { useRecoilValue } from 'recoil';
 import {
+    currentBookIdxState,
     currentPageIdxState,
     currentSketchbookState,
     maxSketchbookState,
@@ -16,6 +18,7 @@ import useCheckGuidePage from '@hooks/useCheckGuidePage';
 import useResultSketchbook from '@hooks/useResultSketchbook';
 import { ReactComponent as LeftArrowIcon } from '@assets/icons/chevron-left-gradient.svg';
 import { ReactComponent as RightArrowIcon } from '@assets/icons/chevron-right-gradient.svg';
+import { emitWatchResultSketchBook, onWatchResultSketchBook } from '@game/NetworkServiceUtils';
 
 function ResultSketchbook() {
     const { maxPageNum } = useRecoilValue(maxSketchbookState);
@@ -23,8 +26,18 @@ function ResultSketchbook() {
     const sketchbookAuthor = useRecoilValue(sketchbookAuthorState);
     const currentPageIdx = useRecoilValue(currentPageIdxState);
     const { isHost } = useRecoilValue(userState);
+    const currentBookIdx = useRecoilValue(currentBookIdxState);
     const { checkIsNotGuidePage } = useCheckGuidePage();
     useResultSketchbook();
+
+    useEffect(() => {
+        onWatchResultSketchBook();
+    }, []);
+
+    function changeSketchbook(nextNum: number) {
+        const nextBookIdx = currentBookIdx + nextNum;
+        emitWatchResultSketchBook(nextBookIdx);
+    }
 
     return (
         <>
@@ -47,10 +60,18 @@ function ResultSketchbook() {
             <SketchbookAuthor>
                 {checkIsNotGuidePage() && (
                     <>
-                        {isHost ? <LeftArrowIcon /> : <Brace>&#123;</Brace>}
+                        {isHost ? (
+                            <LeftArrowIcon onClick={() => changeSketchbook(-1)} />
+                        ) : (
+                            <Brace>&#123;</Brace>
+                        )}
                         <AuthorName isHost={isHost}>{sketchbookAuthor}</AuthorName>
                         <AuthorName isHost={isHost}>유저1355</AuthorName>
-                        {isHost ? <RightArrowIcon /> : <Brace>&#125;</Brace>}
+                        {isHost ? (
+                            <RightArrowIcon onClick={() => changeSketchbook(1)} />
+                        ) : (
+                            <Brace>&#125;</Brace>
+                        )}
                         <span>의 스케치북</span>
                     </>
                 )}
