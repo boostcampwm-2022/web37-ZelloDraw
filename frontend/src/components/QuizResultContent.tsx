@@ -13,7 +13,7 @@ function QuizResultContent() {
             {checkIsNotGuidePage() && (
                 <QuizResult>
                     {currentSketchbook.type === 'DRAW' ? (
-                        <img src={currentSketchbook.content} />
+                        <img src={currentSketchbook.content} alt={'quiz result content'} />
                     ) : (
                         <div>{currentSketchbook.content}</div>
                     )}
