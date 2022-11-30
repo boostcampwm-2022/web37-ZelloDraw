@@ -128,6 +128,10 @@ export class GameLobby implements Lobby, Game {
         return this.quizReplyChains;
     }
 
+    isLastRound(): boolean {
+        return this.curRound === this.maxRound;
+    }
+
     private swapRoundType() {
         if (this.roundType === 'ANSWER') {
             this.roundType = 'DRAW';

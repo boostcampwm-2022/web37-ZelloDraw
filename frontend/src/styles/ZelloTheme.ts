@@ -70,6 +70,7 @@ export const ZelloTheme = {
         card: '0px 6px 9px 2px rgba(0, 29, 46, 0.2)',
         icon: '0px 1px 3px 1px rgba(0, 29, 46, 0.5)',
         btn: '0px 1px 3px 1px rgba(0, 29, 46, 0.3)',
+        text: '0px 1px 3px rgba(0, 29, 46, 0.5)',
     },
 
     layout: {

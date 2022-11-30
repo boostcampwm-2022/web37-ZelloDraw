@@ -17,10 +17,12 @@ import { SocketException } from './socket.exception';
 import { SocketExceptionFilter } from './socket.filter';
 import { GameService } from './game.service';
 import {
+    CompleteGameEmitRequest,
     StartRoundEmitRequest,
     SubmitQuizReplyEmitRequest,
     SubmitQuizReplyRequest,
 } from './game.dto';
+import { QuizReplyChain } from './quizReplyChain.model';
 import { User } from './user.model';
 
 // TODO: Validation Pipe 관련 내용 학습 + 소켓에서 에러 처리 어케할건지 학습 하고 적용하기
@@ -118,8 +120,12 @@ export class CoreGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
         await this.gameService.submitQuizReply(user.lobbyId, user, request.quizReply);
         const repliesCount = await this.gameService.getSubmittedQuizRepliesCount(user.lobbyId);
         if (await this.gameService.isAllUserSubmittedQuizReply(user.lobbyId)) {
-            await this.gameService.proceedRound(user.lobbyId);
-            await this.emitStartRound(client, user.lobbyId);
+            if (await this.gameService.isLastRound(user.lobbyId)) {
+                await this.emitCompleteGame(client, user.lobbyId);
+            } else {
+                await this.gameService.proceedRound(user.lobbyId);
+                await this.emitStartRound(client, user.lobbyId);
+            }
         } else {
             const payload: SubmitQuizReplyEmitRequest = {
                 submittedQuizReplyCount: repliesCount,
@@ -178,5 +184,14 @@ export class CoreGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
         payload: SubmitQuizReplyEmitRequest,
     ) {
         client.nsp.to(lobbyId).emit('submit-quiz-reply', payload);
+    }
+
+    private async emitCompleteGame(client: Socket, lobbyId: string) {
+        const quizReplyChains: QuizReplyChain[] =
+            await this.gameService.getQuizReplyChainsWhenGameEnd(lobbyId);
+        const payload: CompleteGameEmitRequest = {
+            quizReplyLists: quizReplyChains.map((quizReplyChain) => quizReplyChain.quizReplyList),
+        };
+        client.nsp.to(lobbyId).emit('complete-game', payload);
     }
 }

@@ -48,6 +48,11 @@ export class GameService {
         return game.isAllUserSubmittedQuizReply();
     }
 
+    async isLastRound(lobbyId: string): Promise<boolean> {
+        const game = await this.getGame(lobbyId);
+        return game.isLastRound();
+    }
+
     async proceedRound(lobbyId: string) {
         const game = await this.getGame(lobbyId);
         game.proceedRound();

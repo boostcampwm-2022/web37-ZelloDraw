@@ -1,12 +1,23 @@
 import { useEffect, useState } from 'react';
 import { emitSubmitQuizReply } from '@game/NetworkServiceUtils';
 import { useRecoilValue } from 'recoil';
-import { quizReplyState } from '@atoms/game';
+import { quizReplyState, roundNumberState } from '@atoms/game';
+import { Guide } from '@styles/styled';
 
-function useZeroRound(curRound: number) {
+function useZeroRound() {
     const placeholderDefault = '그림을 보고 답을 맞춰보세요!';
     const quizReplyContent = useRecoilValue(quizReplyState);
+    const { curRound } = useRecoilValue(roundNumberState);
     const [placeholder, setPlaceholder] = useState(placeholderDefault);
+
+    const renderZeroRoundGuide = () => (
+        <Guide>
+            <div>
+                나만의 문장을 만들어 입력해보세요! <br />
+                다른 사람들이 어떤 그림을 그리게 될까요?
+            </div>
+        </Guide>
+    );
 
     useEffect(() => {
         setRandomWordToPlaceholder();
@@ -29,7 +40,7 @@ function useZeroRound(curRound: number) {
         emitSubmitQuizReply({ quizReply: { type: 'ANSWER', content: quizReplyContent } });
     }
 
-    return { placeholder, sendRandomWordReplyToServer };
+    return { placeholder, sendRandomWordReplyToServer, renderZeroRoundGuide };
 }
 
 export default useZeroRound;
