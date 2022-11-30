@@ -1,20 +1,25 @@
+import { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { ScaledDiv, ScaledSection } from '@styles/styled';
-import SketchbookCard from '@components/SketchbookCard';
+import { onCompleteGame, onCountSubmittedQuiz } from '@game/NetworkServiceUtils';
+import { useSetRecoilState } from 'recoil';
+import { gameResultState } from '@atoms/game';
 import GameUsers from '@components/GameUsers';
 import MicButton from '@components/MicButton';
 import CameraButton from '@components/CameraButton';
-import SmallLogo from '@assets/logo-s.png';
 import useMovePage from '@hooks/useMovePage';
-import QuizReplySection from '@components/QuizReplySection';
-import { useEffect } from 'react';
-import { onSubmitQuizReply } from '@game/NetworkServiceUtils';
+import SmallLogo from '@assets/logo-s.png';
+import GameSketchbook from '@components/GameSketchbook';
+import ResultSketchbook from '@components/ResultSketchbook';
 
 function Game() {
     const [setPage] = useMovePage();
+    const setGameResult = useSetRecoilState(gameResultState);
+    const [isCompleteGame, setIsCompleteGame] = useState(false);
 
     useEffect(() => {
-        onSubmitQuizReply();
+        onCountSubmittedQuiz();
+        onCompleteGame(setGameResult, setIsCompleteGame);
     }, []);
 
     return (
@@ -22,8 +27,7 @@ function Game() {
             <Container>
                 <GameUsers />
                 <SketchbookSection>
-                    <SketchbookCard />
-                    <QuizReplySection />
+                    {isCompleteGame ? <ResultSketchbook /> : <GameSketchbook />}
                 </SketchbookSection>
             </Container>
             <CamAndMicWrapper>

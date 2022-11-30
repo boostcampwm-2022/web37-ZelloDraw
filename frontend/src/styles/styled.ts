@@ -31,3 +31,15 @@ export const ScaledDiv = styled.div`
     transform: ${({ theme }) =>
         theme.layout.sectionScale < 1 ? `scale(${theme.layout.sectionScale})` : 'scale(1)'};
 `;
+
+export const Guide = styled(Center)`
+    ${({ theme }) => theme.layout.sketchBook};
+    flex-direction: column;
+    height: 420px;
+    > div {
+        color: ${({ theme }) => theme.color.primaryLight};
+        font-size: ${({ theme }) => theme.typo.h3};
+        font-weight: 600;
+        white-space: pre-line;
+    }
+`;
