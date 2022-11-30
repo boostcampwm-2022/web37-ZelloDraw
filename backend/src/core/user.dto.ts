@@ -8,5 +8,6 @@ export class JoinLobbyRequest {
 export type JoinLobbyResponse = Array<{ userName: string }>;
 
 export interface JoinLobbyReEmitRequest {
+    sid: string;
     userName: string;
 }

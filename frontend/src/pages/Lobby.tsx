@@ -24,7 +24,7 @@ function Lobby() {
     const [setPage] = useMovePage();
     const lobbyId = getParam('id');
     const setRoundInfo = useSetRecoilState<StartRoundEmitRequest>(roundInfoState);
-    const { selfVideoRef, remoteVideoRef, createOffer } = useWebRTC();
+    const { selfVideoRef, userStreamList, createOffers } = useWebRTC();
 
     useEffect(() => {
         const payload: JoinLobbyRequest = { lobbyId };
@@ -52,7 +52,7 @@ function Lobby() {
         NetworkService.on('join-lobby', (user: JoinLobbyReEmitRequest) => {
             setUserList([...userList, user.userName]);
             setTimeout(() => {
-                void createOffer();
+                void createOffers(user);
             }, 100);
         });
         return () => {
@@ -71,7 +71,7 @@ function Lobby() {
             </LogoWrapper>
             <LobbyContainer>
                 <FlexBox>
-                    <UserList selfVideoRef={selfVideoRef} remoteVideoRef={remoteVideoRef} />
+                    <UserList selfVideoRef={selfVideoRef} />
                     <GameModeList lobbyId={lobbyId} />
                 </FlexBox>
                 <ButtonWrapper>

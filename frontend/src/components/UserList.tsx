@@ -10,10 +10,10 @@ import { userState } from '@atoms/user';
 
 interface UserListType {
     selfVideoRef: React.RefObject<HTMLVideoElement>;
-    remoteVideoRef: React.RefObject<HTMLVideoElement>;
+    // userStreamList: { [socketId: string]: RTCPeerConnection };
 }
 
-function UserList({ selfVideoRef, remoteVideoRef }: UserListType) {
+function UserList({ selfVideoRef }: UserListType) {
     const userList = useRecoilValue(userListState);
     const currentUser = useRecoilValue(userState);
 
@@ -29,13 +29,13 @@ function UserList({ selfVideoRef, remoteVideoRef }: UserListType) {
                     <InviteButton />
                 </FlexBox>
                 <UserGridList>
-                    {userList.map((user: string, idx: number) =>
-                        currentUser.name === user ? (
-                            <VideoCallUser key={idx} userName={user} video={selfVideoRef} />
+                    {/* {userStreamList.map((user: string, idx: number) =>
+                        user.name === user ? (
+                            <VideoCallUser key={idx} userName={user.sid} video={selfVideoRef} />
                         ) : (
-                            <VideoCallUser key={idx} userName={user} video={remoteVideoRef} />
+                            <VideoCallUser key={idx} userName={user.sid} video={remoteVideoRef} />
                         ),
-                    )}
+                    )} */}
                     {new Array(8 - userList.length)
                         .fill('empty')
                         .map((item: string, idx: number) => (
