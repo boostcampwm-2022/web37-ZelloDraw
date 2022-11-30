@@ -26,6 +26,7 @@ function useLocalStream(): localStreamProps {
 
             if (!selfVideoRef.current) return;
             selfVideoRef.current.srcObject = stream;
+            console.log('getSelfMedia');
         } catch (err) {
             console.log(err);
         }

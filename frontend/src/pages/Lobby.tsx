@@ -11,16 +11,18 @@ import {
     networkServiceInstance as NetworkService,
     SocketException,
 } from '../services/socketService';
-import { useRecoilState, useSetRecoilState } from 'recoil';
+import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
 import { roundInfoState, userListState } from '@atoms/game';
 import { getParam } from '@utils/common';
 import { JoinLobbyReEmitRequest, JoinLobbyRequest } from '@backend/core/user.dto';
 import { StartRoundEmitRequest } from '@backend/core/game.dto';
 import { onStartGame } from '@game/NetworkServiceUtils';
 import useWebRTC from '@hooks/useWebRTC';
+import { userState } from '@atoms/user';
 
 function Lobby() {
     const [userList, setUserList] = useRecoilState(userListState);
+    const curUser = useRecoilValue(userState);
     const [setPage] = useMovePage();
     const lobbyId = getParam('id');
     const setRoundInfo = useSetRecoilState<StartRoundEmitRequest>(roundInfoState);
@@ -35,9 +37,11 @@ function Lobby() {
                 setUserList(res);
                 res.forEach((userInRoom) => {
                     setTimeout(() => {
-                        console.log('send offer from newbie');
-                        void createOffers(userInRoom);
-                    }, 2000);
+                        if (curUser.name !== userInRoom.userName) {
+                            console.log('send offer from newbie');
+                            void createOffers(userInRoom);
+                        }
+                    }, 500);
                 });
             },
             (err: SocketException) => {
@@ -73,7 +77,7 @@ function Lobby() {
             </LogoWrapper>
             <LobbyContainer>
                 <FlexBox>
-                    <UserList selfVideoRef={selfVideoRef} />
+                    <UserList selfVideoRef={selfVideoRef} userStreamList={userStreamList} />
                     <GameModeList lobbyId={lobbyId} />
                 </FlexBox>
                 <ButtonWrapper>

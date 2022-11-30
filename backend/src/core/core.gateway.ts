@@ -134,20 +134,17 @@ export class CoreGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 
     @SubscribeMessage('offer')
     async handleOffer(@ConnectedSocket() client: Socket, @MessageBody() body) {
-        console.log('offer', body);
-        client.broadcast.to(body.lobbyId).emit('offer', body.sdp, client.id);
+        client.broadcast.to(body.offerReceiveID).emit('offer', body.sdp, client.id);
     }
 
     @SubscribeMessage('answer')
     async handleAnswer(@ConnectedSocket() client: Socket, @MessageBody() body) {
-        console.log('answer', body);
-        client.broadcast.to(body.lobbyId).emit('answer', body.sdp, client.id);
+        client.broadcast.to(body.answerReceiveID).emit('answer', body.sdp, client.id);
     }
 
     @SubscribeMessage('ice')
     async handleIce(@ConnectedSocket() client: Socket, @MessageBody() body) {
-        console.log('ice', body);
-        client.broadcast.to(body.lobbyId).emit('ice', body.ice, client.id); // client.id == iceSendID
+        client.broadcast.to(body.candidateReceiveID).emit('ice', body.ice, client.id); // client.id == iceSendID
     }
 
     private emitJoinLobby(client: Socket, lobbyId: string, payload: JoinLobbyReEmitRequest) {

@@ -3,76 +3,97 @@
 import { useEffect, useRef, useState, useCallback } from 'react';
 import { getParam } from '@utils/common';
 import { networkServiceInstance as NetworkService } from '../services/socketService';
-import useLocalStream from './useLocalStream';
 import { JoinLobbyReEmitRequest } from '@backend/core/user.dto';
+import { userCamState, userMicState } from '@atoms/user';
+import { useRecoilValue } from 'recoil';
 
-interface WebRTCUser {
-    sid: string; // socket id
+export interface WebRTCUser {
+    sid: string; // socketID
     stream: MediaStream;
 }
 
-// 지금 들어온사람 -> [{user}]
-// 원래 있던사람들 -> {user}
-
 function useWebRTC() {
-    const { selfVideoRef, selfStreamRef, getSelfMedia } = useLocalStream();
-    // const remoteVideoRef = useRef<HTMLVideoElement>(null);
+    const userCam = useRecoilValue<boolean>(userCamState);
+    const userMic = useRecoilValue<boolean>(userMicState);
+
+    const selfVideoRef = useRef<HTMLVideoElement>(null);
+    const selfStreamRef = useRef<MediaStream | undefined>();
+
+    const getSelfMedia: () => Promise<void> = useCallback(async () => {
+        try {
+            const stream = await navigator.mediaDevices.getUserMedia({
+                video: userCam,
+                audio: userMic,
+            });
+            selfStreamRef.current = stream;
+
+            if (!selfVideoRef.current) return;
+            selfVideoRef.current.srcObject = stream;
+        } catch (err) {
+            console.log(err);
+        }
+    }, []);
+
     const pcsRef = useRef<{ [socketId: string]: RTCPeerConnection }>({});
     const [userStreamList, setUserStreamList] = useState<WebRTCUser[]>([]);
 
     const lobbyId = getParam('id');
 
-    const createPeerConnection = useCallback((peerSocketId: string) => {
-        try {
-            const pc = new RTCPeerConnection();
+    const createPeerConnection = useCallback(async (peerSocketId: string): Promise<any> => {
+        const res = await new Promise((resolve, reject) => {
+            try {
+                const pc = new RTCPeerConnection();
 
-            pc.onicecandidate = (e) => {
-                if (e.candidate) {
-                    NetworkService.emit('ice', {
-                        ice: e.candidate,
-                        lobbyId,
-                        candidateReceiveID: peerSocketId,
-                    });
-                }
-            };
+                pc.onicecandidate = (e) => {
+                    if (e.candidate) {
+                        NetworkService.emit('ice', {
+                            ice: e.candidate,
+                            lobbyId,
+                            candidateReceiveID: peerSocketId,
+                        });
+                    }
+                };
 
-            pc.ontrack = (e) => {
-                setUserStreamList((prevList) =>
-                    prevList
-                        .filter((user) => user.sid !== peerSocketId)
-                        .concat({
-                            sid: peerSocketId,
-                            stream: e.streams[0],
-                        }),
-                );
-            };
+                pc.ontrack = (e) => {
+                    setUserStreamList((prevList) =>
+                        prevList
+                            .filter((user) => user.sid !== peerSocketId)
+                            .concat({
+                                sid: peerSocketId,
+                                stream: e.streams[0],
+                            }),
+                    );
+                };
 
-            if (!selfStreamRef.current) return;
-            selfStreamRef.current.getTracks().forEach((track) => {
                 if (!selfStreamRef.current) return;
-                pc.addTrack(track, selfStreamRef.current);
-            });
-            return pc;
-        } catch (err) {
-            console.log(err);
-            return undefined;
-        }
+                selfStreamRef.current.getTracks().forEach((track) => {
+                    if (!selfStreamRef.current) return;
+                    pc.addTrack(track, selfStreamRef.current);
+                });
+                resolve(pc);
+            } catch (err) {
+                console.log(err);
+                return undefined;
+            }
+        });
+        return res;
     }, []);
 
     const createOffers = async (user: JoinLobbyReEmitRequest) => {
         if (!selfStreamRef.current) return;
-        const pc = createPeerConnection(user.sid);
+        const pc = await createPeerConnection(user.sid);
         if (!pc) return;
         pcsRef.current = { ...pcsRef.current, [user.sid]: pc };
         try {
             const localSdp = await pc.createOffer();
-            console.log('create offer success');
             await pc.setLocalDescription(new RTCSessionDescription(localSdp));
-            NetworkService.emit('offer', {
-                sdp: localSdp,
-                lobbyId,
-                offerReceiveID: user.sid,
-            });
+            setTimeout(() => {
+                NetworkService.emit('offer', {
+                    sdp: localSdp,
+                    lobbyId,
+                    offerReceiveID: user.sid,
+                });
+            }, 2000);
         } catch (e) {
             console.error(e);
         }
@@ -83,13 +104,14 @@ function useWebRTC() {
 
         NetworkService.on('offer', async (sdp: RTCSessionDescription, offerSendSid: string) => {
             if (!selfStreamRef.current) return;
-            const pc = createPeerConnection(offerSendSid);
+            const pc = await createPeerConnection(offerSendSid);
             if (!pc) return;
             pcsRef.current = { ...pcsRef.current, [offerSendSid]: pc };
             try {
                 await pc.setRemoteDescription(new RTCSessionDescription(sdp));
                 const localSdp = await pc.createAnswer();
                 await pc.setLocalDescription(new RTCSessionDescription(localSdp));
+
                 NetworkService.emit('answer', {
                     sdp: localSdp,
                     answerReceiveID: offerSendSid,
@@ -102,6 +124,7 @@ function useWebRTC() {
         NetworkService.on('answer', (sdp: RTCSessionDescription, answerSendID: string) => {
             const pc: RTCPeerConnection = pcsRef.current[answerSendID];
             if (!pc) return;
+
             pc.setRemoteDescription(new RTCSessionDescription(sdp));
         });
 
@@ -123,6 +146,16 @@ function useWebRTC() {
             });
         };
     }, []);
+
+    useEffect(() => {
+        if (!selfStreamRef.current) return;
+        selfStreamRef.current.getVideoTracks().forEach((track) => (track.enabled = !track.enabled));
+    }, [userCam]);
+
+    useEffect(() => {
+        if (!selfStreamRef.current) return;
+        selfStreamRef.current.getAudioTracks().forEach((track) => (track.enabled = !track.enabled));
+    }, [userMic]);
 
     return { selfVideoRef, userStreamList, createOffers };
 }

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import styled from 'styled-components';
 import Card from '@components/Card';
 import InviteButton from '@components/InviteButton';
@@ -7,13 +7,14 @@ import VideoCallUser from '@components/VideoCallUser';
 import { useRecoilValue } from 'recoil';
 import { userListState } from '@atoms/game';
 import { userState } from '@atoms/user';
+import { WebRTCUser } from '@hooks/useWebRTC';
 
 interface UserListType {
     selfVideoRef: React.RefObject<HTMLVideoElement>;
-    // userStreamList: { [socketId: string]: RTCPeerConnection };
+    userStreamList: WebRTCUser[];
 }
 
-function UserList({ selfVideoRef }: UserListType) {
+function UserList({ selfVideoRef, userStreamList }: UserListType) {
     const userList = useRecoilValue(userListState);
     const currentUser = useRecoilValue(userState);
 
@@ -29,13 +30,10 @@ function UserList({ selfVideoRef }: UserListType) {
                     <InviteButton />
                 </FlexBox>
                 <UserGridList>
-                    {/* {userStreamList.map((user: string, idx: number) =>
-                        user.name === user ? (
-                            <VideoCallUser key={idx} userName={user.sid} video={selfVideoRef} />
-                        ) : (
-                            <VideoCallUser key={idx} userName={user.sid} video={remoteVideoRef} />
-                        ),
-                    )} */}
+                    <VideoCallUser userName={currentUser.name} curUserRef={selfVideoRef} />
+                    {userStreamList.map((user: WebRTCUser, idx: number) => (
+                        <VideoCallUser key={idx} userName={user.sid} video={user.stream} />
+                    ))}
                     {new Array(8 - userList.length)
                         .fill('empty')
                         .map((item: string, idx: number) => (
