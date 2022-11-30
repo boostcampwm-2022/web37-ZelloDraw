@@ -72,10 +72,13 @@ export class CoreGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 
             await this.lobbyService.joinLobby(user, lobby.id);
             await client.join(body.lobbyId);
-            this.emitJoinLobby(client, lobby.id, { userName: user.name });
+            this.emitJoinLobby(client, lobby.id, {
+                userName: user.name,
+                sid: client.id,
+            });
 
             return lobby.users.map((user) => {
-                return { userName: user.name };
+                return { userName: user.name, sid: user.socketId };
             }) as JoinLobbyResponse;
         } catch (e) {
             throw new SocketException('BadRequest', e.message);
@@ -89,6 +92,8 @@ export class CoreGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 
         const leftUsers = this.lobbyService.leaveLobby(user, user.lobbyId);
         const payload: JoinLobbyReEmitRequest[] = leftUsers.map((user) => ({
+            // TODO: LeaveLobbyReEmitRequest DTO를 생성해야함.
+            sid: client.id,
             userName: user.name,
         }));
         this.emitLeaveLobby(client, user.lobbyId, payload);
@@ -130,19 +135,19 @@ export class CoreGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
     @SubscribeMessage('offer')
     async handleOffer(@ConnectedSocket() client: Socket, @MessageBody() body) {
         console.log('offer', body);
-        client.broadcast.to(body.lobbyId).emit('offer', body.offer);
+        client.broadcast.to(body.lobbyId).emit('offer', body.sdp, client.id);
     }
 
     @SubscribeMessage('answer')
     async handleAnswer(@ConnectedSocket() client: Socket, @MessageBody() body) {
         console.log('answer', body);
-        client.broadcast.to(body.lobbyId).emit('answer', body.answerSdp);
+        client.broadcast.to(body.lobbyId).emit('answer', body.sdp, client.id);
     }
 
     @SubscribeMessage('ice')
     async handleIce(@ConnectedSocket() client: Socket, @MessageBody() body) {
         console.log('ice', body);
-        client.broadcast.to(body.lobbyId).emit('ice', body.ice);
+        client.broadcast.to(body.lobbyId).emit('ice', body.ice, client.id); // client.id == iceSendID
     }
 
     private emitJoinLobby(client: Socket, lobbyId: string, payload: JoinLobbyReEmitRequest) {

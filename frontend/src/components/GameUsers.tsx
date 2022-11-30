@@ -3,14 +3,15 @@ import styled from 'styled-components';
 import { useRecoilValue } from 'recoil';
 import { userListState } from '@atoms/game';
 import { Center } from '@styles/styled';
+import { JoinLobbyReEmitRequest } from '@backend/core/user.dto';
 
 function GameUsers() {
     const userList = useRecoilValue(userListState);
 
     return (
         <Container>
-            {userList.map((user: string, idx: number) => (
-                <VideoCallUser key={`${user} ${idx}`} userName={user} />
+            {userList.map((user: JoinLobbyReEmitRequest, idx: number) => (
+                <VideoCallUser key={`${user.userName} ${idx}`} userName={user.userName} />
             ))}
         </Container>
     );

@@ -31,17 +31,22 @@ function Lobby() {
         NetworkService.emit(
             'join-lobby',
             payload,
-            (res: Array<{ userName: string }>) => {
-                const data = res.map((user) => user.userName);
-                setUserList(data);
+            (res: Array<{ userName: string; sid: string }>) => {
+                setUserList(res);
+                res.forEach((userInRoom) => {
+                    setTimeout(() => {
+                        console.log('send offer from newbie');
+                        void createOffers(userInRoom);
+                    }, 2000);
+                });
             },
             (err: SocketException) => {
                 alert(JSON.stringify(err.message));
                 setPage('/');
             },
         );
-        NetworkService.on('leave-lobby', (users: Array<{ userName: string }>) => {
-            setUserList(users.map((user) => user.userName));
+        NetworkService.on('leave-lobby', (users: Array<{ userName: string; sid: string }>) => {
+            setUserList(users);
         });
         return () => {
             NetworkService.off('leave-lobby');
@@ -50,10 +55,7 @@ function Lobby() {
 
     useEffect(() => {
         NetworkService.on('join-lobby', (user: JoinLobbyReEmitRequest) => {
-            setUserList([...userList, user.userName]);
-            setTimeout(() => {
-                void createOffers(user);
-            }, 100);
+            setUserList([...userList, user]);
         });
         return () => {
             NetworkService.off('join-lobby');
