@@ -45,7 +45,7 @@ function ResultSketchbook() {
                 }
             />
             <SketchbookAuthor>
-                {
+                {checkIsNotGuidePage() && (
                     <>
                         {isHost ? <LeftArrowIcon /> : <Brace>&#123;</Brace>}
                         <AuthorName isHost={isHost}>{sketchbookAuthor}</AuthorName>
@@ -53,7 +53,7 @@ function ResultSketchbook() {
                         {isHost ? <RightArrowIcon /> : <Brace>&#125;</Brace>}
                         <span>의 스케치북</span>
                     </>
-                }
+                )}
             </SketchbookAuthor>
         </>
     );
