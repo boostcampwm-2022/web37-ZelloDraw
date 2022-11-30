@@ -3,9 +3,6 @@
 
 declare namespace NodeJS {
     interface ProcessEnv {
-        NODE_ENV: 'development' | 'production' | 'test';
-        PUBLIC_URL: string;
-        REACT_APP_TEST: string;
-        SOCKET_PATH: string;
+        REACT_APP_SOCKET_PATH: string;
     }
 }

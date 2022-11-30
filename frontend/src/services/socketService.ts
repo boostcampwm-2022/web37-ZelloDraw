@@ -12,7 +12,7 @@ export class SocketService {
     public socketId = '';
 
     private constructor() {
-        this.socket = io(process.env.SOCKET_PATH, {
+        this.socket = io(process.env.REACT_APP_SOCKET_PATH, {
             transports: ['websocket'],
         });
         this.socket.connect();
