@@ -1,6 +1,5 @@
 import { atom, selector } from 'recoil';
 import { StartRoundEmitRequest } from '@backend/core/game.dto';
-import { QuizReply } from '@backend/core/quizReply.model';
 
 /**
  * 로비(게임)에 접속한 유저 리스트
@@ -66,9 +65,4 @@ export const quizSubmitState = atom<boolean>({
 export const userReplyState = atom<string>({
     key: 'userReplyState',
     default: '',
-});
-
-export const gameResultState = atom<QuizReply[][]>({
-    key: 'gameResultState',
-    default: undefined,
 });

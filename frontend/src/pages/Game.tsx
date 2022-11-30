@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import { ScaledDiv, ScaledSection } from '@styles/styled';
 import { onCompleteGame, onCountSubmittedQuiz } from '@game/NetworkServiceUtils';
 import { useSetRecoilState } from 'recoil';
-import { gameResultState } from '@atoms/game';
+import { gameResultState } from '@atoms/result';
 import GameUsers from '@components/GameUsers';
 import MicButton from '@components/MicButton';
 import CameraButton from '@components/CameraButton';

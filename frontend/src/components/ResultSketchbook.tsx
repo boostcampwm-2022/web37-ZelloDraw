@@ -1,8 +1,16 @@
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import styled from 'styled-components';
 import { Center } from '@styles/styled';
-import { useRecoilValue } from 'recoil';
-import { gameResultState } from '@atoms/game';
+import { useRecoilState, useRecoilValue } from 'recoil';
+import {
+    currentBookIdxState,
+    currentPageIdxState,
+    currentSketchbookState,
+    gameResultState,
+    isEndedState,
+    maxSketchbookState,
+    sketchbookAuthorState,
+} from '@atoms/result';
 import SketchbookCard from '@components/SketchbookCard';
 import RoundNumber from '@components/RoundNumber';
 import ResultGuide from '@components/ResultGuide';
@@ -10,18 +18,16 @@ import useTimer from '@hooks/useTimer';
 
 function ResultSketchbook() {
     const gameResults = useRecoilValue(gameResultState);
-    const maxSketchbookNum = gameResults.length - 1;
-    const maxPageNum = gameResults[0].length - 1;
     // 스케치북 개수 * (스케치북 페이지 개수 + 가이드 페이지 개수)
     const allResultLimitTime = gameResults.length * (gameResults[0].length + 1);
-    const guidePageNum = -1;
-    const [currentSketchbook, setCurrentSketchbook] = useState(gameResults[0]);
-    const [sketchbookNum, setSketchbookNum] = useState(0);
-    const [currentPage, setCurrentPage] = useState(gameResults[0][0]);
-    const [pageNum, setPageNum] = useState(guidePageNum);
-    const [sketchbookAuthorName, setSketchbookAuthorName] = useState('');
-    const [isEnded, setIsEnded] = useState(false);
+    const { maxPageNum } = useRecoilValue(maxSketchbookState);
+    const currentSketchbook = useRecoilValue(currentSketchbookState);
+    const sketchbookAuthor = useRecoilValue(sketchbookAuthorState);
+    const isEnded = useRecoilValue(isEndedState);
+    const [currentBookIdx, setCurrentBookIdx] = useRecoilState(currentBookIdxState);
+    const [currentPageIdx, setCurrentPageIdx] = useRecoilState(currentPageIdxState);
     const { timeLeft, setTimerTime } = useTimer(2000);
+    const guidePageIdx = -1;
 
     useEffect(() => {
         setTimerTime(allResultLimitTime);
@@ -32,42 +38,22 @@ function ResultSketchbook() {
         handleSketchbook();
     }, [timeLeft]);
 
-    useEffect(() => {
-        if (pageNum !== 0 || currentSketchbook === undefined) return;
-
-        const { author } = currentSketchbook[pageNum];
-        if (author === undefined) return;
-        // 새 스케치북이 시작되면 스케치북 주인 이름을 설정한다.
-        setSketchbookAuthorName(author.name);
-    }, [pageNum, currentSketchbook]);
-
-    useEffect(() => {
-        if (sketchbookNum === maxSketchbookNum && pageNum === maxPageNum) {
-            setTimeout(() => {
-                setIsEnded(true);
-            }, 2000);
-        }
-    }, [sketchbookNum, pageNum]);
-
     function handleSketchbook() {
-        if (currentSketchbook === undefined || isEnded) return;
-
-        // 현재 스케치북의 마지막 장에 오면 새 스케치북으로 변경한다.
-        if (pageNum === maxPageNum) {
-            const nextResultNumber = sketchbookNum + 1;
-            setCurrentSketchbook(gameResults[nextResultNumber]);
-            setSketchbookNum(nextResultNumber);
-            setPageNum(guidePageNum);
+        if (isEnded) return;
+        // 현재 스케치북의 마지막 장에 오면 다음 스케치북으로 idx로 변경한다.
+        if (currentPageIdx === maxPageNum) {
+            const nextBookIdx = currentBookIdx + 1;
+            setCurrentBookIdx(nextBookIdx);
+            setCurrentPageIdx(guidePageIdx);
             return;
         }
-        // 스케치북을 넘긴다.
-        const NextPageNumber = pageNum + 1;
-        setCurrentPage(currentSketchbook[NextPageNumber]);
-        setPageNum(NextPageNumber);
+        // 스케치북 페이지를 넘긴다.
+        const NextPageNumber = currentPageIdx + 1;
+        setCurrentPageIdx(NextPageNumber);
     }
 
     function checkIsNotGuidePage() {
-        return pageNum > guidePageNum && !isEnded;
+        return currentPageIdx > guidePageIdx && !isEnded;
     }
 
     return (
@@ -77,33 +63,34 @@ function ResultSketchbook() {
                     <>
                         {checkIsNotGuidePage() && (
                             <QuizResult>
-                                {currentPage.type === 'DRAW' ? (
-                                    <img src={currentPage.content} />
+                                {currentSketchbook.type === 'DRAW' ? (
+                                    <img src={currentSketchbook.content} />
                                 ) : (
-                                    <div>{currentPage.content}</div>
+                                    <div>{currentSketchbook.content}</div>
                                 )}
                             </QuizResult>
                         )}
-                        <ResultGuide
-                            sketchbookNum={sketchbookNum}
-                            pageNum={pageNum}
-                            isEnded={isEnded}
-                        />
+                        <ResultGuide />
                     </>
                 }
                 right={
                     <>
-                        <QuizAuthor>{checkIsNotGuidePage() && currentPage.author!.name}</QuizAuthor>
-                        {checkIsNotGuidePage() && <RoundNumber cur={pageNum} max={maxPageNum} />}
+                        <QuizAuthor>
+                            {checkIsNotGuidePage() && currentSketchbook.author!.name}
+                        </QuizAuthor>
+                        {checkIsNotGuidePage() && (
+                            <RoundNumber cur={currentPageIdx} max={maxPageNum} />
+                        )}
                     </>
                 }
             />
             <SketchbookAuthor>
-                {checkIsNotGuidePage() && `${sketchbookAuthorName}의 스케치북`}
+                {checkIsNotGuidePage() && `${sketchbookAuthor}의 스케치북`}
             </SketchbookAuthor>
         </>
     );
 }
+
 export default ResultSketchbook;
 
 const QuizResult = styled(Center)`
