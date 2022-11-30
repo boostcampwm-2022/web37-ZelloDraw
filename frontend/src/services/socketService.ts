@@ -12,7 +12,7 @@ export class SocketService {
     public socketId = '';
 
     private constructor() {
-        this.socket = io('ws://localhost:8180/core', {
+        this.socket = io(process.env.SOCKET_PATH, {
             transports: ['websocket'],
         });
         this.socket.connect();
