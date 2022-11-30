@@ -14,57 +14,57 @@ export class GameService {
         private readonly gameLobbyRepository: GameLobbyRepository,
     ) {}
 
-    startGame(lobbyId: string) {
-        const game = this.getGame(lobbyId);
+    async startGame(lobbyId: string) {
+        const game = await this.getGame(lobbyId);
         // TODO: Round 별 시간 관련 로직 추가 필요
         game.startGame();
-        this.gameLobbyRepository.save(game);
+        await this.gameLobbyRepository.save(game);
     }
 
-    submitQuizReply(lobbyId: string, user: User, reply: QuizReplyRequest) {
-        const game = this.getGame(lobbyId);
+    async submitQuizReply(lobbyId: string, user: User, reply: QuizReplyRequest) {
         const quizReply = new QuizReply(reply.type, reply.content, user);
+        const game = await this.getGame(lobbyId);
         game.submitQuizReply(user, quizReply);
-        this.gameLobbyRepository.save(game);
+        await this.gameLobbyRepository.save(game);
     }
 
-    getCurrentRoundQuizReplyChain(lobbyId: string, user: User) {
-        const game = this.getGame(lobbyId);
+    async getCurrentRoundQuizReplyChain(lobbyId: string, user: User) {
+        const game = await this.getGame(lobbyId);
         return game.getCurrentRoundQuizReplyChain(user);
     }
 
-    getSubmittedQuizRepliesCount(lobbyId: string) {
-        const game = this.getGame(lobbyId);
+    async getSubmittedQuizRepliesCount(lobbyId: string) {
+        const game = await this.getGame(lobbyId);
         return game.getSubmittedQuizRepliesCount();
     }
 
-    getNotSubmittedUsers(lobbyId: string): User[] {
-        const game = this.getGame(lobbyId);
+    async getNotSubmittedUsers(lobbyId: string): Promise<User[]> {
+        const game = await this.getGame(lobbyId);
         return game.getNotSubmittedUsers();
     }
 
-    isAllUserSubmittedQuizReply(lobbyId: string): boolean {
-        const game = this.getGame(lobbyId);
+    async isAllUserSubmittedQuizReply(lobbyId: string): Promise<boolean> {
+        const game = await this.getGame(lobbyId);
         return game.isAllUserSubmittedQuizReply();
     }
 
-    isLastRound(lobbyId: string): boolean {
-        const game = this.getGame(lobbyId);
+    async isLastRound(lobbyId: string): Promise<boolean> {
+        const game = await this.getGame(lobbyId);
         return game.isLastRound();
     }
 
-    proceedRound(lobbyId: string) {
-        const game = this.getGame(lobbyId);
+    async proceedRound(lobbyId: string) {
+        const game = await this.getGame(lobbyId);
         game.proceedRound();
-        this.gameLobbyRepository.save(game);
+        await this.gameLobbyRepository.save(game);
     }
 
-    getQuizReplyChainsWhenGameEnd(lobbyId: string): undefined | QuizReplyChain[] {
-        const game = this.getGame(lobbyId);
+    async getQuizReplyChainsWhenGameEnd(lobbyId: string): Promise<undefined | QuizReplyChain[]> {
+        const game = await this.getGame(lobbyId);
         return game.getQuizReplyChains();
     }
 
-    getGame(lobbyId: string): GameLobby {
-        return this.gameLobbyRepository.findById(lobbyId);
+    async getGame(lobbyId: string): Promise<GameLobby> {
+        return await this.gameLobbyRepository.findById(lobbyId);
     }
 }

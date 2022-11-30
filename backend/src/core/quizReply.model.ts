@@ -1,4 +1,5 @@
 import { User } from './user.model';
+import { PartialWithoutMethods } from '../utils/types';
 
 export type QuizReplyType = 'ANSWER' | 'DRAW';
 
@@ -11,5 +12,9 @@ export class QuizReply {
         this.type = type;
         this.content = content;
         this.author = author;
+    }
+
+    static createByJson(json: PartialWithoutMethods<QuizReply>): QuizReply {
+        return new QuizReply(json.type, json.content, json.author);
     }
 }
