@@ -28,4 +28,5 @@ jobs:
             npm i
             npm run build
             cd ~/web37-ZelloDraw/backend/
+            npm i
             npm run deploy:prod
