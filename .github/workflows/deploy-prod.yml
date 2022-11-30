@@ -23,6 +23,9 @@ jobs:
           password: ${{ secrets.SERVER_PASSWORD }}
           port: ${{ secrets.SERVER_PORT }}
           script: |
-            cd ~/web37-ZelloDraw/backend/ && git pull origin develop
+            cd ~/web37-ZelloDraw/ && git pull origin develop
+            cd ~/web37-ZelloDraw/frontend/
             npm i
+            npm run build
+            cd ~/web37-ZelloDraw/backend/
             npm run deploy:prod
