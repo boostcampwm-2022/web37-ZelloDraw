@@ -15,6 +15,7 @@ import SketchbookCard from '@components/SketchbookCard';
 import RoundNumber from '@components/RoundNumber';
 import ResultGuide from '@components/ResultGuide';
 import useTimer from '@hooks/useTimer';
+import QuizResultContent from '@components/QuizResultContent';
 
 function ResultSketchbook() {
     const gameResults = useRecoilValue(gameResultState);
@@ -61,15 +62,7 @@ function ResultSketchbook() {
             <SketchbookCard
                 center={
                     <>
-                        {checkIsNotGuidePage() && (
-                            <QuizResult>
-                                {currentSketchbook.type === 'DRAW' ? (
-                                    <img src={currentSketchbook.content} />
-                                ) : (
-                                    <div>{currentSketchbook.content}</div>
-                                )}
-                            </QuizResult>
-                        )}
+                        <QuizResultContent />
                         <ResultGuide />
                     </>
                 }
@@ -93,18 +86,6 @@ function ResultSketchbook() {
 
 export default ResultSketchbook;
 
-const QuizResult = styled(Center)`
-    ${({ theme }) => theme.layout.sketchBook};
-    > img {
-        width: 100%;
-    }
-
-    > div {
-        color: ${({ theme }) => theme.color.black};
-        font-size: ${({ theme }) => theme.typo.h1};
-        letter-spacing: 0.13rem;
-    }
-`;
 const QuizAuthor = styled.div`
     position: relative;
     top: -40px;
