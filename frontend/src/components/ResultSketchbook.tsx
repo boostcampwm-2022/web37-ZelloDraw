@@ -65,14 +65,12 @@ function ResultSketchbook() {
                     </>
                 }
                 right={
-                    <>
-                        <QuizAuthor>
-                            {checkIsNotGuidePage() && currentSketchbook.author!.name}
-                        </QuizAuthor>
-                        {checkIsNotGuidePage() && (
+                    checkIsNotGuidePage() && (
+                        <>
+                            <QuizAuthor>{currentSketchbook.author!.name}</QuizAuthor>
                             <RoundNumber cur={currentPageIdx} max={maxPageNum} />
-                        )}
-                    </>
+                        </>
+                    )
                 }
             />
             <SketchbookAuthor>
