@@ -16,6 +16,7 @@ import RoundNumber from '@components/RoundNumber';
 import ResultGuide from '@components/ResultGuide';
 import useTimer from '@hooks/useTimer';
 import QuizResultContent from '@components/QuizResultContent';
+import useCheckGuidePage from '@hooks/useCheckGuidePage';
 
 function ResultSketchbook() {
     const gameResults = useRecoilValue(gameResultState);
@@ -29,6 +30,7 @@ function ResultSketchbook() {
     const [currentPageIdx, setCurrentPageIdx] = useRecoilState(currentPageIdxState);
     const { timeLeft, setTimerTime } = useTimer(2000);
     const guidePageIdx = -1;
+    const { checkIsNotGuidePage } = useCheckGuidePage();
 
     useEffect(() => {
         setTimerTime(allResultLimitTime);
@@ -51,10 +53,6 @@ function ResultSketchbook() {
         // 스케치북 페이지를 넘긴다.
         const NextPageNumber = currentPageIdx + 1;
         setCurrentPageIdx(NextPageNumber);
-    }
-
-    function checkIsNotGuidePage() {
-        return currentPageIdx > guidePageIdx && !isEnded;
     }
 
     return (
