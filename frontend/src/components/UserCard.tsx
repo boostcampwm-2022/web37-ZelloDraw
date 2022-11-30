@@ -7,12 +7,12 @@ import { userState } from '@atoms/user';
 import { useRecoilState } from 'recoil';
 import { networkServiceInstance as NetworkService } from '../services/socketService';
 import { debounce } from 'lodash';
-import useWebRTC from '@hooks/useWebRTC';
 import { VideoProperty } from '@styles/styled';
+import useLocalStream from '@hooks/useLocalStream';
 
 function UserCard() {
     const [user, setUserState] = useRecoilState(userState);
-    const { getSelfMedia, selfVideoRef } = useWebRTC();
+    const { selfVideoRef, getSelfMedia } = useLocalStream();
 
     const onChangeName = (e: React.ChangeEvent<HTMLInputElement>) => {
         const name = e.target.value;
