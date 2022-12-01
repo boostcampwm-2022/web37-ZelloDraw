@@ -31,7 +31,23 @@ export class QuizReplyChain {
     }
 
     getLastQuizReply() {
-        return this.quizReplyList[this.quizReplyList.length - 1];
+        const lastIdx = this.quizReplyList.length - 1;
+        const lastQuizReply = this.quizReplyList[lastIdx];
+
+        if (lastQuizReply.getType() === 'ANSWER') {
+            return this.getLastValidAnswerTypeQuizReply(lastIdx);
+        } else {
+            return lastQuizReply;
+        }
+    }
+
+    private getLastValidAnswerTypeQuizReply(index: number) {
+        const lastReply = this.quizReplyList[index];
+        if (lastReply.isEmptyAnswerTypeQuizReply()) {
+            return this.getLastValidAnswerTypeQuizReply(index - 2);
+        } else {
+            return lastReply;
+        }
     }
 
     setIsWatched(isWatched: boolean) {

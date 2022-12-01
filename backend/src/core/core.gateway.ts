@@ -43,7 +43,15 @@ export class CoreGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
     }
 
     async handleDisconnect(@ConnectedSocket() client: Socket) {
-        await this.handleLeaveLobby(client);
+        const user = this.userService.getUser(client.id);
+
+        if (user.lobbyId === undefined) return;
+        const gameLobby = await this.gameService.getGame(user.lobbyId);
+        if (gameLobby.getIsPlaying()) {
+            await this.handleLeaveGame(client);
+        } else {
+            await this.handleLeaveLobby(client);
+        }
         this.userService.deleteUser(client.id);
     }
 
@@ -97,6 +105,16 @@ export class CoreGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
             userName: user.name,
         }));
         this.emitLeaveLobby(client, user.lobbyId, payload);
+        await client.leave(user.lobbyId);
+    }
+
+    @SubscribeMessage('leave-game')
+    async handleLeaveGame(@ConnectedSocket() client: Socket) {
+        const user = this.userService.getUser(client.id);
+        if (user.lobbyId === undefined) return;
+
+        await this.gameService.leaveWhenPlayingGame(user, user.lobbyId);
+        this.emitLeaveGame(client, user);
         await client.leave(user.lobbyId);
     }
 
@@ -217,5 +235,12 @@ export class CoreGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
             quizReplyLists: quizReplyChains.map((quizReplyChain) => quizReplyChain.quizReplyList),
         };
         client.nsp.to(lobbyId).emit('complete-game', payload);
+    }
+
+    private emitLeaveGame(client: Socket, user: User) {
+        const payload: JoinLobbyReEmitRequest = {
+            userName: user.name,
+        };
+        client.nsp.to(user.lobbyId).emit('leave-game', payload);
     }
 }
