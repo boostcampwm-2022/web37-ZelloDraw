@@ -64,6 +64,17 @@ export class GameService {
         return game.getQuizReplyChains();
     }
 
+    async getIsWatchedQuizReplyChain(lobbyId: string, replyChainIdx: number): Promise<boolean> {
+        const game = await this.getGame(lobbyId);
+        return game.getIsWatchedQuizReplyChain(replyChainIdx);
+    }
+
+    async watchQuizReplyChain(lobbyId: string, bookIdx: number) {
+        const game = await this.getGame(lobbyId);
+        game.watchQuizReplyChain(bookIdx);
+        await this.gameLobbyRepository.save(game);
+    }
+
     async getGame(lobbyId: string): Promise<GameLobby> {
         return await this.gameLobbyRepository.findById(lobbyId);
     }

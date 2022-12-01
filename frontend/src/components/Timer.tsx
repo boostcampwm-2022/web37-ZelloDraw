@@ -3,13 +3,17 @@ import { useEffect, useState } from 'react';
 import { useRecoilValue } from 'recoil';
 import styled from 'styled-components';
 import { Center } from '@styles/styled';
-import { roundInfoState } from '@atoms/game';
+import { roundInfoState, roundNumberState } from '@atoms/game';
 import useTimer from '@hooks/useTimer';
 
 function Timer() {
     const [progress, setProgress] = useState<number>(100);
     const roundInfo = useRecoilValue(roundInfoState);
-    const { limitTime, timeLeft, isTimeOver, setTimerTime } = useTimer(1000);
+    const { curRound } = useRecoilValue(roundNumberState);
+    const { limitTime, timeLeft, isTimeOver, setTimerTime } = useTimer({
+        interval: 1000,
+        clearTimerDeps: curRound,
+    });
 
     useEffect(() => {
         if (roundInfo === undefined) return;

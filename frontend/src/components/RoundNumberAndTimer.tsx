@@ -7,7 +7,7 @@ function RoundNumberAndTimer() {
     const { curRound, maxRound } = useRecoilValue(roundNumberState);
     return (
         <>
-            <RoundNumber cur={curRound} max={maxRound} />
+            <RoundNumber cur={curRound} max={maxRound} round={true} />
             <Timer />
         </>
     );
