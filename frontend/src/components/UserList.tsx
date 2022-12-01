@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import styled from 'styled-components';
 import Card from '@components/Card';
 import InviteButton from '@components/InviteButton';
@@ -32,7 +32,7 @@ function UserList({ selfVideoRef, userStreamList }: UserListType) {
                 <UserGridList>
                     <VideoCallUser userName={currentUser.name} curUserRef={selfVideoRef} />
                     {userStreamList.map((user: WebRTCUser, idx: number) => (
-                        <VideoCallUser key={idx} userName={user.sid} video={user.stream} />
+                        <VideoCallUser key={idx} userName={user.userName} video={user.stream} />
                     ))}
                     {new Array(8 - userList.length)
                         .fill('empty')

@@ -41,7 +41,7 @@ function Lobby() {
                             console.log('send offer from newbie');
                             void createOffers(userInRoom);
                         }
-                    }, 500);
+                    }, 100);
                 });
             },
             (err: SocketException) => {
