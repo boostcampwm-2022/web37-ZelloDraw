@@ -113,6 +113,7 @@ export class CoreGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 
         await this.gameService.leaveWhenPlayingGame(user, user.lobbyId);
         this.emitLeaveGame(client, user);
+        await client.leave(user.lobbyId);
     }
 
     @SubscribeMessage('start-game')
