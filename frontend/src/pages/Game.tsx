@@ -12,7 +12,6 @@ import useMovePage from '@hooks/useMovePage';
 import SmallLogo from '@assets/logo-s.png';
 import GameSketchbook from '@components/GameSketchbook';
 import ResultSketchbook from '@components/ResultSketchbook';
-import usePreventClose from '@hooks/usePreventClose';
 import { networkServiceInstance as NetworkService } from '../services/socketService';
 import { JoinLobbyReEmitRequest } from '@backend/core/user.dto';
 
@@ -21,8 +20,6 @@ function Game() {
     const setGameResult = useSetRecoilState(gameResultState);
     const [isCompleteGame, setIsCompleteGame] = useState(false);
     const [userList, setUserList] = useRecoilState(userListState);
-
-    usePreventClose();
 
     useEffect(() => {
         onCountSubmittedQuiz();
