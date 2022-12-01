@@ -1,7 +1,8 @@
 import { atom, selector } from 'recoil';
 import { QuizReply } from '@backend/core/quizReply.model';
+import { PartialWithoutMethods } from '@backend/utils/types';
 
-export const gameResultState = atom<QuizReply[][]>({
+export const gameResultState = atom<Array<Array<PartialWithoutMethods<QuizReply>>>>({
     key: 'gameResultState',
     default: undefined,
 });
