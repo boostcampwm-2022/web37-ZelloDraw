@@ -1,17 +1,22 @@
 import VideoCallUser from '@components/VideoCallUser';
 import styled from 'styled-components';
 import { useRecoilValue } from 'recoil';
-import { userListState } from '@atoms/game';
+import { userListState, userStreamListState, WebRTCUser } from '@atoms/game';
+import { userState } from '@atoms/user';
 import { Center } from '@styles/styled';
-import { JoinLobbyReEmitRequest } from '@backend/core/user.dto';
+import useWebRTC from '@hooks/useWebRTC';
 
 function GameUsers() {
     const userList = useRecoilValue(userListState);
+    const userStreamList = useRecoilValue(userStreamListState);
+    const currentUser = useRecoilValue(userState);
+    const { selfVideoRef } = useWebRTC();
 
     return (
         <Container>
-            {userList.map((user: JoinLobbyReEmitRequest, idx: number) => (
-                <VideoCallUser key={`${user.userName} ${idx}`} userName={user.userName} />
+            <VideoCallUser userName={currentUser.name} curUserRef={selfVideoRef} />
+            {userStreamList.map((user: WebRTCUser, idx: number) => (
+                <VideoCallUser key={idx} userName={user.userName} video={user.stream} />
             ))}
         </Container>
     );

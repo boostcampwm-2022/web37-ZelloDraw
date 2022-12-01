@@ -1,16 +1,12 @@
 /* eslint-disable @typescript-eslint/no-floating-promises */
 /* eslint-disable @typescript-eslint/no-misused-promises */
+/* eslint-disable @typescript-eslint/no-floating-promises */
 import { useEffect, useRef, useState, useCallback } from 'react';
 import { networkServiceInstance as NetworkService } from '../services/socketService';
 import { JoinLobbyReEmitRequest } from '@backend/core/user.dto';
 import { userCamState, userMicState } from '@atoms/user';
-import { useRecoilValue } from 'recoil';
-
-export interface WebRTCUser {
-    sid: string; // socketID
-    userName: string;
-    stream: MediaStream;
-}
+import { useRecoilValue, useRecoilState } from 'recoil';
+import { WebRTCUser, userStreamListState } from '@atoms/game';
 
 function useWebRTC() {
     const userCam = useRecoilValue<boolean>(userCamState);
@@ -35,7 +31,7 @@ function useWebRTC() {
     }, []);
 
     const pcsRef = useRef<{ [socketId: string]: RTCPeerConnection }>({});
-    const [userStreamList, setUserStreamList] = useState<WebRTCUser[]>([]);
+    const [userStreamList, setUserStreamList] = useRecoilState<WebRTCUser[]>(userStreamListState);
 
     const createPeerConnection = useCallback(
         async (peerSocketId: string, peerName: string): Promise<any> => {

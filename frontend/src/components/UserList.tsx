@@ -5,9 +5,8 @@ import InviteButton from '@components/InviteButton';
 import EmptyVideoCall from '@components/EmptyVideoCall';
 import VideoCallUser from '@components/VideoCallUser';
 import { useRecoilValue } from 'recoil';
-import { userListState } from '@atoms/game';
+import { userListState, WebRTCUser } from '@atoms/game';
 import { userState } from '@atoms/user';
-import { WebRTCUser } from '@hooks/useWebRTC';
 
 interface UserListType {
     selfVideoRef: React.RefObject<HTMLVideoElement>;

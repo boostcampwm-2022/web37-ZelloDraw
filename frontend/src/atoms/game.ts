@@ -9,6 +9,17 @@ export const userListState = atom<Array<{ userName: string; sid: string }>>({
     default: [],
 });
 
+export interface WebRTCUser {
+    sid: string; // socketID
+    userName: string;
+    stream: MediaStream;
+}
+
+export const userStreamListState = atom<WebRTCUser[]>({
+    key: 'userStreamListState',
+    default: [],
+});
+
 /**
  * 라운드 정보
  */
