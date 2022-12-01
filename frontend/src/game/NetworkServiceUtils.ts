@@ -60,11 +60,16 @@ export const emitWatchResultSketchBook = (nextBookIdx: number) => {
     NetworkService.emit('watch-result-sketchbook', { bookIdx: nextBookIdx });
 };
 
-export const onWatchResultSketchBook = () => {
+export const onWatchResultSketchBook = (
+    setCurrentBookIdx: SetterOrUpdater<number>,
+    setCurrentPageIdx: SetterOrUpdater<number>,
+) => {
     NetworkService.on(
         'watch-result-sketchbook',
         (bookIdxInfo: WatchResultSketchbookEmitRequest) => {
-            console.log('스케치북 인포', bookIdxInfo);
+            // TODO: isWatched recoil에 저장하기
+            setCurrentBookIdx(bookIdxInfo.bookIdx);
+            setCurrentPageIdx(0);
         },
     );
 };

@@ -1,11 +1,13 @@
 import { useEffect } from 'react';
 import styled from 'styled-components';
 import { Center } from '@styles/styled';
-import { useRecoilValue } from 'recoil';
+import { useRecoilState, useRecoilValue } from 'recoil';
 import {
     currentBookIdxState,
     currentPageIdxState,
     currentSketchbookState,
+    isEndedState,
+    isStartedState,
     maxSketchbookState,
     sketchbookAuthorState,
 } from '@atoms/result';
@@ -24,14 +26,18 @@ function ResultSketchbook() {
     const { maxPageNum } = useRecoilValue(maxSketchbookState);
     const currentSketchbook = useRecoilValue(currentSketchbookState);
     const sketchbookAuthor = useRecoilValue(sketchbookAuthorState);
-    const currentPageIdx = useRecoilValue(currentPageIdxState);
+    const [currentBookIdx, setCurrentBookIdx] = useRecoilState(currentBookIdxState);
+    const [currentPageIdx, setCurrentPageIdx] = useRecoilState(currentPageIdxState);
     const { isHost } = useRecoilValue(userState);
-    const currentBookIdx = useRecoilValue(currentBookIdxState);
+    const isEnded = useRecoilValue(isEndedState);
+    const [isStarted, setIsStarted] = useRecoilState(isStartedState);
+
     const { checkIsNotGuidePage } = useCheckGuidePage();
     useResultSketchbook();
 
     useEffect(() => {
-        onWatchResultSketchBook();
+        setTimeout(() => setIsStarted(false), 3000);
+        onWatchResultSketchBook(setCurrentBookIdx, setCurrentPageIdx);
     }, []);
 
     function changeSketchbook(nextNum: number) {
@@ -58,20 +64,19 @@ function ResultSketchbook() {
                 }
             />
             <SketchbookAuthor>
-                {checkIsNotGuidePage() && (
+                {!isStarted && (
                     <>
-                        {isHost ? (
+                        {isHost && currentBookIdx !== 0 && (
                             <LeftArrowIcon onClick={() => changeSketchbook(-1)} />
-                        ) : (
-                            <Brace>&#123;</Brace>
                         )}
+                        {isHost && currentBookIdx === 0 && <EmptySpan />}
+                        <Brace>&#123;</Brace>
                         <AuthorName isHost={isHost}>{sketchbookAuthor}</AuthorName>
-                        <AuthorName isHost={isHost}>유저1355</AuthorName>
-                        {isHost ? (
+                        <Brace>&#125;</Brace>
+                        {isHost && !isEnded && (
                             <RightArrowIcon onClick={() => changeSketchbook(1)} />
-                        ) : (
-                            <Brace>&#125;</Brace>
                         )}
+                        {isHost && isEnded && <EmptySpan />}
                         <span>의 스케치북</span>
                     </>
                 )}
@@ -101,6 +106,7 @@ const SketchbookAuthor = styled(Center)`
         transform: scale(1.3) translateY(2px);
         cursor: pointer;
     }
+
     > span {
         font-weight: 600;
     }
@@ -121,4 +127,10 @@ const Brace = styled.span`
     font-weight: 700;
     font-size: ${({ theme }) => theme.typo.h1};
     transform: translateY(4px);
+`;
+
+const EmptySpan = styled.span`
+    width: 30px;
+    margin: 0 28px;
+    transform: scale(1.3) translateY(2px);
 `;
