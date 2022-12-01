@@ -7,6 +7,7 @@ import {
 } from '@backend/core/game.dto';
 import { SetterOrUpdater } from 'recoil';
 import { QuizReply } from '@backend/core/quizReply.model';
+import { PartialWithoutMethods } from '@backend/utils/types';
 
 export const emitStartGame = (lobbyId: string) => {
     NetworkService.emit('start-game', lobbyId);
@@ -46,7 +47,7 @@ export const onRoundTimeout = (setIsRoundTimeout: SetterOrUpdater<boolean>) => {
 };
 
 export const onCompleteGame = (
-    setGameResult: SetterOrUpdater<QuizReply[][]>,
+    setGameResult: SetterOrUpdater<Array<Array<PartialWithoutMethods<QuizReply>>>>,
     setIsCompleteGame: SetterOrUpdater<boolean>,
 ) => {
     NetworkService.on('complete-game', (gameResult: CompleteGameEmitRequest) => {
