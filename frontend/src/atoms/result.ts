@@ -59,6 +59,6 @@ export const isEndedState = selector({
         const { maxBookNum } = get(maxSketchbookState);
         const currentBookIdx = get(currentBookIdxState);
         const currentPageIdx = get(currentPageIdxState);
-        return currentBookIdx > maxBookNum && currentPageIdx === -1;
+        return currentBookIdx === maxBookNum && currentPageIdx === GUIDE_PAGE_IDX;
     },
 });
