@@ -17,4 +17,8 @@ export class QuizReply {
     static createByJson(json: PartialWithoutMethods<QuizReply>): QuizReply {
         return new QuizReply(json.type, json.content, json.author);
     }
+
+    static createEmptyQuizReply(type: QuizReplyType): QuizReply {
+        return new QuizReply(type, undefined);
+    }
 }
