@@ -26,7 +26,7 @@ import { ReactComponent as UpArrowIcon } from '@assets/icons/chevron-up.svg';
 import { emitWatchResultSketchBook, onWatchResultSketchBook } from '@game/NetworkServiceUtils';
 
 function ResultSketchbook() {
-    const { maxPageNum } = useRecoilValue(maxSketchbookState);
+    const { maxPageNum, maxBookNum } = useRecoilValue(maxSketchbookState);
     const currentSketchbook = useRecoilValue(currentSketchbookState);
     const sketchbookAuthor = useRecoilValue(sketchbookAuthorState);
     const [currentBookIdx, setCurrentBookIdx] = useRecoilState(currentBookIdxState);
@@ -97,8 +97,8 @@ function ResultSketchbook() {
                         </SketchbookAuthorName>
                         <Brace>{'}'}</Brace>
                         <span>의 스케치북</span>
-                        {isHost && isEnded && <EmptySpan />}
-                        {isHost && !isEnded && (
+                        {isHost && currentBookIdx === maxBookNum && <EmptySpan />}
+                        {isHost && currentBookIdx !== maxBookNum && (
                             <RightArrowIcon onClick={() => changeSketchbook(1)} />
                         )}
                     </>
