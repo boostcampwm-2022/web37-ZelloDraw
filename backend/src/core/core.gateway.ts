@@ -217,6 +217,6 @@ export class CoreGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
         const payload: JoinLobbyReEmitRequest = {
             userName: user.name,
         };
-        client.nsp.to(user.socketId).emit('leave-game', payload);
+        client.nsp.to(user.lobbyId).emit('leave-game', payload);
     }
 }
