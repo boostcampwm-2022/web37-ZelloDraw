@@ -13,7 +13,11 @@ function QuizResultContent() {
             {checkIsNotGuidePage() && (
                 <QuizResult>
                     {currentSketchbook.type === 'DRAW' ? (
-                        <img src={currentSketchbook.content} alt={'quiz result content'} />
+                        currentSketchbook.content !== undefined ? (
+                            <img src={currentSketchbook.content} alt={'quiz result content'} />
+                        ) : (
+                            <div>{'비어있음'}</div>
+                        )
                     ) : (
                         <div>{currentSketchbook.content}</div>
                     )}
