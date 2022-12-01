@@ -9,6 +9,7 @@ export class GameLobby implements Lobby, Game {
     readonly id: string;
     readonly host: User;
     users: User[];
+    usersAliveState: boolean[];
     maxRound: number;
     curRound: number;
     roundType: 'DRAW' | 'ANSWER';
@@ -49,6 +50,10 @@ export class GameLobby implements Lobby, Game {
         return this.roundType;
     }
 
+    getIsPlaying(): boolean {
+        return this.isPlaying;
+    }
+
     getHost(): User {
         return this.host;
     }
@@ -65,6 +70,12 @@ export class GameLobby implements Lobby, Game {
         this.users = this.users.filter((iUser) => iUser.socketId !== user.socketId);
     }
 
+    leaveWhenPlayingGame(user: User) {
+        const leavedUserIdx = this.getUserIndex(user);
+        this.usersAliveState[leavedUserIdx] = false;
+        this.pollyFillQuizReply(user);
+    }
+
     // TODO: 게임 시작시, 혹은 게임 종료 시 프로퍼티 초기화 로직 필요.
     startGame() {
         this.maxRound = this.users.length - 1;
@@ -78,6 +89,7 @@ export class GameLobby implements Lobby, Game {
             quizReplyChain.add(new QuizReply('ANSWER', randomKeyword));
             return quizReplyChain;
         });
+        this.usersAliveState = this.users.map(() => true);
         this.submittedQuizRepliesOnCurrentRound = this.users.map(() => undefined);
     }
 
@@ -101,6 +113,7 @@ export class GameLobby implements Lobby, Game {
         }
         this.swapRoundType();
         this.submittedQuizRepliesOnCurrentRound = this.users.map(() => undefined);
+        this.pollyFillDeadUsersQuizReply();
     }
 
     getSubmittedQuizRepliesCount(): number {
@@ -149,5 +162,18 @@ export class GameLobby implements Lobby, Game {
     // TODO: 유저별 가져가야 할 ReplyChainIndex를 따로 관리 하도록 하여 다른 메서드 에서는 유저가 각라운드에 가져가야 할 ReplyChainIndex 계산식을 모르게 하도록 수정
     private currentRoundQuizReplyChainIndex(user: User): number {
         return (this.getUserIndex(user) + this.curRound) % this.users.length;
+    }
+
+    private pollyFillQuizReply(user: User) {
+        const quizReply = QuizReply.createEmptyQuizReply(this.roundType);
+        this.submitQuizReply(user, quizReply);
+    }
+
+    private pollyFillDeadUsersQuizReply() {
+        this.usersAliveState.forEach((isAlive, idx) => {
+            if (!isAlive) {
+                this.pollyFillQuizReply(this.users[idx]);
+            }
+        });
     }
 }

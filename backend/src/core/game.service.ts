@@ -64,6 +64,12 @@ export class GameService {
         return game.getQuizReplyChains();
     }
 
+    async leaveWhenPlayingGame(user: User, lobbyId: string) {
+        const game = await this.getGame(lobbyId);
+        game.leaveWhenPlayingGame(user);
+        await this.gameLobbyRepository.save(game);
+    }
+
     async getGame(lobbyId: string): Promise<GameLobby> {
         return await this.gameLobbyRepository.findById(lobbyId);
     }
