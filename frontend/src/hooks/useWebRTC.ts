@@ -46,9 +46,8 @@ function useWebRTC() {
 
                 pc.onicecandidate = (e) => {
                     if (e.candidate) {
-                        NetworkService.emit('ice', {
+                        NetworkService.emit('webrtc-ice', {
                             ice: e.candidate,
-                            lobbyId,
                             candidateReceiveID: peerSocketId,
                         });
                     }
@@ -88,9 +87,8 @@ function useWebRTC() {
             const localSdp = await pc.createOffer();
             await pc.setLocalDescription(new RTCSessionDescription(localSdp));
             setTimeout(() => {
-                NetworkService.emit('offer', {
+                NetworkService.emit('webrtc-offer', {
                     sdp: localSdp,
-                    lobbyId,
                     offerReceiveID: user.sid,
                 });
             }, 2000);
@@ -102,42 +100,51 @@ function useWebRTC() {
     useEffect(() => {
         getSelfMedia();
 
-        NetworkService.on('offer', async (sdp: RTCSessionDescription, offerSendSid: string) => {
-            if (!selfStreamRef.current) return;
-            const pc = await createPeerConnection(offerSendSid);
-            if (!pc) return;
-            pcsRef.current = { ...pcsRef.current, [offerSendSid]: pc };
-            try {
-                await pc.setRemoteDescription(new RTCSessionDescription(sdp));
-                const localSdp = await pc.createAnswer();
-                await pc.setLocalDescription(new RTCSessionDescription(localSdp));
+        NetworkService.on(
+            'webrtc-offer',
+            async (sdp: RTCSessionDescription, offerSendSid: string, userName: string) => {
+                if (!selfStreamRef.current) return;
+                const pc = await createPeerConnection(offerSendSid);
+                if (!pc) return;
+                pcsRef.current = { ...pcsRef.current, [offerSendSid]: pc };
+                try {
+                    await pc.setRemoteDescription(new RTCSessionDescription(sdp));
+                    const localSdp = await pc.createAnswer();
+                    await pc.setLocalDescription(new RTCSessionDescription(localSdp));
 
-                NetworkService.emit('answer', {
-                    sdp: localSdp,
-                    answerReceiveID: offerSendSid,
-                });
-            } catch (e) {
-                console.error(e);
-            }
-        });
+                    NetworkService.emit('webrtc-answer', {
+                        sdp: localSdp,
+                        answerReceiveID: offerSendSid,
+                    });
+                } catch (e) {
+                    console.error(e);
+                }
+            },
+        );
 
-        NetworkService.on('answer', (sdp: RTCSessionDescription, answerSendID: string) => {
-            const pc: RTCPeerConnection = pcsRef.current[answerSendID];
-            if (!pc) return;
+        NetworkService.on(
+            'webrtc-answer',
+            (sdp: RTCSessionDescription, answerSendID: string, userName: string) => {
+                const pc: RTCPeerConnection = pcsRef.current[answerSendID];
+                if (!pc) return;
 
-            pc.setRemoteDescription(new RTCSessionDescription(sdp));
-        });
+                pc.setRemoteDescription(new RTCSessionDescription(sdp));
+            },
+        );
 
-        NetworkService.on('ice', async (ice: RTCIceCandidate, iceSendID: string) => {
-            const pc: RTCPeerConnection = pcsRef.current[iceSendID];
-            if (!pc) return;
-            await pc.addIceCandidate(new RTCIceCandidate(ice));
-        });
+        NetworkService.on(
+            'webrtc-ice',
+            async (ice: RTCIceCandidate, iceSendID: string, userName: string) => {
+                const pc: RTCPeerConnection = pcsRef.current[iceSendID];
+                if (!pc) return;
+                await pc.addIceCandidate(new RTCIceCandidate(ice));
+            },
+        );
 
         return () => {
-            NetworkService.off('offer');
-            NetworkService.off('answer');
-            NetworkService.off('ice');
+            NetworkService.off('webrtc-offer');
+            NetworkService.off('webrtc-answer');
+            NetworkService.off('webrtc-ice');
             userStreamList.forEach((user) => {
                 if (!pcsRef.current[user.sid]) return;
                 pcsRef.current[user.sid].close();

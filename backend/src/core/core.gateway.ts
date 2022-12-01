@@ -132,19 +132,28 @@ export class CoreGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
         }
     }
 
-    @SubscribeMessage('offer')
+    @SubscribeMessage('webrtc-offer')
     async handleOffer(@ConnectedSocket() client: Socket, @MessageBody() body) {
-        client.broadcast.to(body.offerReceiveID).emit('offer', body.sdp, client.id);
+        const user = this.userService.getUser(client.id);
+        client.broadcast
+            .to(body.offerReceiveID)
+            .emit('webrtc-offer', body.sdp, client.id, user.name);
     }
 
-    @SubscribeMessage('answer')
+    @SubscribeMessage('webrtc-answer')
     async handleAnswer(@ConnectedSocket() client: Socket, @MessageBody() body) {
-        client.broadcast.to(body.answerReceiveID).emit('answer', body.sdp, client.id);
+        const user = this.userService.getUser(client.id);
+        client.broadcast
+            .to(body.answerReceiveID)
+            .emit('webrtc-answer', body.sdp, client.id, user.name);
     }
 
-    @SubscribeMessage('ice')
+    @SubscribeMessage('webrtc-ice')
     async handleIce(@ConnectedSocket() client: Socket, @MessageBody() body) {
-        client.broadcast.to(body.candidateReceiveID).emit('ice', body.ice, client.id); // client.id == iceSendID
+        const user = this.userService.getUser(client.id);
+        client.broadcast
+            .to(body.candidateReceiveID)
+            .emit('webrtc-ice', body.ice, client.id, user.name);
     }
 
     private emitJoinLobby(client: Socket, lobbyId: string, payload: JoinLobbyReEmitRequest) {
