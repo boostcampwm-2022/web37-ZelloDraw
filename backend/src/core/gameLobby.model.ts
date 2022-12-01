@@ -165,7 +165,7 @@ export class GameLobby implements Lobby, Game {
     }
 
     private pollyFillQuizReply(user: User) {
-        const quizReply = QuizReply.createEmptyQuizReply(this.roundType);
+        const quizReply = QuizReply.createEmptyQuizReply(this.roundType, user);
         this.submitQuizReply(user, quizReply);
     }
 

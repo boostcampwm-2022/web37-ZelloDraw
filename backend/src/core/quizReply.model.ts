@@ -26,7 +26,7 @@ export class QuizReply {
         return new QuizReply(json.type, json.content, json.author);
     }
 
-    static createEmptyQuizReply(type: QuizReplyType): QuizReply {
-        return new QuizReply(type, undefined);
+    static createEmptyQuizReply(type: QuizReplyType, author: User): QuizReply {
+        return new QuizReply(type, undefined, author);
     }
 }
