@@ -63,13 +63,14 @@ export const emitWatchResultSketchBook = (nextBookIdx: number) => {
 export const onWatchResultSketchBook = (
     setCurrentBookIdx: SetterOrUpdater<number>,
     setCurrentPageIdx: SetterOrUpdater<number>,
+    setIsWatched: SetterOrUpdater<boolean>,
 ) => {
     NetworkService.on(
         'watch-result-sketchbook',
         (bookIdxInfo: WatchResultSketchbookEmitRequest) => {
-            // TODO: isWatched recoil에 저장하기
             setCurrentBookIdx(bookIdxInfo.bookIdx);
             setCurrentPageIdx(0);
+            setIsWatched(bookIdxInfo.isWatched);
         },
     );
 };

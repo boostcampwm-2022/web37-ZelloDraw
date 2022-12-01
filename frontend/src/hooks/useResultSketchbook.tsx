@@ -4,6 +4,7 @@ import {
     currentBookIdxState,
     currentPageIdxState,
     isStartedState,
+    isWatchedBookState,
     maxSketchbookState,
 } from '@atoms/result';
 import useTimer from '@hooks/useTimer';
@@ -11,6 +12,7 @@ import { GUIDE_PAGE_IDX } from '@utils/constants';
 
 function useResultSketchbook() {
     const isStarted = useRecoilValue(isStartedState);
+    const isWatched = useRecoilValue(isWatchedBookState);
     const { maxPageNum, maxBookNum } = useRecoilValue(maxSketchbookState);
     const currentBookIdx = useRecoilValue(currentBookIdxState);
     const [currentPageIdx, setCurrentPageIdx] = useRecoilState(currentPageIdxState);
@@ -21,28 +23,39 @@ function useResultSketchbook() {
         clearTimerDeps: currentBookIdx,
     });
 
-    // TODO: 7. 이미 봤던 스케치북이라서 서버에서 isWatched: true를 보내면 Page를 조작할 수 있는 UI 띄우기
-    // TODO: 8. 유저가 Page를 조작하는 것은 각자 클라이언트에서 자유롭게 조작해서 볼 수 있도록 하기
-
     useEffect(() => {
-        if (isStarted) return;
+        if (isStarted || isWatched) return;
         setTimerTime(aSketchBookLimitTime);
-    }, [currentBookIdx, isStarted]);
+    }, [currentBookIdx, isStarted, isWatched]);
 
     useEffect(() => {
         if (timeLeft === 0 || timeLeft === aSketchBookLimitTime) return;
-        handleSketchbook();
+        addSketchbookPage();
     }, [timeLeft]);
 
-    function handleSketchbook() {
-        if (currentPageIdx === maxPageNum) {
+    function addSketchbookPage() {
+        if (currentPageIdx === maxPageNum && !isWatched) {
             setCurrentPageIdx(GUIDE_PAGE_IDX);
             return;
         }
 
-        // 스케치북 페이지를 넘긴다.
-        const NextPageNumber = currentPageIdx + 1;
+        // 유저가 페이지를 조작하는 상태에서 마지막 페이지가 왔을 경우
+        if (currentPageIdx === maxPageNum && isWatched) return;
+
+        goToNextPage(1);
+    }
+
+    function subtractSketchbookPage() {
+        if (currentPageIdx === 0) return;
+
+        goToNextPage(-1);
+    }
+
+    function goToNextPage(nextNum: number) {
+        const NextPageNumber = currentPageIdx + nextNum;
         setCurrentPageIdx(NextPageNumber);
     }
+
+    return { addSketchbookPage, subtractSketchbookPage };
 }
 export default useResultSketchbook;

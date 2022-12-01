@@ -8,6 +8,7 @@ import {
     currentSketchbookState,
     isEndedState,
     isStartedState,
+    isWatchedBookState,
     maxSketchbookState,
     sketchbookAuthorState,
 } from '@atoms/result';
@@ -20,6 +21,8 @@ import useCheckGuidePage from '@hooks/useCheckGuidePage';
 import useResultSketchbook from '@hooks/useResultSketchbook';
 import { ReactComponent as LeftArrowIcon } from '@assets/icons/chevron-left-gradient.svg';
 import { ReactComponent as RightArrowIcon } from '@assets/icons/chevron-right-gradient.svg';
+import { ReactComponent as DownArrowIcon } from '@assets/icons/chevron-down.svg';
+import { ReactComponent as UpArrowIcon } from '@assets/icons/chevron-up.svg';
 import { emitWatchResultSketchBook, onWatchResultSketchBook } from '@game/NetworkServiceUtils';
 
 function ResultSketchbook() {
@@ -31,13 +34,15 @@ function ResultSketchbook() {
     const { isHost } = useRecoilValue(userState);
     const isEnded = useRecoilValue(isEndedState);
     const [isStarted, setIsStarted] = useRecoilState(isStartedState);
-
+    const [isWatched, setIsWatched] = useRecoilState(isWatchedBookState);
     const { checkIsNotGuidePage } = useCheckGuidePage();
-    useResultSketchbook();
+    const { addSketchbookPage, subtractSketchbookPage } = useResultSketchbook();
 
     useEffect(() => {
         setTimeout(() => setIsStarted(false), 3000);
-        onWatchResultSketchBook(setCurrentBookIdx, setCurrentPageIdx);
+        onWatchResultSketchBook(setCurrentBookIdx, setCurrentPageIdx, setIsWatched);
+        // 가장 처음 나타나는 스케치북도 봤다고 서버에게 알린다.
+        if (isHost) emitWatchResultSketchBook(0);
     }, []);
 
     function changeSketchbook(nextNum: number) {
@@ -63,7 +68,17 @@ function ResultSketchbook() {
                                 <SmallBrace>{'}'}</SmallBrace>
                             </QuizAuthor>
                             <RoundNumberWrapper>
+                                {isWatched && (
+                                    <UpArrowWrapper disable={currentPageIdx === maxPageNum}>
+                                        <UpArrowIcon onClick={addSketchbookPage} />
+                                    </UpArrowWrapper>
+                                )}
                                 <RoundNumber cur={currentPageIdx} max={maxPageNum} round={false} />
+                                {isWatched && (
+                                    <DownArrowWrapper disable={currentPageIdx === 0}>
+                                        <DownArrowIcon onClick={subtractSketchbookPage} />
+                                    </DownArrowWrapper>
+                                )}
                             </RoundNumberWrapper>
                         </>
                     )
@@ -156,5 +171,21 @@ const EmptySpan = styled.span`
 `;
 
 const RoundNumberWrapper = styled(Center)`
+    justify-content: end;
     flex-direction: column;
+`;
+
+const UpArrowWrapper = styled.div<{ disable: boolean }>`
+    > svg {
+        cursor: ${(props) => (props.disable ? 'not-allowed' : 'pointer')};
+        opacity: ${(props) => (props.disable ? 0.4 : 1)};
+        margin-bottom: -8px;
+    }
+`;
+const DownArrowWrapper = styled.div<{ disable: boolean }>`
+    > svg {
+        cursor: ${(props) => (props.disable ? 'not-allowed' : 'pointer')};
+        opacity: ${(props) => (props.disable ? 0.4 : 1)};
+        margin-top: 8px;
+    }
 `;

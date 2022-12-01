@@ -68,3 +68,8 @@ export const isStartedState = atom({
     key: 'isStartedState',
     default: true,
 });
+
+export const isWatchedBookState = atom<boolean>({
+    key: 'isWatchedBookState',
+    default: false,
+});
