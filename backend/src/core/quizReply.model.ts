@@ -14,6 +14,14 @@ export class QuizReply {
         this.author = author;
     }
 
+    getType(): QuizReplyType {
+        return this.type;
+    }
+
+    isEmptyAnswerTypeQuizReply(): boolean {
+        return this.type === 'ANSWER' && this.content === undefined;
+    }
+
     static createByJson(json: PartialWithoutMethods<QuizReply>): QuizReply {
         return new QuizReply(json.type, json.content, json.author);
     }
