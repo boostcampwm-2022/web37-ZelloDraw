@@ -57,8 +57,14 @@ function ResultSketchbook() {
                 right={
                     checkIsNotGuidePage() && (
                         <>
-                            <QuizAuthor>{currentSketchbook.author!.name}</QuizAuthor>
-                            <RoundNumber cur={currentPageIdx} max={maxPageNum} />
+                            <QuizAuthor>
+                                <SmallBrace>{'{'}</SmallBrace>
+                                <QuizAuthorName>{currentSketchbook.author!.name}</QuizAuthorName>
+                                <SmallBrace>{'}'}</SmallBrace>
+                            </QuizAuthor>
+                            <RoundNumberWrapper>
+                                <RoundNumber cur={currentPageIdx} max={maxPageNum} round={false} />
+                            </RoundNumberWrapper>
                         </>
                     )
                 }
@@ -70,14 +76,16 @@ function ResultSketchbook() {
                             <LeftArrowIcon onClick={() => changeSketchbook(-1)} />
                         )}
                         {isHost && currentBookIdx === 0 && <EmptySpan />}
-                        <Brace>&#123;</Brace>
-                        <AuthorName isHost={isHost}>{sketchbookAuthor}</AuthorName>
-                        <Brace>&#125;</Brace>
+                        <Brace>{'{'}</Brace>
+                        <SketchbookAuthorName isHost={isHost}>
+                            {sketchbookAuthor}
+                        </SketchbookAuthorName>
+                        <Brace>{'}'}</Brace>
+                        <span>의 스케치북</span>
+                        {isHost && isEnded && <EmptySpan />}
                         {isHost && !isEnded && (
                             <RightArrowIcon onClick={() => changeSketchbook(1)} />
                         )}
-                        {isHost && isEnded && <EmptySpan />}
-                        <span>의 스케치북</span>
                     </>
                 )}
             </SketchbookAuthor>
@@ -89,9 +97,17 @@ export default ResultSketchbook;
 
 const QuizAuthor = styled.div`
     position: relative;
-    top: -40px;
-    color: ${({ theme }) => theme.color.yellow};
+    top: -56px;
+`;
+
+const QuizAuthorName = styled.span`
+    background: ${({ theme }) => theme.gradation.whitePurple};
+    ${({ theme }) => theme.layout.gradientTypo}
+    -webkit-text-stroke:${({ theme }) => theme.color.primaryLight};
+    text-stroke: ${({ theme }) => theme.color.primaryLight};
     font-size: ${({ theme }) => theme.typo.h5};
+    font-weight: 600;
+    word-break: keep-all;
 `;
 
 const SketchbookAuthor = styled(Center)`
@@ -112,13 +128,10 @@ const SketchbookAuthor = styled(Center)`
     }
 `;
 
-const AuthorName = styled.span<{ isHost: boolean | null }>`
+const SketchbookAuthorName = styled.span<{ isHost: boolean | null }>`
     background: ${(props) =>
         props.isHost ? props.theme.gradation.yellowPurple : props.theme.color.whiteT2};
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-    text-fill-color: transparent;
+    ${({ theme }) => theme.layout.gradientTypo}
 `;
 
 const Brace = styled.span`
@@ -129,8 +142,19 @@ const Brace = styled.span`
     transform: translateY(4px);
 `;
 
+const SmallBrace = styled(Brace)`
+    font-size: ${({ theme }) => theme.typo.h4};
+    color: ${({ theme }) => theme.color.whiteT2};
+    position: relative;
+    top: 1px;
+`;
+
 const EmptySpan = styled.span`
     width: 30px;
     margin: 0 28px;
     transform: scale(1.3) translateY(2px);
+`;
+
+const RoundNumberWrapper = styled(Center)`
+    flex-direction: column;
 `;
