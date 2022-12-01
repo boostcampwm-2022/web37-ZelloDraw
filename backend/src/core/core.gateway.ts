@@ -21,6 +21,8 @@ import {
     StartRoundEmitRequest,
     SubmitQuizReplyEmitRequest,
     SubmitQuizReplyRequest,
+    WatchResultSketchbookEmitRequest,
+    WatchResultSketchbookRequest,
 } from './game.dto';
 import { QuizReplyChain } from './quizReplyChain.model';
 import { User } from './user.model';
@@ -161,6 +163,28 @@ export class CoreGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
         client.broadcast
             .to(body.candidateReceiveID)
             .emit('webrtc-ice', body.ice, client.id, user.name);
+    }
+
+    @SubscribeMessage('watch-result-sketchbook')
+    async handleWatchResultSketchbook(
+        @ConnectedSocket() client: Socket,
+        @MessageBody() payload: WatchResultSketchbookRequest,
+    ) {
+        const user = this.userService.getUser(client.id);
+        const isWatched: boolean = await this.gameService.getIsWatchedQuizReplyChain(
+            user.lobbyId,
+            payload.bookIdx,
+        );
+        await this.gameService.watchQuizReplyChain(user.lobbyId, payload.bookIdx);
+        this.emitWatchResultSketchbook(client, payload.bookIdx, isWatched);
+    }
+
+    private emitWatchResultSketchbook(client: Socket, bookIndex: number, isWatched: boolean) {
+        const payload: WatchResultSketchbookEmitRequest = {
+            bookIdx: bookIndex,
+            isWatched,
+        };
+        client.nsp.emit('watch-result-sketchbook', payload);
     }
 
     private emitJoinLobby(client: Socket, lobbyId: string, payload: JoinLobbyReEmitRequest) {

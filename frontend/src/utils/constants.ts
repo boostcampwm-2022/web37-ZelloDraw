@@ -28,6 +28,7 @@ export const ERASER_LINE_WIDTH = 20;
 export const MAX_WIDTH = 2000;
 export const MAX_HEIGHT = 1050;
 export const SCALE = Number((window.innerWidth / MAX_WIDTH).toFixed(2));
+export const GUIDE_PAGE_IDX = -1;
 
 export enum CanvasState {
     DRAW,

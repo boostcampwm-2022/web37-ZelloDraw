@@ -1,8 +1,8 @@
 import styled from 'styled-components';
 
-function RoundNumber({ cur, max }: { cur: number; max: number }) {
+function RoundNumber({ cur, max, round }: { cur: number; max: number; round: boolean }) {
     return (
-        <Round>
+        <Round round={round}>
             {cur}/{max}
         </Round>
     );
@@ -10,15 +10,15 @@ function RoundNumber({ cur, max }: { cur: number; max: number }) {
 
 export default RoundNumber;
 
-const Round = styled.div`
+const Round = styled.div<{ round: boolean }>`
     height: 45px;
-    background: ${({ theme }) => theme.gradation.primaryLightBrown};
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-    text-fill-color: transparent;
-    -webkit-text-stroke: 1px ${({ theme }) => theme.color.blackT1};
-    text-stroke: 1px ${({ theme }) => theme.color.blackT1};
+    background: ${(props) =>
+        props.round ? props.theme.gradation.primaryLightBrown : props.theme.gradation.whitePurple};
+    ${({ theme }) => theme.layout.gradientTypo}
+    -webkit-text-stroke: 1px ${(props) =>
+        props.round ? props.theme.color.blackT1 : props.theme.color.primaryLight};
+    text-stroke: 1px
+        ${(props) => (props.round ? props.theme.color.blackT1 : props.theme.color.primaryLight)};
     font-family: 'Sniglet', cursive;
     font-weight: 800;
     font-size: 1.75rem;
