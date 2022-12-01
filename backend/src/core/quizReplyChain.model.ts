@@ -3,9 +3,11 @@ import { PartialWithoutMethods } from '../utils/types';
 
 export class QuizReplyChain {
     quizReplyList: QuizReply[];
+    isWatched: boolean;
 
     constructor() {
         this.quizReplyList = [];
+        this.isWatched = false;
     }
 
     static createByJson(json: PartialWithoutMethods<QuizReplyChain>) {
@@ -18,6 +20,10 @@ export class QuizReplyChain {
 
     add(QuizReply: QuizReply) {
         this.quizReplyList.push(QuizReply);
+    }
+
+    get(index: number) {
+        return this.quizReplyList[index];
     }
 
     put(index: number, quizReply: QuizReply) {
@@ -42,5 +48,13 @@ export class QuizReplyChain {
         } else {
             return lastReply;
         }
+    }
+
+    setIsWatched(isWatched: boolean) {
+        this.isWatched = isWatched;
+    }
+
+    getIsWatched() {
+        return this.isWatched;
     }
 }

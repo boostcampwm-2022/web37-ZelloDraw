@@ -26,3 +26,12 @@ export interface SubmitQuizReplyEmitRequest {
 export interface CompleteGameEmitRequest {
     quizReplyLists: Array<Array<PartialWithoutMethods<QuizReply>>>;
 }
+
+export interface WatchResultSketchbookRequest {
+    bookIdx: number;
+}
+
+export interface WatchResultSketchbookEmitRequest {
+    bookIdx: number;
+    isWatched: boolean;
+}

@@ -1,6 +1,7 @@
 import { atom, selector } from 'recoil';
 import { QuizReply } from '@backend/core/quizReply.model';
 import { PartialWithoutMethods } from '@backend/utils/types';
+import { GUIDE_PAGE_IDX } from '@utils/constants';
 
 export const gameResultState = atom<Array<Array<PartialWithoutMethods<QuizReply>>>>({
     key: 'gameResultState',
@@ -22,7 +23,7 @@ export const currentBookIdxState = atom<number>({
 
 export const currentPageIdxState = atom<number>({
     key: 'currentPageIdxState',
-    default: -1, // 첫 시작시 가이드페이지가 나오도록 가이드페이지 인덱스로 기본 설정
+    default: 0,
 });
 
 export const currentSketchbookState = selector({
@@ -60,6 +61,16 @@ export const isEndedState = selector({
         const { maxBookNum } = get(maxSketchbookState);
         const currentBookIdx = get(currentBookIdxState);
         const currentPageIdx = get(currentPageIdxState);
-        return currentBookIdx > maxBookNum && currentPageIdx === -1;
+        return currentBookIdx === maxBookNum && currentPageIdx === GUIDE_PAGE_IDX;
     },
+});
+
+export const isStartedState = atom({
+    key: 'isStartedState',
+    default: true,
+});
+
+export const isWatchedBookState = atom<boolean>({
+    key: 'isWatchedBookState',
+    default: false,
 });

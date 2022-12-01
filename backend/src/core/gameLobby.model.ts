@@ -15,6 +15,7 @@ export class GameLobby implements Lobby, Game {
     roundType: 'DRAW' | 'ANSWER';
     roundLimitTime: number;
     submittedQuizRepliesOnCurrentRound: Array<QuizReply | undefined>;
+    // isWatchedQuizReplyChain: boolean[];
     quizReplyChains: QuizReplyChain[];
     isPlaying: boolean;
 
@@ -91,6 +92,7 @@ export class GameLobby implements Lobby, Game {
         });
         this.usersAliveState = this.users.map(() => true);
         this.submittedQuizRepliesOnCurrentRound = this.users.map(() => undefined);
+        // this.isWatchedQuizReplyChain = this.users.map(() => false);
     }
 
     getCurrentRoundQuizReplyChain(user: User): QuizReplyChain {
@@ -143,6 +145,14 @@ export class GameLobby implements Lobby, Game {
 
     isLastRound(): boolean {
         return this.curRound === this.maxRound;
+    }
+
+    watchQuizReplyChain(index: number) {
+        this.quizReplyChains[index].setIsWatched(true);
+    }
+
+    getIsWatchedQuizReplyChain(idx: number): boolean {
+        return this.quizReplyChains[idx].getIsWatched();
     }
 
     private swapRoundType() {
