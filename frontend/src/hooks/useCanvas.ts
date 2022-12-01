@@ -6,7 +6,9 @@ import {
     PEN_DEFAULT_COLOR,
     ERASER_COLOR,
     ERASER_LINE_WIDTH,
+    CanvasState,
 } from '@utils/constants';
+import { convertHexToRgba, getPixelColor, isSameColor, setPixel } from '@utils/canvas';
 import { useRecoilValue, useSetRecoilState } from 'recoil';
 import {
     isQuizTypeDrawState,
@@ -23,9 +25,11 @@ interface Coordinate {
 function useCanvas() {
     const canvasRef = useRef<HTMLCanvasElement>(null);
     const ctxRef = useRef<any>(null);
+    const curColor = useRef<Uint8ClampedArray>(convertHexToRgba(PEN_DEFAULT_COLOR));
+    const drawState = useRef<CanvasState>(CanvasState.NONE);
 
     const [pos, setPos] = useState<Coordinate | undefined>({ x: 0, y: 0 });
-    const [isPainting, setIsPainting] = useState<boolean>(false);
+    const [isDrawing, setIsDrawing] = useState<boolean>(false);
     const quizSubmitted = useRecoilValue(quizSubmitState);
     const { curRound } = useRecoilValue(roundNumberState);
     const isTypeDraw = useRecoilValue(isQuizTypeDrawState);
@@ -44,22 +48,67 @@ function useCanvas() {
     };
 
     const onClickPen = (selectedColor: string) => {
+        drawState.current = CanvasState.NONE;
         ctxRef.current.strokeStyle = selectedColor;
         ctxRef.current.lineWidth = PEN_LINE_WIDTH;
     };
 
+    const floodFill = (x: number, y: number, fillColor: Uint8ClampedArray) => {
+        const imageData = ctxRef.current.getImageData(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
+        const visited = new Uint8Array(imageData.width, imageData.height);
+        const targetColor = getPixelColor(imageData, x, y);
+
+        if (!isSameColor(targetColor, fillColor)) {
+            const stack = [{ x, y }];
+            while (stack.length > 0) {
+                const child = stack.pop();
+                if (!child) return;
+                const currentColor = getPixelColor(imageData, child.x, child.y);
+                if (
+                    !visited[child.y * imageData.width + child.x] &&
+                    isSameColor(currentColor, targetColor)
+                ) {
+                    setPixel(imageData, child.x, child.y, fillColor);
+                    visited[child.y * imageData.width + child.x] = 1;
+                    stack.push({ x: child.x + 1, y: child.y });
+                    stack.push({ x: child.x - 1, y: child.y });
+                    stack.push({ x: child.x, y: child.y + 1 });
+                    stack.push({ x: child.x, y: child.y - 1 });
+                }
+            }
+            ctxRef.current.putImageData(imageData, 0, 0);
+        }
+    };
+
+    const paintCanvas = useCallback(
+        (event: MouseEvent) => {
+            if (drawState.current === CanvasState.PAINT) {
+                const curPos = getCoordinates(event);
+                if (!curPos) return;
+                floodFill(curPos.x, curPos.y, curColor.current);
+            }
+        },
+        [drawState],
+    );
+
+    const onClickPaint = () => {
+        drawState.current = CanvasState.PAINT;
+    };
+
     const onColorChange = (color: string) => {
+        curColor.current = convertHexToRgba(color);
         ctxRef.current.strokeStyle = color;
-        ctxRef.current.fillStyle = color;
         ctxRef.current.lineWidth = PEN_LINE_WIDTH;
     };
 
     const onClickEraser = () => {
+        drawState.current = CanvasState.NONE;
         ctxRef.current.strokeStyle = ERASER_COLOR;
         ctxRef.current.lineWidth = ERASER_LINE_WIDTH;
     };
 
     const onClickReset = () => {
+        drawState.current = CanvasState.NONE;
         ctxRef.current.clearRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
     };
 
@@ -70,7 +119,7 @@ function useCanvas() {
 
             if (quizSubmitted || curRound === 0) return;
 
-            if (isPainting) {
+            if (drawState.current === CanvasState.DRAW && isDrawing) {
                 const newPos = getCoordinates(event);
                 if (pos && newPos) {
                     drawLine(pos, newPos);
@@ -78,19 +127,21 @@ function useCanvas() {
                 }
             }
         },
-        [isPainting, pos],
+        [drawState, pos],
     );
 
     const startPainting = useCallback((event: MouseEvent) => {
+        if (drawState.current === CanvasState.PAINT) return;
         const newPos = getCoordinates(event);
         if (newPos) {
-            setIsPainting(true);
+            drawState.current = CanvasState.DRAW;
+            setIsDrawing(true);
             setPos(newPos);
         }
     }, []);
 
     const cancelPainting = useCallback(() => {
-        setIsPainting(false);
+        setIsDrawing(false);
 
         // 유저가 그리는 걸 멈추는 순간 recoil에 그림 저장
         if (isTypeDraw) {
@@ -106,14 +157,16 @@ function useCanvas() {
         canvas.addEventListener('mousemove', onMove);
         canvas.addEventListener('mouseup', cancelPainting);
         canvas.addEventListener('mouseleave', cancelPainting);
+        canvas.addEventListener('click', paintCanvas);
 
         return () => {
             canvas.removeEventListener('mousedown', startPainting);
             canvas.removeEventListener('mousemove', onMove);
             canvas.removeEventListener('mouseup', cancelPainting);
             canvas.removeEventListener('mouseleave', cancelPainting);
+            canvas.removeEventListener('click', paintCanvas);
         };
-    }, [onMove, startPainting, cancelPainting]);
+    }, [onMove, startPainting, cancelPainting, paintCanvas]);
 
     useEffect(() => {
         if (!canvasRef.current) return;
@@ -121,7 +174,9 @@ function useCanvas() {
         canvas.width = CANVAS_WIDTH;
         canvas.height = CANVAS_HEIGHT;
 
-        const ctx: CanvasRenderingContext2D | null = canvas.getContext('2d');
+        const ctx: CanvasRenderingContext2D | null = canvas.getContext('2d', {
+            willReadFrequently: true,
+        });
         if (!ctx) return;
         ctx.strokeStyle = PEN_DEFAULT_COLOR;
         ctx.lineWidth = PEN_LINE_WIDTH;
@@ -133,7 +188,7 @@ function useCanvas() {
         ctxRef.current.clearRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
     }, [curRound]);
 
-    return { canvasRef, onClickPen, onColorChange, onClickEraser, onClickReset };
+    return { canvasRef, onClickPen, onClickPaint, onColorChange, onClickEraser, onClickReset };
 }
 
 export default useCanvas;

@@ -38,3 +38,15 @@ export const VideoProperty = styled.video`
     height: 100%;
     object-fit: cover;
 `;
+
+export const Guide = styled(Center)`
+    ${({ theme }) => theme.layout.sketchBook};
+    flex-direction: column;
+    height: 420px;
+    > div {
+        color: ${({ theme }) => theme.color.primaryLight};
+        font-size: ${({ theme }) => theme.typo.h3};
+        font-weight: 600;
+        white-space: pre-line;
+    }
+`;

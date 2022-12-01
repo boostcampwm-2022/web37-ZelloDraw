@@ -7,17 +7,19 @@ import usePalette from '@hooks/usePalette';
 
 interface PaletteType {
     onClickPen: (color: string) => void;
+    onClickPaint: () => void;
     onColorChange: (color: string) => void;
     onClickEraser: () => void;
     onClickReset: () => void;
 }
 
 interface DrawingToolsType {
-    rest: PaletteType;
+    restProps: PaletteType;
 }
 
-function DrawingTools({ rest }: DrawingToolsType) {
-    const { tools, selectedColor, selectedTool, onClickColor, onChangeTool } = usePalette(rest);
+function DrawingTools({ restProps }: DrawingToolsType) {
+    const { tools, selectedColor, selectedTool, onClickColor, onChangeTool } =
+        usePalette(restProps);
 
     return (
         <Container>

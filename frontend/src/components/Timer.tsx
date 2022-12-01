@@ -4,34 +4,19 @@ import { useRecoilValue } from 'recoil';
 import styled from 'styled-components';
 import { Center } from '@styles/styled';
 import { roundInfoState } from '@atoms/game';
+import useTimer from '@hooks/useTimer';
 
 function Timer() {
-    const [intervalId, setIntervalId] = useState<any>(undefined);
     const [progress, setProgress] = useState<number>(100);
     const roundInfo = useRecoilValue(roundInfoState);
-    const [limitTime, setLimitTime] = useState<number>(60);
-    const [timeLeft, setTimeLeft] = useState<number>(60);
-    const [isTimeOver, setIsTimeOver] = useState<boolean>(false);
+    const { limitTime, timeLeft, isTimeOver, setTimerTime } = useTimer(1000);
 
     useEffect(() => {
         if (roundInfo === undefined) return;
-        setLimitTime(roundInfo.limitTime);
-        setTimeLeft(roundInfo.limitTime);
+        setTimerTime(roundInfo.limitTime);
     }, [roundInfo]);
 
     useEffect(() => {
-        if (limitTime === timeLeft) {
-            const startTimer = setInterval(() => {
-                setTimeLeft((prevTime) => prevTime - 1);
-            }, 1000);
-            setIntervalId(startTimer);
-        } else if (timeLeft < 0) {
-            // 시간이 0초가 되면 타이머가 멈춘다.
-            clearInterval(intervalId);
-            setIntervalId(undefined);
-            setIsTimeOver(true);
-        }
-
         // 프로그레스바의 높이를 설정
         setProgress((timeLeft / limitTime) * 100);
     }, [timeLeft]);
@@ -51,6 +36,7 @@ export default Timer;
 
 const Container = styled(Center)`
     flex-direction: column;
+    margin-left: 32px;
 `;
 
 const ProgressBar = styled.div`

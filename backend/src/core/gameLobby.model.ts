@@ -3,6 +3,7 @@ import { Lobby } from './lobby.interface';
 import { QuizReply } from './quizReply.model';
 import { QuizReplyChain } from './quizReplyChain.model';
 import { User } from './user.model';
+import { PartialWithoutMethods } from '../utils/types';
 
 export class GameLobby implements Lobby, Game {
     readonly id: string;
@@ -26,6 +27,14 @@ export class GameLobby implements Lobby, Game {
         this.roundLimitTime = 0;
         this.quizReplyChains = [];
         this.isPlaying = false;
+    }
+
+    static createByJson(json: PartialWithoutMethods<GameLobby>): GameLobby {
+        const gameLobby = Object.assign(new GameLobby(json.host), json);
+        gameLobby.quizReplyChains = gameLobby.quizReplyChains.map((quizReplyChain: any) => {
+            return QuizReplyChain.createByJson(quizReplyChain);
+        });
+        return gameLobby;
     }
 
     getId(): string {
@@ -95,9 +104,8 @@ export class GameLobby implements Lobby, Game {
     }
 
     getSubmittedQuizRepliesCount(): number {
-        return this.submittedQuizRepliesOnCurrentRound.filter(
-            (quizReply) => quizReply !== undefined,
-        ).length;
+        return this.submittedQuizRepliesOnCurrentRound.filter((quizReply) => quizReply == undefined)
+            .length;
     }
 
     getNotSubmittedUsers() {
@@ -113,13 +121,15 @@ export class GameLobby implements Lobby, Game {
     }
 
     isAllUserSubmittedQuizReply(): boolean {
-        return this.submittedQuizRepliesOnCurrentRound.every(
-            (quizReply) => quizReply !== undefined,
-        );
+        return this.submittedQuizRepliesOnCurrentRound.every((quizReply) => quizReply != undefined);
     }
 
     getQuizReplyChains(): QuizReplyChain[] {
         return this.quizReplyChains;
+    }
+
+    isLastRound(): boolean {
+        return this.curRound === this.maxRound;
     }
 
     private swapRoundType() {
