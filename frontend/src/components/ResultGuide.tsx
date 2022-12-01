@@ -28,18 +28,8 @@ function ResultGuide() {
                 {!isEnded && currentPageIdx === GUIDE_PAGE_IDX && nextSketchbookGuide}
                 {currentBookIdx === maxBookNum && currentPageIdx === GUIDE_PAGE_IDX && EndGuide}
             </div>
-            {isEnded && <ReplayBtn>다시보기</ReplayBtn>}
         </Guide>
     );
 }
 
 export default ResultGuide;
-
-const ReplayBtn = styled.button`
-    position: absolute;
-    bottom: -24px;
-    color: ${({ theme }) => theme.color.primaryDark};
-    font-size: ${({ theme }) => theme.typo.h4};
-    font-weight: 600;
-    border-bottom: 3px solid ${({ theme }) => theme.color.primaryDark};
-`;
