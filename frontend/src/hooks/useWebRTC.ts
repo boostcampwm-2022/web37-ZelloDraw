@@ -1,41 +1,18 @@
-/* eslint-disable @typescript-eslint/no-floating-promises */
-/* eslint-disable @typescript-eslint/no-misused-promises */
-/* eslint-disable @typescript-eslint/no-floating-promises */
-import { useEffect, useRef, useState, useCallback } from 'react';
+import { useEffect, useRef, useCallback } from 'react';
 import { networkServiceInstance as NetworkService } from '../services/socketService';
 import { JoinLobbyReEmitRequest } from '@backend/core/user.dto';
-import { userCamState, userMicState } from '@atoms/user';
+import { userStreamRefState } from '@atoms/user';
 import { useRecoilValue, useRecoilState } from 'recoil';
 import { WebRTCUser, userStreamListState } from '@atoms/game';
 
 function useWebRTC() {
-    const userCam = useRecoilValue<boolean>(userCamState);
-    const userMic = useRecoilValue<boolean>(userMicState);
-
-    const selfVideoRef = useRef<HTMLVideoElement>(null);
-    const selfStreamRef = useRef<MediaStream | undefined>();
-
-    const getSelfMedia: () => Promise<void> = useCallback(async () => {
-        try {
-            const stream = await navigator.mediaDevices.getUserMedia({
-                video: userCam,
-                audio: userMic,
-            });
-            selfStreamRef.current = stream;
-
-            if (!selfVideoRef.current) return;
-            selfVideoRef.current.srcObject = stream;
-        } catch (err) {
-            console.log(err);
-        }
-    }, []);
-
     const pcsRef = useRef<{ [socketId: string]: RTCPeerConnection }>({});
+    const selfStreamRef = useRecoilValue(userStreamRefState);
     const [userStreamList, setUserStreamList] = useRecoilState<WebRTCUser[]>(userStreamListState);
 
     const createPeerConnection = useCallback(
         async (peerSocketId: string, peerName: string): Promise<any> => {
-            const res = await new Promise((resolve, reject) => {
+            const res = await new Promise((resolve) => {
                 try {
                     const pc = new RTCPeerConnection();
 
@@ -60,7 +37,7 @@ function useWebRTC() {
                         );
                     };
 
-                    if (!selfStreamRef.current) return;
+                    if (!selfStreamRef?.current) return;
                     selfStreamRef.current.getTracks().forEach((track) => {
                         if (!selfStreamRef.current) return;
                         pc.addTrack(track, selfStreamRef.current);
@@ -77,7 +54,7 @@ function useWebRTC() {
     );
 
     const createOffers = async (user: JoinLobbyReEmitRequest) => {
-        if (!selfStreamRef.current) return;
+        if (!selfStreamRef?.current) return;
         const pc = await createPeerConnection(user.sid, user.userName);
         if (!pc) return;
         pcsRef.current = { ...pcsRef.current, [user.sid]: pc };
@@ -94,12 +71,11 @@ function useWebRTC() {
     };
 
     useEffect(() => {
-        getSelfMedia();
-
         NetworkService.on(
             'webrtc-offer',
+            // eslint-disable-next-line @typescript-eslint/no-misused-promises
             async (sdp: RTCSessionDescription, offerSendSid: string, userName: string) => {
-                if (!selfStreamRef.current) return;
+                if (!selfStreamRef?.current) return;
                 const pc = await createPeerConnection(offerSendSid, userName);
                 if (!pc) return;
                 pcsRef.current = { ...pcsRef.current, [offerSendSid]: pc };
@@ -124,18 +100,16 @@ function useWebRTC() {
                 const pc: RTCPeerConnection = pcsRef.current[answerSendID];
                 if (!pc) return;
 
-                pc.setRemoteDescription(new RTCSessionDescription(sdp));
+                void pc.setRemoteDescription(new RTCSessionDescription(sdp));
             },
         );
 
-        NetworkService.on(
-            'webrtc-ice',
-            async (ice: RTCIceCandidate, iceSendID: string, userName: string) => {
-                const pc: RTCPeerConnection = pcsRef.current[iceSendID];
-                if (!pc) return;
-                await pc.addIceCandidate(new RTCIceCandidate(ice));
-            },
-        );
+        // eslint-disable-next-line @typescript-eslint/no-misused-promises
+        NetworkService.on('webrtc-ice', async (ice: RTCIceCandidate, iceSendID: string) => {
+            const pc: RTCPeerConnection = pcsRef.current[iceSendID];
+            if (!pc) return;
+            await pc.addIceCandidate(new RTCIceCandidate(ice));
+        });
 
         return () => {
             NetworkService.off('webrtc-offer');
@@ -150,17 +124,7 @@ function useWebRTC() {
         };
     }, []);
 
-    useEffect(() => {
-        if (!selfStreamRef.current) return;
-        selfStreamRef.current.getVideoTracks().forEach((track) => (track.enabled = !track.enabled));
-    }, [userCam]);
-
-    useEffect(() => {
-        if (!selfStreamRef.current) return;
-        selfStreamRef.current.getAudioTracks().forEach((track) => (track.enabled = !track.enabled));
-    }, [userMic]);
-
-    return { selfVideoRef, userStreamList, createOffers };
+    return { createOffers };
 }
 
 export default useWebRTC;

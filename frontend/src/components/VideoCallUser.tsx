@@ -5,20 +5,16 @@ import { ReactComponent as MicOnIcon } from '@assets/icons/mic-on-video-icon.svg
 import { ReactComponent as HostIconS } from '@assets/icons/host-icon-s.svg';
 import { ReactComponent as HostIconL } from '@assets/icons/host-icon-l.svg';
 import { Center, VideoProperty } from '@styles/styled';
-import { useRecoilValue } from 'recoil';
-import { userListState } from '@atoms/game';
 
 interface VideoCallProps {
     userName?: string;
     video?: MediaStream;
-    curUserRef?: React.RefObject<HTMLVideoElement>;
 }
 
-function VideoCallUser({ userName, video, curUserRef }: VideoCallProps) {
+function VideoCallUser({ userName, video }: VideoCallProps) {
     const [hostState, setHostState] = useState<boolean>(false);
     const [micState, setMicState] = useState<boolean>(true);
-    const videoRef = useRef<HTMLVideoElement>(null);
-    const userList = useRecoilValue(userListState);
+    const videoRef: React.RefObject<HTMLVideoElement> | null = useRef(null);
 
     useEffect(() => {
         if (!videoRef.current || !video) return;
@@ -30,14 +26,6 @@ function VideoCallUser({ userName, video, curUserRef }: VideoCallProps) {
             {video ? (
                 <>
                     <Video ref={videoRef} autoPlay playsInline></Video>
-                    <CameraOnUserName>
-                        <span>{userName}</span>
-                        {hostState && <HostIconS />}
-                    </CameraOnUserName>
-                </>
-            ) : curUserRef ? (
-                <>
-                    <Video ref={curUserRef} autoPlay playsInline></Video>
                     <CameraOnUserName>
                         <span>{userName}</span>
                         {hostState && <HostIconS />}

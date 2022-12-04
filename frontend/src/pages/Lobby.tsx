@@ -12,7 +12,7 @@ import {
     SocketException,
 } from '../services/socketService';
 import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
-import { roundInfoState, userListState } from '@atoms/game';
+import { roundInfoState, userListState, userStreamListState } from '@atoms/game';
 import { getParam } from '@utils/common';
 import { JoinLobbyReEmitRequest, JoinLobbyRequest } from '@backend/core/user.dto';
 import { StartRoundEmitRequest } from '@backend/core/game.dto';
@@ -21,12 +21,14 @@ import useWebRTC from '@hooks/useWebRTC';
 import { userState } from '@atoms/user';
 
 function Lobby() {
-    const [userList, setUserList] = useRecoilState(userListState);
     const curUser = useRecoilValue(userState);
-    const [setPage] = useMovePage();
-    const lobbyId = getParam('id');
+    const userStreamList = useRecoilValue(userStreamListState);
+    const [userList, setUserList] = useRecoilState(userListState);
     const setRoundInfo = useSetRecoilState<StartRoundEmitRequest>(roundInfoState);
-    const { selfVideoRef, userStreamList, createOffers } = useWebRTC();
+
+    const lobbyId = getParam('id');
+    const [setPage] = useMovePage();
+    const { createOffers } = useWebRTC();
 
     useEffect(() => {
         const payload: JoinLobbyRequest = { lobbyId };
@@ -77,7 +79,7 @@ function Lobby() {
             </LogoWrapper>
             <LobbyContainer>
                 <FlexBox>
-                    <UserList selfVideoRef={selfVideoRef} userStreamList={userStreamList} />
+                    <UserList userStreamList={userStreamList} />
                     <GameModeList lobbyId={lobbyId} />
                 </FlexBox>
                 <ButtonWrapper>

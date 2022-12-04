@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect } from 'react';
+import React, { useCallback } from 'react';
 import styled from 'styled-components';
 import Card from '@components/Card';
 import CameraButton from '@components/CameraButton';
@@ -12,7 +12,7 @@ import useLocalStream from '@hooks/useLocalStream';
 
 function UserCard() {
     const [user, setUserState] = useRecoilState(userState);
-    const { selfVideoRef, getSelfMedia } = useLocalStream();
+    const { videoRef } = useLocalStream();
 
     const onChangeName = (e: React.ChangeEvent<HTMLInputElement>) => {
         const name = e.target.value;
@@ -27,15 +27,11 @@ function UserCard() {
         [],
     );
 
-    useEffect(() => {
-        void getSelfMedia();
-    }, []);
-
     return (
         <Card>
             <CardInner>
                 <UserVideo>
-                    <Video ref={selfVideoRef} autoPlay playsInline></Video>
+                    <Video ref={videoRef} autoPlay playsInline></Video>
                 </UserVideo>
                 <UserName>
                     <span>&#123;</span>

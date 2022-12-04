@@ -1,20 +1,20 @@
-/* eslint-disable @typescript-eslint/no-misused-promises */
 import { useEffect, useRef, useCallback } from 'react';
-import { userCamState, userMicState } from '@atoms/user';
-import { useRecoilValue } from 'recoil';
+import { userCamState, userMicState, userStreamState, userStreamRefState } from '@atoms/user';
+import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
 
 interface localStreamProps {
-    selfStreamRef: React.MutableRefObject<MediaStream | undefined>;
-    selfVideoRef: React.RefObject<HTMLVideoElement>;
-    getSelfMedia: () => Promise<void>;
+    videoRef: React.RefObject<HTMLVideoElement> | null;
 }
 
 function useLocalStream(): localStreamProps {
     const userCam = useRecoilValue<boolean>(userCamState);
     const userMic = useRecoilValue<boolean>(userMicState);
 
-    const selfVideoRef = useRef<HTMLVideoElement>(null);
-    const selfStreamRef = useRef<MediaStream | undefined>();
+    const setStream = useSetRecoilState(userStreamState);
+    const [selfStreamRef, setSelfStreamRef] = useRecoilState(userStreamRefState);
+
+    const videoRef: React.RefObject<HTMLVideoElement> | null = useRef(null);
+    const streamRef = useRef<MediaStream>();
 
     const getSelfMedia: () => Promise<void> = useCallback(async () => {
         try {
@@ -22,27 +22,33 @@ function useLocalStream(): localStreamProps {
                 video: userCam,
                 audio: userMic,
             });
-            selfStreamRef.current = stream;
+            streamRef.current = stream;
+            if (!videoRef.current) return;
+            videoRef.current.srcObject = stream;
 
-            if (!selfVideoRef.current) return;
-            selfVideoRef.current.srcObject = stream;
-            console.log('getSelfMedia');
+            setStream(stream);
+            setSelfStreamRef(streamRef);
         } catch (err) {
             console.log(err);
         }
     }, []);
 
     useEffect(() => {
-        if (!selfStreamRef.current) return;
+        if (!selfStreamRef?.current) return;
         selfStreamRef.current.getVideoTracks().forEach((track) => (track.enabled = !track.enabled));
     }, [userCam]);
 
     useEffect(() => {
-        if (!selfStreamRef.current) return;
+        if (!selfStreamRef?.current) return;
         selfStreamRef.current.getAudioTracks().forEach((track) => (track.enabled = !track.enabled));
     }, [userMic]);
 
-    return { selfStreamRef, selfVideoRef, getSelfMedia };
+    useEffect(() => {
+        if (selfStreamRef) return;
+        void getSelfMedia();
+    }, []);
+
+    return { videoRef };
 }
 
 export default useLocalStream;
