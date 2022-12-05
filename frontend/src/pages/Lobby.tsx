@@ -19,6 +19,7 @@ import { StartRoundEmitRequest } from '@backend/core/game.dto';
 import { onStartGame } from '@game/NetworkServiceUtils';
 import useWebRTC from '@hooks/useWebRTC';
 import { userState } from '@atoms/user';
+import useBeforeReload from '@hooks/useBeforeReload';
 
 function Lobby() {
     const curUser = useRecoilValue(userState);
@@ -29,6 +30,7 @@ function Lobby() {
     const lobbyId = getParam('id');
     const [setPage] = useMovePage();
     const { createOffers } = useWebRTC();
+    useBeforeReload();
 
     useEffect(() => {
         const payload: JoinLobbyRequest = { lobbyId };
