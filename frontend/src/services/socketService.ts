@@ -14,7 +14,7 @@ export class SocketService {
     private constructor() {
         this.socket = io(process.env.REACT_APP_SOCKET_PATH, {
             transports: ['websocket'],
-            path: '/ws/socket.io',
+            path: '/socket.io',
         });
         this.socket.connect();
         // TODO: 타이밍 이슈 여부 파악 및 해결
