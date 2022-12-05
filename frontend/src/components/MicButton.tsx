@@ -1,13 +1,17 @@
 import micOffImg from '@assets/buttons/mic-off-btn.svg';
 import micOnImg from '@assets/buttons/mic-on-btn.svg';
 import styled from 'styled-components';
-import { useRecoilState } from 'recoil';
-import { userMicState } from '@atoms/user';
+import { useRecoilState, useRecoilValue } from 'recoil';
+import { userMicState, userCamState } from '@atoms/user';
+import { networkServiceInstance as NetworkService } from '../services/socketService';
 
 function MicButton() {
     const [userMic, setUserMic] = useRecoilState(userMicState);
+    const userCam = useRecoilValue(userCamState);
     const onBtnClick = () => {
-        setUserMic(!userMic);
+        const changed = !userMic;
+        setUserMic(changed);
+        NetworkService.emit('update-user-stream', { audio: changed, video: userCam });
     };
 
     return (

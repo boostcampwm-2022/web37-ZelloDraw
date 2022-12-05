@@ -12,7 +12,7 @@ import {
     SocketException,
 } from '../services/socketService';
 import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
-import { roundInfoState, userListState, userStreamListState } from '@atoms/game';
+import { roundInfoState, userListState, userStreamListState, WebRTCUser } from '@atoms/game';
 import { getParam } from '@utils/common';
 import {
     JoinLobbyReEmitRequest,
@@ -26,11 +26,11 @@ import { userCamState, userMicState, userState } from '@atoms/user';
 
 function Lobby() {
     const curUser = useRecoilValue(userState);
-    const userStreamList = useRecoilValue(userStreamListState);
     const userCam = useRecoilValue(userCamState);
     const userMic = useRecoilValue(userMicState);
     const [userList, setUserList] = useRecoilState(userListState);
     const setRoundInfo = useSetRecoilState<StartRoundEmitRequest>(roundInfoState);
+    const [userStreamList, setUserStreamList] = useRecoilState<WebRTCUser[]>(userStreamListState);
 
     const lobbyId = getParam('id');
     const [setPage] = useMovePage();
@@ -41,19 +41,16 @@ function Lobby() {
         NetworkService.emit(
             'join-lobby',
             payload,
-            // (res: Array<{ userName: string; sid: string }>) => {
-            //     setUserList(res);
-            //     res.forEach((userInRoom) => {
-            //         setTimeout(() => {
-            //             if (curUser.name !== userInRoom.userName) {
-            //                 console.log('send offer from newbie');
-            //                 void createOffers(userInRoom);
-            //             }
-            //         }, 100);
-            //     });
-            // },
             (res: JoinLobbyResponse) => {
-                console.log(res);
+                setUserList(res);
+                res.forEach((userInRoom) => {
+                    setTimeout(() => {
+                        if (curUser.name !== userInRoom.userName) {
+                            console.log('send offer from newbie');
+                            void createOffers(userInRoom);
+                        }
+                    }, 100);
+                });
             },
             (err: SocketException) => {
                 alert(JSON.stringify(err.message));
@@ -74,12 +71,21 @@ function Lobby() {
             setUserList([...userList, user]);
         });
         NetworkService.on('update-user-stream', (payload) => {
-            console.log(payload);
+            setUserStreamList((prev) =>
+                prev.map((user) => {
+                    const prevUserValue = { ...user };
+                    if (payload.socketId === user.sid) {
+                        prevUserValue.audio = payload.audio;
+                        prevUserValue.video = payload.video;
+                    }
+                    return prevUserValue;
+                }),
+            );
         });
         return () => {
             NetworkService.off('join-lobby');
         };
-    }, [userList]);
+    }, [userList, userStreamList]);
 
     useEffect(() => {
         onStartGame(setPage, setRoundInfo);

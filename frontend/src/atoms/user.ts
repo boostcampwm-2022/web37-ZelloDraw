@@ -32,7 +32,7 @@ export const userMicState = atom<boolean>({
 
 export const userCamState = atom<boolean>({
     key: 'userCamState',
-    default: false,
+    default: true,
 });
 
 /**

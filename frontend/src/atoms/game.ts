@@ -4,7 +4,15 @@ import { StartRoundEmitRequest } from '@backend/core/game.dto';
 /**
  * 로비(게임)에 접속한 유저 리스트
  */
-export const userListState = atom<Array<{ userName: string; sid: string }>>({
+
+export interface UserListProps {
+    userName: string;
+    sid: string;
+    audio?: boolean;
+    video?: boolean;
+}
+
+export const userListState = atom<UserListProps[]>({
     key: 'userListState',
     default: [],
 });
@@ -13,6 +21,8 @@ export interface WebRTCUser {
     sid: string; // socketID
     userName: string;
     stream: MediaStream;
+    audio?: boolean;
+    video?: boolean;
 }
 
 export const userStreamListState = atom<WebRTCUser[]>({

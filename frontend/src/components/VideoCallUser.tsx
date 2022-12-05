@@ -7,23 +7,24 @@ import { ReactComponent as HostIconL } from '@assets/icons/host-icon-l.svg';
 import { Center, VideoProperty } from '@styles/styled';
 
 interface VideoCallProps {
-    userName?: string;
-    video?: MediaStream;
+    userName: string;
+    stream?: MediaStream;
+    audio?: boolean;
+    video?: boolean;
 }
 
-function VideoCallUser({ userName, video }: VideoCallProps) {
+function VideoCallUser({ userName, stream, audio, video }: VideoCallProps) {
     const [hostState, setHostState] = useState<boolean>(false);
-    const [micState, setMicState] = useState<boolean>(true);
     const videoRef: React.RefObject<HTMLVideoElement> | null = useRef(null);
 
     useEffect(() => {
-        if (!videoRef.current || !video) return;
-        videoRef.current.srcObject = video;
-    }, [video]);
+        if (!videoRef.current || !stream) return;
+        videoRef.current.srcObject = stream;
+    }, [stream]);
 
     return (
         <Container>
-            {video ? (
+            {stream ? (
                 <>
                     <Video ref={videoRef} autoPlay playsInline></Video>
                     <CameraOnUserName>
@@ -41,7 +42,7 @@ function VideoCallUser({ userName, video }: VideoCallProps) {
                     </CameraOffUserName>
                 </>
             )}
-            <MicIconWrapper>{micState ? <MicOnIcon /> : <MicOffIcon />}</MicIconWrapper>
+            <MicIconWrapper>{audio ? <MicOnIcon /> : <MicOffIcon />}</MicIconWrapper>
         </Container>
     );
 }
