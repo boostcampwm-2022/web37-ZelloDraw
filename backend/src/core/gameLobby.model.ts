@@ -95,6 +95,15 @@ export class GameLobby implements Lobby, Game {
         // this.isWatchedQuizReplyChain = this.users.map(() => false);
     }
 
+    quitGame() {
+        this.maxRound = 0;
+        this.curRound = 0;
+        this.roundType = 'ANSWER';
+        this.roundLimitTime = 0;
+        this.quizReplyChains = [];
+        this.isPlaying = false;
+    }
+
     getCurrentRoundQuizReplyChain(user: User): QuizReplyChain {
         const currentRoundQuizReplyChainIndex = this.currentRoundQuizReplyChainIndex(user);
         return this.quizReplyChains[currentRoundQuizReplyChainIndex];

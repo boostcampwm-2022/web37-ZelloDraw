@@ -74,3 +74,8 @@ export const isWatchedBookState = atom<boolean>({
     key: 'isWatchedBookState',
     default: false,
 });
+
+export const canOneMoreGameState = atom<boolean>({
+    key: 'isCanOneMoreState',
+    default: false,
+});
