@@ -168,6 +168,14 @@ export class CoreGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
         this.emitWatchResultSketchbook(client, payload.bookIdx, isWatched);
     }
 
+    @SubscribeMessage('back-to-lobby')
+    async onPlayNextGame(@ConnectedSocket() client: Socket) {
+        const user = this.userService.getUser(client.id);
+        await this.gameService.quitGame(user.lobbyId);
+
+        this.emitBackToLobby(client);
+    }
+
     private emitWatchResultSketchbook(client: Socket, bookIndex: number, isWatched: boolean) {
         const payload: WatchResultSketchbookEmitRequest = {
             bookIdx: bookIndex,
@@ -242,5 +250,9 @@ export class CoreGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
             userName: user.name,
         };
         client.nsp.to(user.lobbyId).emit('leave-game', payload);
+    }
+
+    private emitBackToLobby(client: Socket) {
+        client.nsp.emit('back-to-lobby');
     }
 }
