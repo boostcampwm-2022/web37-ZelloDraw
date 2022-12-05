@@ -108,13 +108,11 @@ export class CoreGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
         const user = this.userService.getUser(client.id);
         if (user.lobbyId === undefined) return;
 
-        const leftUsers = await this.lobbyService.leaveLobby(user, user.lobbyId);
-        const payload: JoinLobbyReEmitRequest[] = leftUsers.map((user) => ({
-            // TODO: LeaveLobbyReEmitRequest DTO를 생성해야함.
-            sid: client.id,
+        const payload = {
             userName: user.name,
-        }));
-        this.emitLeaveLobby(client, user.lobbyId, payload);
+            sid: user.socketId,
+        };
+        client.broadcast.to(user.lobbyId).emit('leave-lobby', payload);
         await client.leave(user.lobbyId);
     }
 
