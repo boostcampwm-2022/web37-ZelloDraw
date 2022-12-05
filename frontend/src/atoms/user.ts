@@ -27,12 +27,12 @@ export const userState = atom<userStateType>({
 
 export const userMicState = atom<boolean>({
     key: 'userMicState',
-    default: false,
+    default: true,
 });
 
 export const userCamState = atom<boolean>({
     key: 'userCamState',
-    default: true,
+    default: false,
 });
 
 /**
@@ -41,7 +41,7 @@ export const userCamState = atom<boolean>({
 
 export const userStreamState = atom<MediaStream>({
     key: 'userStreamState',
-    default: undefined,
+    default: new MediaStream(),
 });
 
 export const userStreamRefState = atom<React.MutableRefObject<MediaStream | undefined>>({

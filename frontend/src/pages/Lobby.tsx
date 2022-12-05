@@ -18,11 +18,13 @@ import { JoinLobbyReEmitRequest, JoinLobbyRequest } from '@backend/core/user.dto
 import { StartRoundEmitRequest } from '@backend/core/game.dto';
 import { onStartGame } from '@game/NetworkServiceUtils';
 import useWebRTC from '@hooks/useWebRTC';
-import { userState } from '@atoms/user';
+import { userCamState, userMicState, userState } from '@atoms/user';
 
 function Lobby() {
     const curUser = useRecoilValue(userState);
     const userStreamList = useRecoilValue(userStreamListState);
+    const userCam = useRecoilValue(userCamState);
+    const userMic = useRecoilValue(userMicState);
     const [userList, setUserList] = useRecoilState(userListState);
     const setRoundInfo = useSetRecoilState<StartRoundEmitRequest>(roundInfoState);
 
@@ -31,7 +33,7 @@ function Lobby() {
     const { createOffers } = useWebRTC();
 
     useEffect(() => {
-        const payload: JoinLobbyRequest = { lobbyId };
+        const payload: JoinLobbyRequest = { lobbyId, audio: userMic, video: userCam };
         NetworkService.emit(
             'join-lobby',
             payload,

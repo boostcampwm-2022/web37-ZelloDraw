@@ -66,7 +66,6 @@ function useWebRTC() {
     );
 
     const createOffers = async (user: JoinLobbyReEmitRequest) => {
-        if (!selfStreamRef?.current) return;
         const pc = await createPeerConnection(user.sid, user.userName);
         if (!pc) return;
         pcsRef.current = { ...pcsRef.current, [user.sid]: pc };
@@ -87,7 +86,6 @@ function useWebRTC() {
             'webrtc-offer',
             // eslint-disable-next-line @typescript-eslint/no-misused-promises
             async (sdp: RTCSessionDescription, offerSendSid: string, userName: string) => {
-                if (!selfStreamRef?.current) return;
                 const pc = await createPeerConnection(offerSendSid, userName);
                 if (!pc) return;
                 pcsRef.current = { ...pcsRef.current, [offerSendSid]: pc };
