@@ -9,7 +9,7 @@ function CameraButton() {
     const userMic = useRecoilValue(userMicState);
     const [userCam, setUserCam] = useRecoilState(userCamState);
     const onBtnClick = () => {
-        const changed = !userMic;
+        const changed = !userCam;
         setUserCam(changed);
         NetworkService.emit('update-user-stream', { audio: userMic, video: changed });
     };

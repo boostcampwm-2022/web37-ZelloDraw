@@ -17,10 +17,11 @@ function useLocalStream(): localStreamProps {
     const streamRef = useRef<MediaStream>();
 
     const getSelfMedia: () => Promise<void> = useCallback(async () => {
+        // TODO: 캠과 마이크가 없는 경우 detect 후 처리
         try {
             const stream = await navigator.mediaDevices.getUserMedia({
-                video: userCam,
-                audio: userMic,
+                video: true,
+                audio: true,
             });
             streamRef.current = stream;
             if (!videoRef.current) return;

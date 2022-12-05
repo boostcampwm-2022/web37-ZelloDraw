@@ -83,6 +83,7 @@ function Lobby() {
             );
         });
         return () => {
+            NetworkService.off('update-user-stream');
             NetworkService.off('join-lobby');
         };
     }, [userStreamList]);
