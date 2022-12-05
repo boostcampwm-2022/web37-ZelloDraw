@@ -23,7 +23,7 @@ import useBeforeReload from '@hooks/useBeforeReload';
 import useLobbyId from '@hooks/useLobbyId';
 
 function Lobby() {
-    const curUser = useRecoilValue(userState);
+    const [user, setUser] = useRecoilState(userState);
     const userStreamList = useRecoilValue(userStreamListState);
     const [userList, setUserList] = useRecoilState(userListState);
     const [lobbyId, setLobbyId] = useLobbyId();
@@ -44,7 +44,7 @@ function Lobby() {
                     setUserList(res);
                     res.forEach((userInRoom) => {
                         setTimeout(() => {
-                            if (curUser.name !== userInRoom.userName) {
+                            if (user.name !== userInRoom.userName) {
                                 console.log('send offer from newbie');
                                 void createOffers(userInRoom);
                             }
@@ -60,8 +60,12 @@ function Lobby() {
         NetworkService.on('leave-lobby', (users: Array<{ userName: string; sid: string }>) => {
             setUserList(users);
         });
+        NetworkService.on('succeed-host', () => {
+            setUser({ ...user, isHost: true });
+        });
         return () => {
             NetworkService.off('leave-lobby');
+            NetworkService.off('succeed-host');
         };
     }, []);
 

@@ -103,6 +103,7 @@ export class CoreGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
         const user = this.userService.getUser(client.id);
         if (user.lobbyId === undefined) return;
 
+        await this.handleHostLeave(client, user);
         const leftUsers = await this.lobbyService.leaveLobby(user, user.lobbyId);
         const payload: JoinLobbyReEmitRequest[] = leftUsers.map((user) => ({
             // TODO: LeaveLobbyReEmitRequest DTO를 생성해야함.
@@ -118,9 +119,21 @@ export class CoreGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
         const user = this.userService.getUser(client.id);
         if (user.lobbyId === undefined) return;
 
+        await this.handleHostLeave(client, user);
         await this.gameService.leaveWhenPlayingGame(user, user.lobbyId);
         this.emitLeaveGame(client, user);
         await client.leave(user.lobbyId);
+    }
+
+    async handleHostLeave(client: Socket, user: User) {
+        const isGameHost = await this.gameService.isHost(user.lobbyId, user);
+        console.log('handleHostLeave', isGameHost);
+        if (isGameHost) {
+            await this.gameService.succeedHost(user.lobbyId);
+            const hostUser = await this.gameService.getGameHost(user.lobbyId);
+            console.log('handleHostLeaveEmit', hostUser);
+            client.to(hostUser.socketId).emit('succeed-host');
+        }
     }
 
     @SubscribeMessage('start-game')

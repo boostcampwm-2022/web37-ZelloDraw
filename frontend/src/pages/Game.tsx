@@ -14,10 +14,12 @@ import GameSketchbook from '@components/GameSketchbook';
 import ResultSketchbook from '@components/ResultSketchbook';
 import { networkServiceInstance as NetworkService } from '../services/socketService';
 import { JoinLobbyReEmitRequest } from '@backend/core/user.dto';
+import { userState } from '@atoms/user';
 import useBeforeReload from '@hooks/useBeforeReload';
 import { useResetGameState } from '@hooks/useResetGameState';
 
 function Game() {
+    const [user, setUser] = useRecoilState(userState);
     const [setPage] = useMovePage();
     const setGameResult = useSetRecoilState(gameResultState);
     const [isCompleteGame, setIsCompleteGame] = useState(false);
@@ -34,8 +36,13 @@ function Game() {
             setUserList(userList.filter((participant) => participant.userName !== user.userName));
         });
 
+        NetworkService.on('succeed-host', () => {
+            setUser({ ...user, isHost: true });
+        });
+
         return () => {
             NetworkService.off('leave-lobby');
+            NetworkService.off('succeed-host');
         };
     }, []);
 
