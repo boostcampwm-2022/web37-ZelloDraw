@@ -1,6 +1,6 @@
 <div align="center">
     <img src="https://i.imgur.com/j2kujcb.png" />
-    <h2>얼굴을 보며 즐기는 드로잉 게임  <img src="https://i.imgur.com/RPm8bZa.png" width="30"/></h2>
+    <h2>얼굴을 보며 즐기는 드로잉 게임 서비스  <img src="https://i.imgur.com/RPm8bZa.png" width="30"/></h2>
     <p>
         ‘그리면서 즐기는 텔레파시 보드게임 텔레스트레이션’을 해본 적 있나요?<br />
         팀 ZELLO는 이 게임을 웹으로 옮겨 보았어요. <br />
@@ -36,8 +36,6 @@
 
 
 ## 🚀 프로젝트 소개
-
-**얼굴을 보며 즐기는 드로잉 게임 서비스**
 
 <img src="https://i.imgur.com/j5kF45V.png" />
 
