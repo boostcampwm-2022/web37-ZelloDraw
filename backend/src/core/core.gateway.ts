@@ -85,10 +85,13 @@ export class CoreGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 
             const users: User[] = await this.lobbyService.joinLobby(user, lobby.id);
             await client.join(body.lobbyId);
-            this.emitJoinLobby(client, lobby.id, { userName: user.name });
+            this.emitJoinLobby(client, lobby.id, {
+                userName: user.name,
+                sid: client.id,
+            });
 
             return users.map((user) => {
-                return { userName: user.name };
+                return { userName: user.name, sid: user.socketId };
             }) as JoinLobbyResponse;
         } catch (e) {
             throw new SocketException('BadRequest', e.message);
@@ -102,6 +105,8 @@ export class CoreGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 
         const leftUsers = await this.lobbyService.leaveLobby(user, user.lobbyId);
         const payload: JoinLobbyReEmitRequest[] = leftUsers.map((user) => ({
+            // TODO: LeaveLobbyReEmitRequest DTO를 생성해야함.
+            sid: client.id,
             userName: user.name,
         }));
         this.emitLeaveLobby(client, user.lobbyId, payload);
@@ -152,6 +157,30 @@ export class CoreGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
             };
             this.emitSubmitQuizReply(client, user.lobbyId, payload);
         }
+    }
+
+    @SubscribeMessage('webrtc-offer')
+    async handleOffer(@ConnectedSocket() client: Socket, @MessageBody() body) {
+        const user = this.userService.getUser(client.id);
+        client.broadcast
+            .to(body.offerReceiveID)
+            .emit('webrtc-offer', body.sdp, client.id, user.name);
+    }
+
+    @SubscribeMessage('webrtc-answer')
+    async handleAnswer(@ConnectedSocket() client: Socket, @MessageBody() body) {
+        const user = this.userService.getUser(client.id);
+        client.broadcast
+            .to(body.answerReceiveID)
+            .emit('webrtc-answer', body.sdp, client.id, user.name);
+    }
+
+    @SubscribeMessage('webrtc-ice')
+    async handleIce(@ConnectedSocket() client: Socket, @MessageBody() body) {
+        const user = this.userService.getUser(client.id);
+        client.broadcast
+            .to(body.candidateReceiveID)
+            .emit('webrtc-ice', body.ice, client.id, user.name);
     }
 
     @SubscribeMessage('watch-result-sketchbook')

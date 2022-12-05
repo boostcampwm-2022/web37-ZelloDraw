@@ -1,14 +1,21 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useRef } from 'react';
 import styled from 'styled-components';
 import Card from '@components/Card';
 import InviteButton from '@components/InviteButton';
 import EmptyVideoCall from '@components/EmptyVideoCall';
 import VideoCallUser from '@components/VideoCallUser';
 import { useRecoilValue } from 'recoil';
-import { userListState } from '@atoms/game';
+import { userListState, WebRTCUser } from '@atoms/game';
+import { userState, userStreamState } from '@atoms/user';
 
-function UserList() {
+interface UserListType {
+    userStreamList: WebRTCUser[];
+}
+
+function UserList({ userStreamList }: UserListType) {
     const userList = useRecoilValue(userListState);
+    const currentUser = useRecoilValue(userState);
+    const selfStream = useRecoilValue(userStreamState);
 
     return (
         <Card>
@@ -22,8 +29,9 @@ function UserList() {
                     <InviteButton />
                 </FlexBox>
                 <UserGridList>
-                    {userList.map((user: string, idx: number) => (
-                        <VideoCallUser key={idx} userName={user} />
+                    <VideoCallUser userName={currentUser.name} video={selfStream} />
+                    {userStreamList.map((user: WebRTCUser, idx: number) => (
+                        <VideoCallUser key={idx} userName={user.userName} video={user.stream} />
                     ))}
                     {new Array(8 - userList.length)
                         .fill('empty')

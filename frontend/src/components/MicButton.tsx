@@ -1,18 +1,21 @@
-import React, { useState } from 'react';
 import micOffImg from '@assets/buttons/mic-off-btn.svg';
 import micOnImg from '@assets/buttons/mic-on-btn.svg';
 import styled from 'styled-components';
+import { useRecoilState } from 'recoil';
+import { userMicState } from '@atoms/user';
 
 function MicButton() {
-    const [isOn, setIsOn] = useState<boolean>(true);
-    const onBtnClick = () => setIsOn(!isOn);
+    const [userMic, setUserMic] = useRecoilState(userMicState);
+    const onBtnClick = () => {
+        setUserMic(!userMic);
+    };
 
     return (
         <MicBtnSet>
             <MicBtn onClick={onBtnClick}>
-                <img src={isOn ? micOnImg : micOffImg} />
+                <img src={userMic ? micOnImg : micOffImg} />
             </MicBtn>
-            <Label>MIC {isOn ? 'ON' : 'OFF'}</Label>
+            <Label>MIC {userMic ? 'ON' : 'OFF'}</Label>
         </MicBtnSet>
     );
 }

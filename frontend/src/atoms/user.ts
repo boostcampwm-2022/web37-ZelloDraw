@@ -20,3 +20,31 @@ export const userState = atom<userStateType>({
         isHost: null,
     },
 });
+
+/**
+ * 사용자 카메라, 마이크 정보
+ */
+
+export const userMicState = atom<boolean>({
+    key: 'userMicState',
+    default: false,
+});
+
+export const userCamState = atom<boolean>({
+    key: 'userCamState',
+    default: true,
+});
+
+/**
+ * 사용자 비디오 스트림 정보
+ */
+
+export const userStreamState = atom<MediaStream>({
+    key: 'userStreamState',
+    default: undefined,
+});
+
+export const userStreamRefState = atom<React.MutableRefObject<MediaStream | undefined>>({
+    key: 'userStreamRefState',
+    default: undefined,
+});

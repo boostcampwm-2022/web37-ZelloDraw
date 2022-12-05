@@ -11,37 +11,49 @@ import {
     networkServiceInstance as NetworkService,
     SocketException,
 } from '../services/socketService';
-import { useRecoilState, useSetRecoilState } from 'recoil';
-import { roundInfoState, userListState } from '@atoms/game';
+import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
+import { roundInfoState, userListState, userStreamListState } from '@atoms/game';
 import { getParam } from '@utils/common';
 import { JoinLobbyReEmitRequest, JoinLobbyRequest } from '@backend/core/user.dto';
 import { StartRoundEmitRequest } from '@backend/core/game.dto';
 import { onStartGame } from '@game/NetworkServiceUtils';
+import useWebRTC from '@hooks/useWebRTC';
+import { userState } from '@atoms/user';
 
 function Lobby() {
+    const curUser = useRecoilValue(userState);
+    const userStreamList = useRecoilValue(userStreamListState);
     const [userList, setUserList] = useRecoilState(userListState);
-    const [setPage] = useMovePage();
-    const lobbyId = getParam('id');
     const setRoundInfo = useSetRecoilState<StartRoundEmitRequest>(roundInfoState);
+
+    const lobbyId = getParam('id');
+    const [setPage] = useMovePage();
+    const { createOffers } = useWebRTC();
 
     useEffect(() => {
         const payload: JoinLobbyRequest = { lobbyId };
         NetworkService.emit(
             'join-lobby',
             payload,
-            (res: Array<{ userName: string }>) => {
-                const data = res.map((user) => user.userName);
-                setUserList(data);
+            (res: Array<{ userName: string; sid: string }>) => {
+                setUserList(res);
+                res.forEach((userInRoom) => {
+                    setTimeout(() => {
+                        if (curUser.name !== userInRoom.userName) {
+                            console.log('send offer from newbie');
+                            void createOffers(userInRoom);
+                        }
+                    }, 100);
+                });
             },
             (err: SocketException) => {
                 alert(JSON.stringify(err.message));
                 setPage('/');
             },
         );
-        NetworkService.on('leave-lobby', (users: Array<{ userName: string }>) => {
-            setUserList(users.map((user) => user.userName));
+        NetworkService.on('leave-lobby', (users: Array<{ userName: string; sid: string }>) => {
+            setUserList(users);
         });
-
         return () => {
             NetworkService.off('leave-lobby');
         };
@@ -49,7 +61,7 @@ function Lobby() {
 
     useEffect(() => {
         NetworkService.on('join-lobby', (user: JoinLobbyReEmitRequest) => {
-            setUserList([...userList, user.userName]);
+            setUserList([...userList, user]);
         });
         return () => {
             NetworkService.off('join-lobby');
@@ -67,7 +79,7 @@ function Lobby() {
             </LogoWrapper>
             <LobbyContainer>
                 <FlexBox>
-                    <UserList />
+                    <UserList userStreamList={userStreamList} />
                     <GameModeList lobbyId={lobbyId} />
                 </FlexBox>
                 <ButtonWrapper>
