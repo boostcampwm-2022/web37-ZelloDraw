@@ -42,12 +42,7 @@ function Lobby() {
             payload,
             (res: JoinLobbyResponse) => {
                 res.forEach((userInRoom) => {
-                    setTimeout(() => {
-                        if (curUser.name !== userInRoom.userName) {
-                            console.log('send offer from newbie');
-                            void createOffers(userInRoom);
-                        }
-                    }, 100);
+                    void createOffers(userInRoom);
                 });
             },
             (err: SocketException) => {
