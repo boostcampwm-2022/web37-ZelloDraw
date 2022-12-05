@@ -4,7 +4,6 @@ import {
     canOneMoreGameState,
     currentBookIdxState,
     currentPageIdxState,
-    isEndedState,
     isStartedState,
     isWatchedBookState,
     maxSketchbookState,
@@ -18,7 +17,6 @@ function useResultSketchbook() {
     const { isHost } = useRecoilValue(userState);
     const [isStarted, setIsStarted] = useRecoilState(isStartedState);
     const [isWatched, setIsWatched] = useRecoilState(isWatchedBookState);
-    const isEnded = useRecoilValue(isEndedState);
 
     const { maxPageNum, maxBookNum } = useRecoilValue(maxSketchbookState);
     const [currentBookIdx, setCurrentBookIdx] = useRecoilState(currentBookIdxState);
