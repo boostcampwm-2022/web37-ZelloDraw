@@ -14,7 +14,19 @@ function useWebRTC() {
         async (peerSocketId: string, peerName: string): Promise<any> => {
             const res = await new Promise((resolve) => {
                 try {
-                    const pc = new RTCPeerConnection();
+                    const pc = new RTCPeerConnection({
+                        iceServers: [
+                            {
+                                urls: [
+                                    'stun:stun.l.google.com:19302',
+                                    'stun:stun1.l.google.com:19302',
+                                    'stun:stun2.l.google.com:19302',
+                                    'stun:stun3.l.google.com:19302',
+                                    'stun:stun4.l.google.com:19302',
+                                ],
+                            },
+                        ],
+                    });
 
                     pc.onicecandidate = (e) => {
                         if (e.candidate) {
