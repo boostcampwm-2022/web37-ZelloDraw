@@ -188,7 +188,7 @@ export class CoreGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
             .emit('webrtc-ice', body.ice, client.id, user.name);
     }
 
-    @SubscribeMessage('change-stream')
+    @SubscribeMessage('update-user-stream')
     async handleChangeStream(@ConnectedSocket() client: Socket, @MessageBody() body) {
         const user = this.userService.getUser(client.id);
         this.userService.updateUser(client.id, { video: body.video, audio: body.audio });
@@ -197,7 +197,7 @@ export class CoreGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
             video: body.video,
             audio: body.audio,
         };
-        client.to(user.lobbyId).emit('change-stream', payload);
+        client.to(user.lobbyId).emit('update-user-stream', payload);
     }
 
     @SubscribeMessage('watch-result-sketchbook')

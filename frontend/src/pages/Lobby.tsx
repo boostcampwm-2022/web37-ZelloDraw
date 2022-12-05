@@ -60,7 +60,7 @@ function Lobby() {
                 setPage('/');
             },
         );
-        NetworkService.emit('change-stream', { video: userCam, audio: userMic });
+        NetworkService.emit('update-user-stream', { video: userCam, audio: userMic });
         NetworkService.on('leave-lobby', (users: Array<{ userName: string; sid: string }>) => {
             setUserList(users);
         });
@@ -73,7 +73,7 @@ function Lobby() {
         NetworkService.on('join-lobby', (user: JoinLobbyReEmitRequest) => {
             setUserList([...userList, user]);
         });
-        NetworkService.on('change-stream', (payload) => {
+        NetworkService.on('update-user-stream', (payload) => {
             console.log(payload);
         });
         return () => {
