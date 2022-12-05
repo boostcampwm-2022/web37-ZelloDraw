@@ -91,7 +91,7 @@ function ResultSketchbook() {
                         {isHost && currentBookIdx !== maxBookNum && (
                             <RightArrowIcon onClick={() => changeSketchbook(1)} />
                         )}
-                        {canOneMoreGame && (
+                        {canOneMoreGame && isHost && (
                             <OneMoreButtonWrapper onClick={emitOneMoreGame}>
                                 <PrimaryButton topText='ONE MORE' bottomText='한판 더 하기' />
                             </OneMoreButtonWrapper>

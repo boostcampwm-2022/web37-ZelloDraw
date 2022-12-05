@@ -50,8 +50,8 @@ function useResultSketchbook() {
     }, [timeLeft]);
 
     useEffect(() => {
-        if (isEnded) setCanOneMoreGame(true);
-    }, [isEnded]);
+        if (currentBookIdx === maxBookNum && currentPageIdx === maxPageNum) setCanOneMoreGame(true);
+    }, [currentBookIdx, currentPageIdx]);
 
     function addSketchbookPage() {
         if (currentPageIdx === maxPageNum && !isWatched) {
