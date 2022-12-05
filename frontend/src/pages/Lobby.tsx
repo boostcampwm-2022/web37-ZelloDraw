@@ -12,7 +12,7 @@ import {
     SocketException,
 } from '../services/socketService';
 import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
-import { roundInfoState, userListState, userStreamListState, WebRTCUser } from '@atoms/game';
+import { roundInfoState, userStreamListState, WebRTCUser } from '@atoms/game';
 import { getParam } from '@utils/common';
 import {
     JoinLobbyReEmitRequest,
@@ -28,7 +28,6 @@ function Lobby() {
     const curUser = useRecoilValue(userState);
     const userCam = useRecoilValue(userCamState);
     const userMic = useRecoilValue(userMicState);
-    const [userList, setUserList] = useRecoilState(userListState);
     const setRoundInfo = useSetRecoilState<StartRoundEmitRequest>(roundInfoState);
     const [userStreamList, setUserStreamList] = useRecoilState<WebRTCUser[]>(userStreamListState);
 
@@ -42,7 +41,6 @@ function Lobby() {
             'join-lobby',
             payload,
             (res: JoinLobbyResponse) => {
-                setUserList(res);
                 res.forEach((userInRoom) => {
                     setTimeout(() => {
                         if (curUser.name !== userInRoom.userName) {
@@ -58,8 +56,10 @@ function Lobby() {
             },
         );
         NetworkService.emit('update-user-stream', { video: userCam, audio: userMic });
-        NetworkService.on('leave-lobby', (users: Array<{ userName: string; sid: string }>) => {
-            setUserList(users);
+        NetworkService.on('leave-lobby', (user: JoinLobbyReEmitRequest) => {
+            setUserStreamList((prev) =>
+                prev.filter((participant) => participant.userName !== user.userName),
+            );
         });
         return () => {
             NetworkService.off('leave-lobby');
@@ -67,9 +67,9 @@ function Lobby() {
     }, []);
 
     useEffect(() => {
-        NetworkService.on('join-lobby', (user: JoinLobbyReEmitRequest) => {
-            setUserList([...userList, user]);
-        });
+        // NetworkService.on('join-lobby', (user: JoinLobbyReEmitRequest) => {
+        //
+        // });
         NetworkService.on('update-user-stream', (payload) => {
             setUserStreamList((prev) =>
                 prev.map((user) => {
@@ -85,7 +85,7 @@ function Lobby() {
         return () => {
             NetworkService.off('join-lobby');
         };
-    }, [userList, userStreamList]);
+    }, [userStreamList]);
 
     useEffect(() => {
         onStartGame(setPage, setRoundInfo);
@@ -98,7 +98,7 @@ function Lobby() {
             </LogoWrapper>
             <LobbyContainer>
                 <FlexBox>
-                    <UserList userStreamList={userStreamList} />
+                    <UserList />
                     <GameModeList lobbyId={lobbyId} />
                 </FlexBox>
                 <ButtonWrapper>

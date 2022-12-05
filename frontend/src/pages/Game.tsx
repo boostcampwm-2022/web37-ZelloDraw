@@ -2,9 +2,9 @@ import { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { ScaledDiv, ScaledSection } from '@styles/styled';
 import { onCompleteGame, onCountSubmittedQuiz } from '@game/NetworkServiceUtils';
-import { useSetRecoilState, useRecoilState } from 'recoil';
+import { useSetRecoilState } from 'recoil';
 import { gameResultState } from '@atoms/result';
-import { userListState } from '@atoms/game';
+import { userStreamListState } from '@atoms/game';
 import GameUsers from '@components/GameUsers';
 import MicButton from '@components/MicButton';
 import CameraButton from '@components/CameraButton';
@@ -18,19 +18,21 @@ import { JoinLobbyReEmitRequest } from '@backend/core/user.dto';
 function Game() {
     const [setPage] = useMovePage();
     const setGameResult = useSetRecoilState(gameResultState);
+    const setUserStreamList = useSetRecoilState(userStreamListState);
     const [isCompleteGame, setIsCompleteGame] = useState(false);
-    const [userList, setUserList] = useRecoilState(userListState);
 
     useEffect(() => {
         onCountSubmittedQuiz();
         onCompleteGame(setGameResult, setIsCompleteGame);
 
         NetworkService.on('leave-game', (user: JoinLobbyReEmitRequest) => {
-            setUserList(userList.filter((participant) => participant.userName !== user.userName));
+            setUserStreamList((prev) =>
+                prev.filter((participant) => participant.userName !== user.userName),
+            );
         });
 
         return () => {
-            NetworkService.off('leave-lobby');
+            NetworkService.off('leave-game');
         };
     }, []);
 
