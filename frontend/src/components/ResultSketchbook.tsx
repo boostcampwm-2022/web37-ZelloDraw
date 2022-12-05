@@ -24,8 +24,14 @@ import { ReactComponent as RightArrowIcon } from '@assets/icons/chevron-right-gr
 import { ReactComponent as DownArrowIcon } from '@assets/icons/chevron-down.svg';
 import { ReactComponent as UpArrowIcon } from '@assets/icons/chevron-up.svg';
 import { emitOneMoreGame } from '@game/NetworkServiceUtils';
+import { useEffect } from 'react';
+import { networkServiceInstance as NetworkService } from '@services/socketService';
+import useMovePage from '@hooks/useMovePage';
+import useLobbyId from '@hooks/useLobbyId';
 
 function ResultSketchbook() {
+    const [setPage] = useMovePage();
+    const [lobbyId] = useLobbyId();
     const { maxPageNum, maxBookNum } = useRecoilValue(maxSketchbookState);
     const currentSketchbook = useRecoilValue(currentSketchbookState);
     const sketchbookAuthor = useRecoilValue(sketchbookAuthorState);
@@ -39,6 +45,16 @@ function ResultSketchbook() {
 
     const { checkIsNotGuidePage } = useCheckGuidePage();
     const { addSketchbookPage, subtractSketchbookPage, changeSketchbook } = useResultSketchbook();
+
+    useEffect(() => {
+        NetworkService.on('back-to-lobby', () => {
+            setPage(`/lobby?id=${lobbyId}&new=false`);
+        });
+
+        return () => {
+            NetworkService.off('back-to-lobby');
+        };
+    }, []);
 
     return (
         <>
