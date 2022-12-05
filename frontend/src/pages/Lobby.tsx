@@ -33,7 +33,7 @@ function Lobby() {
     const { createOffers } = useWebRTC();
 
     useEffect(() => {
-        const payload: JoinLobbyRequest = { lobbyId, audio: userMic, video: userCam };
+        const payload: JoinLobbyRequest = { lobbyId };
         NetworkService.emit(
             'join-lobby',
             payload,
