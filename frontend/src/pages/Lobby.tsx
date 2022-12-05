@@ -17,27 +17,32 @@ import { getParam } from '@utils/common';
 import { JoinLobbyReEmitRequest, JoinLobbyRequest } from '@backend/core/user.dto';
 import { StartRoundEmitRequest } from '@backend/core/game.dto';
 import { onStartGame } from '@game/NetworkServiceUtils';
+import useLobbyId from '@hooks/useLobbyId';
 
 function Lobby() {
     const [userList, setUserList] = useRecoilState(userListState);
+    const [lobbyId, setLobbyId] = useLobbyId();
     const [setPage] = useMovePage();
-    const lobbyId = getParam('id');
+    const isNewLobby = getParam('new') === 'true' || getParam('new') === '';
     const setRoundInfo = useSetRecoilState<StartRoundEmitRequest>(roundInfoState);
 
     useEffect(() => {
+        setLobbyId(lobbyId);
         const payload: JoinLobbyRequest = { lobbyId };
-        NetworkService.emit(
-            'join-lobby',
-            payload,
-            (res: Array<{ userName: string }>) => {
-                const data = res.map((user) => user.userName);
-                setUserList(data);
-            },
-            (err: SocketException) => {
-                alert(JSON.stringify(err.message));
-                setPage('/');
-            },
-        );
+        if (isNewLobby) {
+            NetworkService.emit(
+                'join-lobby',
+                payload,
+                (res: Array<{ userName: string }>) => {
+                    const data = res.map((user) => user.userName);
+                    setUserList(data);
+                },
+                (err: SocketException) => {
+                    alert(JSON.stringify(err.message));
+                    setPage('/');
+                },
+            );
+        }
         NetworkService.on('leave-lobby', (users: Array<{ userName: string }>) => {
             setUserList(users.map((user) => user.userName));
         });
