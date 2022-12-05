@@ -19,38 +19,42 @@ import { StartRoundEmitRequest } from '@backend/core/game.dto';
 import { onStartGame } from '@game/NetworkServiceUtils';
 import useWebRTC from '@hooks/useWebRTC';
 import { userState } from '@atoms/user';
+import useLobbyId from '@hooks/useLobbyId';
 
 function Lobby() {
     const curUser = useRecoilValue(userState);
     const userStreamList = useRecoilValue(userStreamListState);
     const [userList, setUserList] = useRecoilState(userListState);
-    const setRoundInfo = useSetRecoilState<StartRoundEmitRequest>(roundInfoState);
-
-    const lobbyId = getParam('id');
+    const [lobbyId, setLobbyId] = useLobbyId();
     const [setPage] = useMovePage();
+    const isNewLobby = getParam('new') === 'true' || getParam('new') === '';
+    const setRoundInfo = useSetRecoilState<StartRoundEmitRequest>(roundInfoState);
     const { createOffers } = useWebRTC();
 
     useEffect(() => {
+        setLobbyId(lobbyId);
         const payload: JoinLobbyRequest = { lobbyId };
-        NetworkService.emit(
-            'join-lobby',
-            payload,
-            (res: Array<{ userName: string; sid: string }>) => {
-                setUserList(res);
-                res.forEach((userInRoom) => {
-                    setTimeout(() => {
-                        if (curUser.name !== userInRoom.userName) {
-                            console.log('send offer from newbie');
-                            void createOffers(userInRoom);
-                        }
-                    }, 100);
-                });
-            },
-            (err: SocketException) => {
-                alert(JSON.stringify(err.message));
-                setPage('/');
-            },
-        );
+        if (isNewLobby) {
+            NetworkService.emit(
+                'join-lobby',
+                payload,
+                (res: Array<{ userName: string; sid: string }>) => {
+                    setUserList(res);
+                    res.forEach((userInRoom) => {
+                        setTimeout(() => {
+                            if (curUser.name !== userInRoom.userName) {
+                                console.log('send offer from newbie');
+                                void createOffers(userInRoom);
+                            }
+                        }, 100);
+                    });
+                },
+                (err: SocketException) => {
+                    alert(JSON.stringify(err.message));
+                    setPage('/');
+                },
+            );
+        }
         NetworkService.on('leave-lobby', (users: Array<{ userName: string; sid: string }>) => {
             setUserList(users);
         });
