@@ -145,17 +145,25 @@ export class CoreGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
         await this.gameService.submitQuizReply(user.lobbyId, user, request.quizReply);
         const repliesCount = await this.gameService.getSubmittedQuizRepliesCount(user.lobbyId);
         if (await this.gameService.isAllUserSubmittedQuizReply(user.lobbyId)) {
-            if (await this.gameService.isLastRound(user.lobbyId)) {
-                await this.emitCompleteGame(client, user.lobbyId);
-            } else {
-                await this.gameService.proceedRound(user.lobbyId);
-                await this.emitStartRound(client, user.lobbyId);
-            }
+            await this.proceedRound(user, client);
         } else {
-            const payload: SubmitQuizReplyEmitRequest = {
-                submittedQuizReplyCount: repliesCount,
-            };
-            this.emitSubmitQuizReply(client, user.lobbyId, payload);
+            this.broadCastQuizReplySubmitted(repliesCount, client, user);
+        }
+    }
+
+    private broadCastQuizReplySubmitted(repliesCount: number, client: Socket, user: User) {
+        const payload: SubmitQuizReplyEmitRequest = {
+            submittedQuizReplyCount: repliesCount,
+        };
+        this.emitSubmitQuizReply(client, user.lobbyId, payload);
+    }
+
+    private async proceedRound(user: User, client: Socket) {
+        if (await this.gameService.isLastRound(user.lobbyId)) {
+            await this.emitCompleteGame(client, user.lobbyId);
+        } else {
+            await this.gameService.proceedRound(user.lobbyId);
+            await this.emitStartRound(client, user.lobbyId);
         }
     }
 
