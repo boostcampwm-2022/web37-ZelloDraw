@@ -14,6 +14,7 @@ export class SocketService {
     private constructor() {
         this.socket = io(process.env.REACT_APP_SOCKET_URL, {
             transports: ['websocket'],
+            closeOnBeforeunload: false,
             path: process.env.REACT_APP_SOCKET_PATH,
         });
         this.socket.connect();

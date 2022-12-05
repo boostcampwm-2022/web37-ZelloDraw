@@ -14,6 +14,7 @@ import GameSketchbook from '@components/GameSketchbook';
 import ResultSketchbook from '@components/ResultSketchbook';
 import { networkServiceInstance as NetworkService } from '../services/socketService';
 import { JoinLobbyReEmitRequest } from '@backend/core/user.dto';
+import useBeforeReload from '@hooks/useBeforeReload';
 import { useResetGameState } from '@hooks/useResetGameState';
 
 function Game() {
@@ -22,6 +23,7 @@ function Game() {
     const [isCompleteGame, setIsCompleteGame] = useState(false);
     const [userList, setUserList] = useRecoilState(userListState);
     const resetGameState = useResetGameState();
+    useBeforeReload();
 
     useEffect(() => {
         resetGameState();
