@@ -3,10 +3,10 @@ import styled from 'styled-components';
 import { Center } from '@styles/styled';
 import { useRecoilState, useRecoilValue } from 'recoil';
 import {
+    canOneMoreGameState,
     currentBookIdxState,
     currentPageIdxState,
     currentSketchbookState,
-    isEndedState,
     isStartedState,
     isWatchedBookState,
     maxSketchbookState,
@@ -19,6 +19,7 @@ import ResultGuide from '@components/ResultGuide';
 import QuizResultContent from '@components/QuizResultContent';
 import useCheckGuidePage from '@hooks/useCheckGuidePage';
 import useResultSketchbook from '@hooks/useResultSketchbook';
+import PrimaryButton from '@components/PrimaryButton';
 import { ReactComponent as LeftArrowIcon } from '@assets/icons/chevron-left-gradient.svg';
 import { ReactComponent as RightArrowIcon } from '@assets/icons/chevron-right-gradient.svg';
 import { ReactComponent as DownArrowIcon } from '@assets/icons/chevron-down.svg';
@@ -32,7 +33,7 @@ function ResultSketchbook() {
     const [currentBookIdx, setCurrentBookIdx] = useRecoilState(currentBookIdxState);
     const [currentPageIdx, setCurrentPageIdx] = useRecoilState(currentPageIdxState);
     const { isHost } = useRecoilValue(userState);
-    const isEnded = useRecoilValue(isEndedState);
+    const canOneMoreGame = useRecoilValue(canOneMoreGameState);
     const [isStarted, setIsStarted] = useRecoilState(isStartedState);
     const [isWatched, setIsWatched] = useRecoilState(isWatchedBookState);
     const { checkIsNotGuidePage } = useCheckGuidePage();
@@ -101,6 +102,11 @@ function ResultSketchbook() {
                         {isHost && currentBookIdx !== maxBookNum && (
                             <RightArrowIcon onClick={() => changeSketchbook(1)} />
                         )}
+                        {canOneMoreGame && (
+                            <OneMoreButtonWrapper>
+                                <PrimaryButton topText='ONE MORE' bottomText='한판 더 하기' />
+                            </OneMoreButtonWrapper>
+                        )}
                     </>
                 )}
             </SketchbookAuthor>
@@ -128,6 +134,7 @@ const QuizAuthorName = styled.span`
 const SketchbookAuthor = styled(Center)`
     width: 100%;
     height: 65px;
+    position: relative;
     margin-top: 26px;
     color: ${({ theme }) => theme.color.whiteT2};
     font-size: ${({ theme }) => theme.typo.h2};
@@ -188,4 +195,9 @@ const DownArrowWrapper = styled.div<{ disable: boolean }>`
         opacity: ${(props) => (props.disable ? 0.4 : 1)};
         margin-top: 8px;
     }
+`;
+
+const OneMoreButtonWrapper = styled.div`
+    position: absolute;
+    right: 0;
 `;

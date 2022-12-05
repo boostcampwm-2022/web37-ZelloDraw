@@ -1,8 +1,10 @@
 import { useEffect } from 'react';
-import { useRecoilState, useRecoilValue } from 'recoil';
+import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
 import {
+    canOneMoreGameState,
     currentBookIdxState,
     currentPageIdxState,
+    isEndedState,
     isStartedState,
     isWatchedBookState,
     maxSketchbookState,
@@ -12,10 +14,12 @@ import { GUIDE_PAGE_IDX } from '@utils/constants';
 
 function useResultSketchbook() {
     const isStarted = useRecoilValue(isStartedState);
+    const isEnded = useRecoilValue(isEndedState);
     const isWatched = useRecoilValue(isWatchedBookState);
     const { maxPageNum, maxBookNum } = useRecoilValue(maxSketchbookState);
     const currentBookIdx = useRecoilValue(currentBookIdxState);
     const [currentPageIdx, setCurrentPageIdx] = useRecoilState(currentPageIdxState);
+    const setCanOneMoreGame = useSetRecoilState(canOneMoreGameState);
     const aSketchBookLimitTime = maxBookNum + 1;
     const interval = 2000;
     const { timeLeft, setTimerTime } = useTimer({
@@ -32,6 +36,10 @@ function useResultSketchbook() {
         if (timeLeft === 0 || timeLeft === aSketchBookLimitTime) return;
         addSketchbookPage();
     }, [timeLeft]);
+
+    useEffect(() => {
+        if (isEnded) setCanOneMoreGame(true);
+    }, [isEnded]);
 
     function addSketchbookPage() {
         if (currentPageIdx === maxPageNum && !isWatched) {
