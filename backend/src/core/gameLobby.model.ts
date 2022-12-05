@@ -74,7 +74,7 @@ export class GameLobby implements Lobby, Game {
     leaveWhenPlayingGame(user: User) {
         const leavedUserIdx = this.getUserIndex(user);
         this.usersAliveState[leavedUserIdx] = false;
-        this.pollyFillQuizReply(user);
+        this.polyFillQuizReply(user);
     }
 
     isHost(user: User): boolean {
@@ -104,6 +104,15 @@ export class GameLobby implements Lobby, Game {
         // this.isWatchedQuizReplyChain = this.users.map(() => false);
     }
 
+    quitGame() {
+        this.maxRound = 0;
+        this.curRound = 0;
+        this.roundType = 'ANSWER';
+        this.roundLimitTime = 0;
+        this.quizReplyChains = [];
+        this.isPlaying = false;
+    }
+
     getCurrentRoundQuizReplyChain(user: User): QuizReplyChain {
         const currentRoundQuizReplyChainIndex = this.currentRoundQuizReplyChainIndex(user);
         return this.quizReplyChains[currentRoundQuizReplyChainIndex];
@@ -124,7 +133,7 @@ export class GameLobby implements Lobby, Game {
         }
         this.swapRoundType();
         this.submittedQuizRepliesOnCurrentRound = this.users.map(() => undefined);
-        this.pollyFillDeadUsersQuizReply();
+        this.polyFillDeadUsersQuizReply();
     }
 
     getSubmittedQuizRepliesCount(): number {
@@ -183,15 +192,15 @@ export class GameLobby implements Lobby, Game {
         return (this.getUserIndex(user) + this.curRound) % this.users.length;
     }
 
-    private pollyFillQuizReply(user: User) {
+    private polyFillQuizReply(user: User) {
         const quizReply = QuizReply.createEmptyQuizReply(this.roundType, user);
         this.submitQuizReply(user, quizReply);
     }
 
-    private pollyFillDeadUsersQuizReply() {
+    private polyFillDeadUsersQuizReply() {
         this.usersAliveState.forEach((isAlive, idx) => {
             if (!isAlive) {
-                this.pollyFillQuizReply(this.users[idx]);
+                this.polyFillQuizReply(this.users[idx]);
             }
         });
     }

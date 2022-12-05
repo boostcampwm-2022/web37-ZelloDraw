@@ -1,12 +1,11 @@
-import { useEffect } from 'react';
 import styled from 'styled-components';
 import { Center } from '@styles/styled';
-import { useRecoilState, useRecoilValue } from 'recoil';
+import { useRecoilValue } from 'recoil';
 import {
+    canOneMoreGameState,
     currentBookIdxState,
     currentPageIdxState,
     currentSketchbookState,
-    isEndedState,
     isStartedState,
     isWatchedBookState,
     maxSketchbookState,
@@ -19,36 +18,43 @@ import ResultGuide from '@components/ResultGuide';
 import QuizResultContent from '@components/QuizResultContent';
 import useCheckGuidePage from '@hooks/useCheckGuidePage';
 import useResultSketchbook from '@hooks/useResultSketchbook';
+import PrimaryButton from '@components/PrimaryButton';
 import { ReactComponent as LeftArrowIcon } from '@assets/icons/chevron-left-gradient.svg';
 import { ReactComponent as RightArrowIcon } from '@assets/icons/chevron-right-gradient.svg';
 import { ReactComponent as DownArrowIcon } from '@assets/icons/chevron-down.svg';
 import { ReactComponent as UpArrowIcon } from '@assets/icons/chevron-up.svg';
-import { emitWatchResultSketchBook, onWatchResultSketchBook } from '@game/NetworkServiceUtils';
+import { emitOneMoreGame } from '@game/NetworkServiceUtils';
+import { useEffect } from 'react';
+import { networkServiceInstance as NetworkService } from '@services/socketService';
+import useMovePage from '@hooks/useMovePage';
+import useLobbyId from '@hooks/useLobbyId';
 
 function ResultSketchbook() {
+    const [setPage] = useMovePage();
+    const [lobbyId] = useLobbyId();
     const { maxPageNum, maxBookNum } = useRecoilValue(maxSketchbookState);
     const currentSketchbook = useRecoilValue(currentSketchbookState);
     const sketchbookAuthor = useRecoilValue(sketchbookAuthorState);
-    const [currentBookIdx, setCurrentBookIdx] = useRecoilState(currentBookIdxState);
-    const [currentPageIdx, setCurrentPageIdx] = useRecoilState(currentPageIdxState);
+    const currentBookIdx = useRecoilValue(currentBookIdxState);
+    const currentPageIdx = useRecoilValue(currentPageIdxState);
+
     const { isHost } = useRecoilValue(userState);
-    const isEnded = useRecoilValue(isEndedState);
-    const [isStarted, setIsStarted] = useRecoilState(isStartedState);
-    const [isWatched, setIsWatched] = useRecoilState(isWatchedBookState);
+    const isStarted = useRecoilValue(isStartedState);
+    const isWatched = useRecoilValue(isWatchedBookState);
+    const canOneMoreGame = useRecoilValue(canOneMoreGameState);
+
     const { checkIsNotGuidePage } = useCheckGuidePage();
-    const { addSketchbookPage, subtractSketchbookPage } = useResultSketchbook();
+    const { addSketchbookPage, subtractSketchbookPage, changeSketchbook } = useResultSketchbook();
 
     useEffect(() => {
-        setTimeout(() => setIsStarted(false), 3000);
-        onWatchResultSketchBook(setCurrentBookIdx, setCurrentPageIdx, setIsWatched);
-        // 가장 처음 나타나는 스케치북도 봤다고 서버에게 알린다.
-        if (isHost) emitWatchResultSketchBook(0);
-    }, []);
+        NetworkService.on('back-to-lobby', () => {
+            setPage(`/lobby?id=${lobbyId}&new=false`);
+        });
 
-    function changeSketchbook(nextNum: number) {
-        const nextBookIdx = currentBookIdx + nextNum;
-        emitWatchResultSketchBook(nextBookIdx);
-    }
+        return () => {
+            NetworkService.off('back-to-lobby');
+        };
+    }, []);
 
     return (
         <>
@@ -101,6 +107,11 @@ function ResultSketchbook() {
                         {isHost && currentBookIdx !== maxBookNum && (
                             <RightArrowIcon onClick={() => changeSketchbook(1)} />
                         )}
+                        {canOneMoreGame && isHost && (
+                            <OneMoreButtonWrapper onClick={emitOneMoreGame}>
+                                <PrimaryButton topText='ONE MORE' bottomText='한판 더 하기' />
+                            </OneMoreButtonWrapper>
+                        )}
                     </>
                 )}
             </SketchbookAuthor>
@@ -128,6 +139,7 @@ const QuizAuthorName = styled.span`
 const SketchbookAuthor = styled(Center)`
     width: 100%;
     height: 65px;
+    position: relative;
     margin-top: 26px;
     color: ${({ theme }) => theme.color.whiteT2};
     font-size: ${({ theme }) => theme.typo.h2};
@@ -188,4 +200,9 @@ const DownArrowWrapper = styled.div<{ disable: boolean }>`
         opacity: ${(props) => (props.disable ? 0.4 : 1)};
         margin-top: 8px;
     }
+`;
+
+const OneMoreButtonWrapper = styled.div`
+    position: absolute;
+    right: 0;
 `;
