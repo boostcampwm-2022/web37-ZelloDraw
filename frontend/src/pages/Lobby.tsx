@@ -19,6 +19,7 @@ import { StartRoundEmitRequest } from '@backend/core/game.dto';
 import { onStartGame } from '@game/NetworkServiceUtils';
 import useWebRTC from '@hooks/useWebRTC';
 import { userState } from '@atoms/user';
+import useBeforeReload from '@hooks/useBeforeReload';
 import useLobbyId from '@hooks/useLobbyId';
 
 function Lobby() {
@@ -30,6 +31,7 @@ function Lobby() {
     const isNewLobby = getParam('new') === 'true' || getParam('new') === '';
     const setRoundInfo = useSetRecoilState<StartRoundEmitRequest>(roundInfoState);
     const { createOffers } = useWebRTC();
+    useBeforeReload();
 
     useEffect(() => {
         setLobbyId(lobbyId);
