@@ -1,7 +1,6 @@
-import { useEffect } from 'react';
 import styled from 'styled-components';
 import { Center } from '@styles/styled';
-import { useRecoilState, useRecoilValue } from 'recoil';
+import { useRecoilValue } from 'recoil';
 import {
     canOneMoreGameState,
     currentBookIdxState,
@@ -24,32 +23,21 @@ import { ReactComponent as LeftArrowIcon } from '@assets/icons/chevron-left-grad
 import { ReactComponent as RightArrowIcon } from '@assets/icons/chevron-right-gradient.svg';
 import { ReactComponent as DownArrowIcon } from '@assets/icons/chevron-down.svg';
 import { ReactComponent as UpArrowIcon } from '@assets/icons/chevron-up.svg';
-import { emitWatchResultSketchBook, onWatchResultSketchBook } from '@game/NetworkServiceUtils';
 
 function ResultSketchbook() {
     const { maxPageNum, maxBookNum } = useRecoilValue(maxSketchbookState);
     const currentSketchbook = useRecoilValue(currentSketchbookState);
     const sketchbookAuthor = useRecoilValue(sketchbookAuthorState);
-    const [currentBookIdx, setCurrentBookIdx] = useRecoilState(currentBookIdxState);
-    const [currentPageIdx, setCurrentPageIdx] = useRecoilState(currentPageIdxState);
+    const currentBookIdx = useRecoilValue(currentBookIdxState);
+    const currentPageIdx = useRecoilValue(currentPageIdxState);
+
     const { isHost } = useRecoilValue(userState);
+    const isStarted = useRecoilValue(isStartedState);
+    const isWatched = useRecoilValue(isWatchedBookState);
     const canOneMoreGame = useRecoilValue(canOneMoreGameState);
-    const [isStarted, setIsStarted] = useRecoilState(isStartedState);
-    const [isWatched, setIsWatched] = useRecoilState(isWatchedBookState);
+
     const { checkIsNotGuidePage } = useCheckGuidePage();
-    const { addSketchbookPage, subtractSketchbookPage } = useResultSketchbook();
-
-    useEffect(() => {
-        setTimeout(() => setIsStarted(false), 3000);
-        onWatchResultSketchBook(setCurrentBookIdx, setCurrentPageIdx, setIsWatched);
-        // 가장 처음 나타나는 스케치북도 봤다고 서버에게 알린다.
-        if (isHost) emitWatchResultSketchBook(0);
-    }, []);
-
-    function changeSketchbook(nextNum: number) {
-        const nextBookIdx = currentBookIdx + nextNum;
-        emitWatchResultSketchBook(nextBookIdx);
-    }
+    const { addSketchbookPage, subtractSketchbookPage, changeSketchbook } = useResultSketchbook();
 
     return (
         <>
