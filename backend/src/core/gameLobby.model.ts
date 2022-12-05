@@ -7,7 +7,7 @@ import { PartialWithoutMethods } from '../utils/types';
 
 export class GameLobby implements Lobby, Game {
     readonly id: string;
-    readonly host: User;
+    host: User;
     users: User[];
     usersAliveState: boolean[];
     maxRound: number;
@@ -75,6 +75,15 @@ export class GameLobby implements Lobby, Game {
         const leavedUserIdx = this.getUserIndex(user);
         this.usersAliveState[leavedUserIdx] = false;
         this.pollyFillQuizReply(user);
+    }
+
+    isHost(user: User): boolean {
+        return this.host.socketId === user.socketId;
+    }
+
+    succeedHost() {
+        const hostIdx = this.getUserIndex(this.host);
+        this.host = this.users[hostIdx + 1];
     }
 
     // TODO: 게임 시작시, 혹은 게임 종료 시 프로퍼티 초기화 로직 필요.
