@@ -81,6 +81,12 @@ export class GameService {
         await this.gameLobbyRepository.save(game);
     }
 
+    async quitGame(lobbyId: string) {
+        const game = await this.getGame(lobbyId);
+        game.quitGame();
+        await this.gameLobbyRepository.save(game);
+    }
+
     async getGame(lobbyId: string): Promise<GameLobby> {
         return await this.gameLobbyRepository.findById(lobbyId);
     }
