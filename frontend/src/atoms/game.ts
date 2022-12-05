@@ -12,8 +12,19 @@ export const lobbyIdState = atom<string>({
 /**
  * 로비(게임)에 접속한 유저 리스트
  */
-export const userListState = atom<string[]>({
+export const userListState = atom<Array<{ userName: string; sid: string }>>({
     key: 'userListState',
+    default: [],
+});
+
+export interface WebRTCUser {
+    sid: string; // socketID
+    userName: string;
+    stream: MediaStream;
+}
+
+export const userStreamListState = atom<WebRTCUser[]>({
+    key: 'userStreamListState',
     default: [],
 });
 

@@ -33,6 +33,12 @@ export const ScaledDiv = styled.div`
         theme.layout.sectionScale < 1 ? `scale(${theme.layout.sectionScale})` : 'scale(1)'};
 `;
 
+export const VideoProperty = styled.video`
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+`;
+
 export const Guide = styled(Center)`
     ${({ theme }) => theme.layout.sketchBook};
     flex-direction: column;

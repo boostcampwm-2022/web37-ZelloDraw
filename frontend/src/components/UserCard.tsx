@@ -7,9 +7,12 @@ import { userState } from '@atoms/user';
 import { useRecoilState } from 'recoil';
 import { networkServiceInstance as NetworkService } from '../services/socketService';
 import { debounce } from 'lodash';
+import { VideoProperty } from '@styles/styled';
+import useLocalStream from '@hooks/useLocalStream';
 
 function UserCard() {
     const [user, setUserState] = useRecoilState(userState);
+    const { videoRef } = useLocalStream();
 
     const onChangeName = (e: React.ChangeEvent<HTMLInputElement>) => {
         const name = e.target.value;
@@ -27,7 +30,9 @@ function UserCard() {
     return (
         <Card>
             <CardInner>
-                <UserVideo></UserVideo>
+                <UserVideo>
+                    <Video ref={videoRef} autoPlay playsInline></Video>
+                </UserVideo>
                 <UserName>
                     <span>&#123;</span>
                     <NameInput
@@ -61,6 +66,10 @@ const UserVideo = styled.div`
     border-radius: 32px;
     background: ${({ theme }) => theme.gradation.purplePrimary};
     margin-bottom: 7.31px;
+`;
+
+const Video = styled(VideoProperty)`
+    border-radius: 32px;
 `;
 
 const UserName = styled.div`

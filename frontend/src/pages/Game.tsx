@@ -29,7 +29,7 @@ function Game() {
         onCompleteGame(setGameResult, setIsCompleteGame);
 
         NetworkService.on('leave-game', (user: JoinLobbyReEmitRequest) => {
-            setUserList(userList.filter((participant) => participant !== user.userName));
+            setUserList(userList.filter((participant) => participant.userName !== user.userName));
         });
 
         return () => {
