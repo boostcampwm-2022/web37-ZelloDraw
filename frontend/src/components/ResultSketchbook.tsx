@@ -23,6 +23,7 @@ import { ReactComponent as LeftArrowIcon } from '@assets/icons/chevron-left-grad
 import { ReactComponent as RightArrowIcon } from '@assets/icons/chevron-right-gradient.svg';
 import { ReactComponent as DownArrowIcon } from '@assets/icons/chevron-down.svg';
 import { ReactComponent as UpArrowIcon } from '@assets/icons/chevron-up.svg';
+import { emitOneMoreGame } from '@game/NetworkServiceUtils';
 
 function ResultSketchbook() {
     const { maxPageNum, maxBookNum } = useRecoilValue(maxSketchbookState);
@@ -91,7 +92,7 @@ function ResultSketchbook() {
                             <RightArrowIcon onClick={() => changeSketchbook(1)} />
                         )}
                         {canOneMoreGame && (
-                            <OneMoreButtonWrapper>
+                            <OneMoreButtonWrapper onClick={emitOneMoreGame}>
                                 <PrimaryButton topText='ONE MORE' bottomText='한판 더 하기' />
                             </OneMoreButtonWrapper>
                         )}

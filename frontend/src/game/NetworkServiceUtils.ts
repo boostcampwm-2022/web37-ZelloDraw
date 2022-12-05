@@ -75,3 +75,7 @@ export const onWatchResultSketchBook = (
         },
     );
 };
+
+export const emitOneMoreGame = () => {
+    NetworkService.emit('one-more');
+};
