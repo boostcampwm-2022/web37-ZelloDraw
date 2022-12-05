@@ -14,7 +14,11 @@ import {
 import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
 import { roundInfoState, userListState, userStreamListState } from '@atoms/game';
 import { getParam } from '@utils/common';
-import { JoinLobbyReEmitRequest, JoinLobbyRequest } from '@backend/core/user.dto';
+import {
+    JoinLobbyReEmitRequest,
+    JoinLobbyRequest,
+    JoinLobbyResponse,
+} from '@backend/core/user.dto';
 import { StartRoundEmitRequest } from '@backend/core/game.dto';
 import { onStartGame } from '@game/NetworkServiceUtils';
 import useWebRTC from '@hooks/useWebRTC';
@@ -37,16 +41,19 @@ function Lobby() {
         NetworkService.emit(
             'join-lobby',
             payload,
-            (res: Array<{ userName: string; sid: string }>) => {
-                setUserList(res);
-                res.forEach((userInRoom) => {
-                    setTimeout(() => {
-                        if (curUser.name !== userInRoom.userName) {
-                            console.log('send offer from newbie');
-                            void createOffers(userInRoom);
-                        }
-                    }, 100);
-                });
+            // (res: Array<{ userName: string; sid: string }>) => {
+            //     setUserList(res);
+            //     res.forEach((userInRoom) => {
+            //         setTimeout(() => {
+            //             if (curUser.name !== userInRoom.userName) {
+            //                 console.log('send offer from newbie');
+            //                 void createOffers(userInRoom);
+            //             }
+            //         }, 100);
+            //     });
+            // },
+            (res: JoinLobbyResponse) => {
+                console.log(res);
             },
             (err: SocketException) => {
                 alert(JSON.stringify(err.message));

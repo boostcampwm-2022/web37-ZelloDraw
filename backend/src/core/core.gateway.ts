@@ -91,7 +91,12 @@ export class CoreGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
             });
 
             return users.map((user) => {
-                return { userName: user.name, sid: user.socketId };
+                return {
+                    userName: user.name,
+                    sid: user.socketId,
+                    video: user.video,
+                    audio: user.audio,
+                };
             }) as JoinLobbyResponse;
         } catch (e) {
             throw new SocketException('BadRequest', e.message);
@@ -186,6 +191,7 @@ export class CoreGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
     @SubscribeMessage('change-stream')
     async handleChangeStream(@ConnectedSocket() client: Socket, @MessageBody() body) {
         const user = this.userService.getUser(client.id);
+        this.userService.updateUser(client.id, { video: body.video, audio: body.audio });
         const payload = {
             socketId: user.socketId,
             video: body.video,
