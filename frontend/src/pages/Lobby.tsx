@@ -84,7 +84,7 @@ function Lobby() {
 
     return (
         <>
-            <LogoWrapper onClick={() => setPage('/')}>
+            <LogoWrapper>
                 <img src={SmallLogo} />
             </LogoWrapper>
             <LobbyContainer>
