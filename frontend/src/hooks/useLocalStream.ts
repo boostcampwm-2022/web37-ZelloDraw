@@ -1,6 +1,8 @@
+import { MediaErrorType, NOT_SUPPORT_USER_MESSAGE } from './../utils/constants';
 import { useEffect, useRef, useCallback } from 'react';
 import { userCamState, userMicState, userStreamState, userStreamRefState } from '@atoms/user';
 import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
+import { NOT_SUPPORTED_MESSAGE } from '@utils/constants';
 
 interface ConstraintsType {
     video: boolean;
@@ -23,7 +25,8 @@ function useLocalStream() {
             const hasMic = devices.some(function (d) {
                 return d.kind === 'audioinput';
             });
-            void getSelfMedia({ video: hasCam, audio: hasMic });
+            if (!hasCam && !hasMic) alert(MediaErrorType.NotFoundError);
+            else void getSelfMedia({ video: hasCam, audio: hasMic });
         });
     };
 
@@ -34,8 +37,12 @@ function useLocalStream() {
 
             setStream(stream);
             setSelfStreamRef(streamRef);
-        } catch (err) {
-            console.log(err);
+        } catch (err: any) {
+            if (err.message.includes(NOT_SUPPORTED_MESSAGE)) {
+                alert(NOT_SUPPORT_USER_MESSAGE);
+            }
+            if (err.name in MediaErrorType) alert(MediaErrorType[err.name]);
+            else alert(err.message);
         }
     }, []);
 
