@@ -4,7 +4,6 @@ import { Center } from '@styles/styled';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useRecoilValue } from 'recoil';
 import { currentBookIdxState } from '@atoms/result';
-import { CANVAS_WIDTH } from '@utils/constants';
 import SketchbookImg from '@assets/sketchbook.svg';
 import Card from '@components/Card';
 
@@ -17,7 +16,7 @@ interface SketchbookCardType {
 const slideVariants = {
     enter: ({ direction, xValue }: { direction: number; xValue: number }) => {
         return {
-            x: direction * xValue,
+            x: direction * xValue * -1,
             opacity: 0,
         };
     },
@@ -29,7 +28,7 @@ const slideVariants = {
     exit: ({ direction, xValue }: { direction: number; xValue: number }) => {
         return {
             zIndex: 0,
-            x: direction * xValue * -1,
+            x: direction * xValue,
             opacity: 0,
         };
     },
@@ -38,14 +37,14 @@ const slideVariants = {
 function SketchbookCard({ left, center, right }: SketchbookCardType) {
     const currentBookIdx = useRecoilValue(currentBookIdxState);
     const [lastBookIdx, setLastBookIdx] = useState(0);
-    const [direction, setDirection] = useState(1);
+    const [bookDirection, setBookDirection] = useState(1);
     const xValue = 600;
 
     useEffect(() => {
         if (currentBookIdx > lastBookIdx) {
-            setDirection(1);
+            setBookDirection(1);
         } else {
-            setDirection(-1);
+            setBookDirection(-1);
         }
         setLastBookIdx(currentBookIdx);
     }, [currentBookIdx]);
@@ -55,10 +54,10 @@ function SketchbookCard({ left, center, right }: SketchbookCardType) {
             <Container>
                 <LeftSide>{left}</LeftSide>
                 <SketchbookWrapper>
-                    <AnimatePresence initial={false} custom={{ direction, xValue }}>
+                    <AnimatePresence initial={false} custom={{ direction: bookDirection, xValue }}>
                         <motion.div
                             key={currentBookIdx}
-                            custom={{ direction, xValue }}
+                            custom={{ direction: bookDirection, xValue }}
                             variants={slideVariants}
                             initial='enter'
                             animate='center'
@@ -92,7 +91,7 @@ const LeftSide = styled.div`
 
 const SketchbookWrapper = styled.div`
     position: relative;
-    width: ${CANVAS_WIDTH}px;
+    width: 786px;
     height: 560px;
     margin: 0 30px;
     > div {
