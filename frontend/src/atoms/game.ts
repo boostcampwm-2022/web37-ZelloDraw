@@ -55,7 +55,7 @@ export const quizReplyState = selector({
     get: ({ get }) => {
         const roundInfo = get(roundInfoState);
 
-        if (roundInfo === undefined || roundInfo.quizReply.content === undefined) {
+        if (roundInfo?.quizReply.content === undefined) {
             return '';
         }
 
