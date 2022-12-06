@@ -28,7 +28,7 @@ jobs:
             - name: Run frontend build check
               run: |
                   cd frontend
-                  npm run build
+                  CI='' npm run build
 
             - name: Run backend build check
               run: |
