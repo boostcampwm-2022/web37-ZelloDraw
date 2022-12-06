@@ -189,7 +189,7 @@ export class CoreGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
         const user = this.userService.getUser(client.id);
         client.broadcast
             .to(body.offerReceiveID)
-            .emit('webrtc-offer', body.sdp, client.id, user.name);
+            .emit('webrtc-offer', body.sdp, client.id, user.name, user.audio, user.video);
     }
 
     @SubscribeMessage('webrtc-answer')

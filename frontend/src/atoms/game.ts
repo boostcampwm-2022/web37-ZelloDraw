@@ -16,7 +16,7 @@ export const lobbyIdState = atom<string>({
 export interface WebRTCUser {
     sid: string; // socketID
     userName: string;
-    stream: MediaStream;
+    stream?: MediaStream;
     audio?: boolean;
     video?: boolean;
 }
