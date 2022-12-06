@@ -12,7 +12,7 @@ import {
     SocketException,
 } from '../services/socketService';
 import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
-import { roundInfoState, userListState, userStreamListState } from '@atoms/game';
+import { lobbyIdState, roundInfoState, userListState, userStreamListState } from '@atoms/game';
 import { getParam } from '@utils/common';
 import { JoinLobbyReEmitRequest, JoinLobbyRequest } from '@backend/core/user.dto';
 import { StartRoundEmitRequest } from '@backend/core/game.dto';
@@ -20,24 +20,24 @@ import { onStartGame } from '@game/NetworkServiceUtils';
 import useWebRTC from '@hooks/useWebRTC';
 import { userState } from '@atoms/user';
 import useBeforeReload from '@hooks/useBeforeReload';
-import useLobbyId from '@hooks/useLobbyId';
+import useRemoveParams from '@hooks/useRemoveParams';
 import { useResetGameState } from '@hooks/useResetGameState';
 
 function Lobby() {
-    const curUser = useRecoilValue(userState);
+    const [user, setUser] = useRecoilState(userState);
     const userStreamList = useRecoilValue(userStreamListState);
     const [userList, setUserList] = useRecoilState(userListState);
-    const [lobbyId, setLobbyId] = useLobbyId();
+    const lobbyId = useRecoilValue(lobbyIdState);
     const [setPage] = useMovePage();
     const isNewLobby = getParam('new') === 'true' || getParam('new') === '';
     const setRoundInfo = useSetRecoilState<StartRoundEmitRequest>(roundInfoState);
     const { createOffers } = useWebRTC();
+    useRemoveParams();
     useBeforeReload();
     const resetGameState = useResetGameState();
 
     useEffect(() => {
         resetGameState();
-        setLobbyId(lobbyId);
         const payload: JoinLobbyRequest = { lobbyId };
 
         if (isNewLobby) {
@@ -48,7 +48,7 @@ function Lobby() {
                     setUserList(res);
                     res.forEach((userInRoom) => {
                         setTimeout(() => {
-                            if (curUser.name !== userInRoom.userName) {
+                            if (user.name !== userInRoom.userName) {
                                 console.log('send offer from newbie');
                                 void createOffers(userInRoom);
                             }
@@ -64,8 +64,12 @@ function Lobby() {
         NetworkService.on('leave-lobby', (users: Array<{ userName: string; sid: string }>) => {
             setUserList(users);
         });
+        NetworkService.on('succeed-host', () => {
+            setUser({ ...user, isHost: true });
+        });
         return () => {
             NetworkService.off('leave-lobby');
+            NetworkService.off('succeed-host');
         };
     }, []);
 
@@ -84,7 +88,7 @@ function Lobby() {
 
     return (
         <>
-            <LogoWrapper onClick={() => setPage('/')}>
+            <LogoWrapper>
                 <img src={SmallLogo} />
             </LogoWrapper>
             <LobbyContainer>

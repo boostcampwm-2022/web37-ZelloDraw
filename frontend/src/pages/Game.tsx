@@ -8,16 +8,16 @@ import { userListState } from '@atoms/game';
 import GameUsers from '@components/GameUsers';
 import MicButton from '@components/MicButton';
 import CameraButton from '@components/CameraButton';
-import useMovePage from '@hooks/useMovePage';
 import SmallLogo from '@assets/logo-s.png';
 import GameSketchbook from '@components/GameSketchbook';
 import ResultSketchbook from '@components/ResultSketchbook';
 import { networkServiceInstance as NetworkService } from '../services/socketService';
 import { JoinLobbyReEmitRequest } from '@backend/core/user.dto';
+import { userState } from '@atoms/user';
 import useBeforeReload from '@hooks/useBeforeReload';
 
 function Game() {
-    const [setPage] = useMovePage();
+    const [user, setUser] = useRecoilState(userState);
     const setGameResult = useSetRecoilState(gameResultState);
     const [isCompleteGame, setIsCompleteGame] = useState(false);
     const [userList, setUserList] = useRecoilState(userListState);
@@ -31,8 +31,13 @@ function Game() {
             setUserList(userList.filter((participant) => participant.userName !== user.userName));
         });
 
+        NetworkService.on('succeed-host', () => {
+            setUser({ ...user, isHost: true });
+        });
+
         return () => {
             NetworkService.off('leave-lobby');
+            NetworkService.off('succeed-host');
         };
     }, []);
 
@@ -48,7 +53,7 @@ function Game() {
                 <CameraButton />
                 <MicButton />
             </CamAndMicWrapper>
-            <LogoWrapper onClick={() => setPage('/')}>
+            <LogoWrapper>
                 <img src={SmallLogo} alt={'Logo'} />
             </LogoWrapper>
         </>
