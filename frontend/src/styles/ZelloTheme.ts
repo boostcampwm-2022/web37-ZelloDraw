@@ -78,12 +78,12 @@ export const ZelloTheme = {
         maxHeight: `${MAX_HEIGHT}px`,
         sectionScale: SCALE,
         sketchBook: `
-          width: 742px;
-          height: 468px;
+          width: 750px;
+          height: 472px;
           position: absolute;
           top: 60px;
-          left: 18px;
-          border-radius: 40px;
+          left: 14px;
+          border-radius: 28px;
         `,
         gradientTypo: `
           -webkit-background-clip: text;
