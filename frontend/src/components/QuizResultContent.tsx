@@ -83,6 +83,7 @@ const QuizResult = styled(motion(Center))`
 
     > img {
         width: 100%;
+        border-radius: 28px;
     }
 
     > div {
