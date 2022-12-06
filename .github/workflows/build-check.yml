@@ -32,5 +32,5 @@ jobs:
 
             - name: Run backend build check
               run: |
-                  cd ../backend
+                  cd backend
                   npm run build
