@@ -1,0 +1,36 @@
+name: build + eslint
+
+on:
+    pull_request:
+        branches:
+            - develop
+
+jobs:
+    check:
+        name: lint + build checking
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v3
+            - name: Install frontend dependencies
+              run: |
+                  cd frontend
+                  npm install
+            - name: Install backend dependencies
+              run: |
+                  cd backend
+                  npm install
+
+            - name: Check eslint
+              run: |
+                  ./frontend/node_modules/.bin/eslint frontend/src --ext .ts,.tsx
+                  ./frontend/node_modules/.bin/eslint backend --ext .ts,.tsx
+
+            - name: Run frontend build check
+              run: |
+                  cd frontend
+                  CI='' npm run build
+
+            - name: Run backend build check
+              run: |
+                  cd backend
+                  npm run build
