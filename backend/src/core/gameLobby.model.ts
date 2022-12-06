@@ -7,7 +7,7 @@ import { PartialWithoutMethods } from '../utils/types';
 
 export class GameLobby implements Lobby, Game {
     readonly id: string;
-    readonly host: User;
+    host: User;
     users: User[];
     usersAliveState: boolean[];
     maxRound: number;
@@ -74,7 +74,16 @@ export class GameLobby implements Lobby, Game {
     leaveWhenPlayingGame(user: User) {
         const leavedUserIdx = this.getUserIndex(user);
         this.usersAliveState[leavedUserIdx] = false;
-        this.pollyFillQuizReply(user);
+        this.polyFillQuizReply(user);
+    }
+
+    isHost(user: User): boolean {
+        return this.host.socketId === user.socketId;
+    }
+
+    succeedHost() {
+        const hostIdx = this.getUserIndex(this.host);
+        this.host = this.users[hostIdx + 1];
     }
 
     // TODO: 게임 시작시, 혹은 게임 종료 시 프로퍼티 초기화 로직 필요.
@@ -93,6 +102,15 @@ export class GameLobby implements Lobby, Game {
         this.usersAliveState = this.users.map(() => true);
         this.submittedQuizRepliesOnCurrentRound = this.users.map(() => undefined);
         // this.isWatchedQuizReplyChain = this.users.map(() => false);
+    }
+
+    quitGame() {
+        this.maxRound = 0;
+        this.curRound = 0;
+        this.roundType = 'ANSWER';
+        this.roundLimitTime = 0;
+        this.quizReplyChains = [];
+        this.isPlaying = false;
     }
 
     getCurrentRoundQuizReplyChain(user: User): QuizReplyChain {
@@ -115,7 +133,7 @@ export class GameLobby implements Lobby, Game {
         }
         this.swapRoundType();
         this.submittedQuizRepliesOnCurrentRound = this.users.map(() => undefined);
-        this.pollyFillDeadUsersQuizReply();
+        this.polyFillDeadUsersQuizReply();
     }
 
     getSubmittedQuizRepliesCount(): number {
@@ -174,15 +192,15 @@ export class GameLobby implements Lobby, Game {
         return (this.getUserIndex(user) + this.curRound) % this.users.length;
     }
 
-    private pollyFillQuizReply(user: User) {
+    private polyFillQuizReply(user: User) {
         const quizReply = QuizReply.createEmptyQuizReply(this.roundType, user);
         this.submitQuizReply(user, quizReply);
     }
 
-    private pollyFillDeadUsersQuizReply() {
+    private polyFillDeadUsersQuizReply() {
         this.usersAliveState.forEach((isAlive, idx) => {
             if (!isAlive) {
-                this.pollyFillQuizReply(this.users[idx]);
+                this.polyFillQuizReply(this.users[idx]);
             }
         });
     }

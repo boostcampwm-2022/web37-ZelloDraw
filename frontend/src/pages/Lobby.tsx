@@ -12,52 +12,63 @@ import {
     SocketException,
 } from '../services/socketService';
 import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
-import { roundInfoState, userStreamListState, WebRTCUser } from '@atoms/game';
+import { roundInfoState, userStreamListState, WebRTCUser, lobbyIdState } from '@atoms/game';
 import { getParam } from '@utils/common';
 import {
-    JoinLobbyReEmitRequest,
-    JoinLobbyRequest,
     JoinLobbyResponse,
+    JoinLobbyRequest,
+    JoinLobbyReEmitRequest,
 } from '@backend/core/user.dto';
 import { StartRoundEmitRequest } from '@backend/core/game.dto';
 import { onStartGame } from '@game/NetworkServiceUtils';
 import useWebRTC from '@hooks/useWebRTC';
+import useBeforeReload from '@hooks/useBeforeReload';
+import useRemoveParams from '@hooks/useRemoveParams';
 import { userCamState, userMicState, userState } from '@atoms/user';
 
 function Lobby() {
-    const curUser = useRecoilValue(userState);
     const userCam = useRecoilValue(userCamState);
     const userMic = useRecoilValue(userMicState);
-    const setRoundInfo = useSetRecoilState<StartRoundEmitRequest>(roundInfoState);
     const [userStreamList, setUserStreamList] = useRecoilState<WebRTCUser[]>(userStreamListState);
-
-    const lobbyId = getParam('id');
+    const [user, setUser] = useRecoilState(userState);
+    const lobbyId = useRecoilValue(lobbyIdState);
     const [setPage] = useMovePage();
+    const isNewLobby = getParam('new') === 'true' || getParam('new') === '';
+    const setRoundInfo = useSetRecoilState<StartRoundEmitRequest>(roundInfoState);
     const { createOffers } = useWebRTC();
+    useRemoveParams();
+    useBeforeReload();
 
     useEffect(() => {
         const payload: JoinLobbyRequest = { lobbyId };
-        NetworkService.emit(
-            'join-lobby',
-            payload,
-            (res: JoinLobbyResponse) => {
-                res.forEach((userInRoom) => {
-                    void createOffers(userInRoom);
-                });
-            },
-            (err: SocketException) => {
-                alert(JSON.stringify(err.message));
-                setPage('/');
-            },
-        );
-        NetworkService.emit('update-user-stream', { video: userCam, audio: userMic });
+
+        if (isNewLobby) {
+            NetworkService.emit(
+                'join-lobby',
+                payload,
+                (res: JoinLobbyResponse) => {
+                    res.forEach((userInRoom) => {
+                        void createOffers(userInRoom);
+                    });
+                },
+                (err: SocketException) => {
+                    alert(JSON.stringify(err.message));
+                    setPage('/');
+                },
+            );
+            NetworkService.emit('update-user-stream', { video: userCam, audio: userMic });
+        }
         NetworkService.on('leave-lobby', (user: JoinLobbyReEmitRequest) => {
             setUserStreamList((prev) =>
                 prev.filter((participant) => participant.userName !== user.userName),
             );
         });
+        NetworkService.on('succeed-host', () => {
+            setUser({ ...user, isHost: true });
+        });
         return () => {
             NetworkService.off('leave-lobby');
+            NetworkService.off('succeed-host');
         };
     }, []);
 
@@ -89,7 +100,7 @@ function Lobby() {
 
     return (
         <>
-            <LogoWrapper onClick={() => setPage('/')}>
+            <LogoWrapper>
                 <img src={SmallLogo} />
             </LogoWrapper>
             <LobbyContainer>

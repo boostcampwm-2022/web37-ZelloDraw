@@ -2,26 +2,31 @@ import { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { ScaledDiv, ScaledSection } from '@styles/styled';
 import { onCompleteGame, onCountSubmittedQuiz } from '@game/NetworkServiceUtils';
-import { useSetRecoilState } from 'recoil';
+import { useSetRecoilState, useRecoilState } from 'recoil';
 import { gameResultState } from '@atoms/result';
 import { userStreamListState } from '@atoms/game';
 import GameUsers from '@components/GameUsers';
 import MicButton from '@components/MicButton';
 import CameraButton from '@components/CameraButton';
-import useMovePage from '@hooks/useMovePage';
 import SmallLogo from '@assets/logo-s.png';
 import GameSketchbook from '@components/GameSketchbook';
 import ResultSketchbook from '@components/ResultSketchbook';
 import { networkServiceInstance as NetworkService } from '../services/socketService';
 import { JoinLobbyReEmitRequest } from '@backend/core/user.dto';
+import { userState } from '@atoms/user';
+import useBeforeReload from '@hooks/useBeforeReload';
+import { useResetGameState } from '@hooks/useResetGameState';
 
 function Game() {
-    const [setPage] = useMovePage();
+    const [user, setUser] = useRecoilState(userState);
     const setGameResult = useSetRecoilState(gameResultState);
     const setUserStreamList = useSetRecoilState(userStreamListState);
     const [isCompleteGame, setIsCompleteGame] = useState(false);
+    const resetGameState = useResetGameState();
+    useBeforeReload();
 
     useEffect(() => {
+        resetGameState();
         onCountSubmittedQuiz();
         onCompleteGame(setGameResult, setIsCompleteGame);
 
@@ -31,8 +36,13 @@ function Game() {
             );
         });
 
+        NetworkService.on('succeed-host', () => {
+            setUser({ ...user, isHost: true });
+        });
+
         return () => {
             NetworkService.off('leave-game');
+            NetworkService.off('succeed-host');
         };
     }, []);
 
@@ -48,7 +58,7 @@ function Game() {
                 <CameraButton />
                 <MicButton />
             </CamAndMicWrapper>
-            <LogoWrapper onClick={() => setPage('/')}>
+            <LogoWrapper>
                 <img src={SmallLogo} />
             </LogoWrapper>
         </>

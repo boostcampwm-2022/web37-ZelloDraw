@@ -4,17 +4,20 @@ import Card from '@components/Card';
 import PrimaryButton from '@components/PrimaryButton';
 import InfoCarousel from '@components/InfoCarousel';
 import { userState } from '@atoms/user';
-import { useRecoilState } from 'recoil';
+import { useRecoilState, useSetRecoilState } from 'recoil';
+import { lobbyIdState } from '@atoms/game';
 import { getParam } from '@utils/common';
 
 function InfoCard({ onHandleEnterLobby }: { onHandleEnterLobby: () => void }) {
+    const paramIdValue = getParam('id');
     const [user, setUser] = useRecoilState(userState);
-    const lobbyId = getParam('id');
+    const setLobbyId = useSetRecoilState(lobbyIdState);
 
     useEffect(() => {
         if (user.isHost) return;
         // 호스트는 주소 복사로 들어오지 않고 가장 먼저 들어온 사람이기 때문에 lobbyId는 ''이다. isHost가 true가 된다.
-        setUser({ ...user, isHost: lobbyId === '' });
+        setUser({ ...user, isHost: paramIdValue === '' });
+        setLobbyId(paramIdValue);
     }, []);
 
     return (

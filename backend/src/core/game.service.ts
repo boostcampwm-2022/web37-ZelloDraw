@@ -53,6 +53,22 @@ export class GameService {
         return game.isLastRound();
     }
 
+    async isHost(lobbyId: string, user: User): Promise<boolean> {
+        const game = await this.getGame(lobbyId);
+        return game.isHost(user);
+    }
+
+    async getGameHost(lobbyId: string): Promise<User> {
+        const game = await this.getGame(lobbyId);
+        return game.getHost();
+    }
+
+    async succeedHost(lobbyId) {
+        const game = await this.getGame(lobbyId);
+        game.succeedHost();
+        await this.gameLobbyRepository.save(game);
+    }
+
     async proceedRound(lobbyId: string) {
         const game = await this.getGame(lobbyId);
         game.proceedRound();
@@ -78,6 +94,12 @@ export class GameService {
     async leaveWhenPlayingGame(user: User, lobbyId: string) {
         const game = await this.getGame(lobbyId);
         game.leaveWhenPlayingGame(user);
+        await this.gameLobbyRepository.save(game);
+    }
+
+    async quitGame(lobbyId: string) {
+        const game = await this.getGame(lobbyId);
+        game.quitGame();
         await this.gameLobbyRepository.save(game);
     }
 

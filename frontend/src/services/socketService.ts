@@ -12,10 +12,10 @@ export class SocketService {
     public socketId = '';
 
     private constructor() {
-        this.socket = io(process.env.REACT_APP_SOCKET_PATH, {
+        this.socket = io(process.env.REACT_APP_SOCKET_URL, {
             transports: ['websocket'],
-            // TODO: 배포랑 로컬 구분 필요
-            // path: '/ws/socket.io',
+            closeOnBeforeunload: false,
+            path: process.env.REACT_APP_SOCKET_PATH,
         });
         this.socket.connect();
         // TODO: 타이밍 이슈 여부 파악 및 해결

@@ -2,6 +2,14 @@ import { atom, selector } from 'recoil';
 import { StartRoundEmitRequest } from '@backend/core/game.dto';
 
 /**
+ * 로비(게임) id 정보
+ */
+export const lobbyIdState = atom<string>({
+    key: 'lobbyId',
+    default: '',
+});
+
+/**
  * 로비(게임)에 접속한 유저 리스트
  */
 
