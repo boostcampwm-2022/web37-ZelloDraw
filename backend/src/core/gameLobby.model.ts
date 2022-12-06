@@ -83,7 +83,7 @@ export class GameLobby implements Lobby, Game {
 
     succeedHost() {
         const hostIdx = this.getUserIndex(this.host);
-        this.host = this.users[hostIdx + 1];
+        this.host = hostIdx === 0 ? this.users[1] : this.users[0];
     }
 
     // TODO: 게임 시작시, 혹은 게임 종료 시 프로퍼티 초기화 로직 필요.
