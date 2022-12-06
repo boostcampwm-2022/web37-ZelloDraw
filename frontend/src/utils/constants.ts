@@ -35,3 +35,5 @@ export enum CanvasState {
     PAINT,
     NONE,
 }
+
+export const RTCOfferOptions = { offerToReceiveAudio: true, offerToReceiveVideo: true };

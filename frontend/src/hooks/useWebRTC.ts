@@ -3,6 +3,7 @@ import { networkServiceInstance as NetworkService } from '../services/socketServ
 import { userStreamRefState } from '@atoms/user';
 import { useRecoilValue, useRecoilState } from 'recoil';
 import { WebRTCUser, userStreamListState } from '@atoms/game';
+import { RTCOfferOptions } from '@utils/constants';
 
 function useWebRTC() {
     const pcsRef = useRef<{ [socketId: string]: RTCPeerConnection }>({});
@@ -76,7 +77,7 @@ function useWebRTC() {
         if (!pc) return;
         pcsRef.current = { ...pcsRef.current, [user.sid]: pc };
         try {
-            const localSdp = await pc.createOffer();
+            const localSdp = await pc.createOffer(RTCOfferOptions);
             await pc.setLocalDescription(new RTCSessionDescription(localSdp));
             NetworkService.emit('webrtc-offer', {
                 sdp: localSdp,

@@ -2,6 +2,11 @@ import { useEffect, useRef, useCallback } from 'react';
 import { userCamState, userMicState, userStreamState, userStreamRefState } from '@atoms/user';
 import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
 
+interface ConstraintsType {
+    video: boolean;
+    audio: boolean;
+}
+
 function useLocalStream() {
     const userCam = useRecoilValue<boolean>(userCamState);
     const userMic = useRecoilValue<boolean>(userMicState);
@@ -10,13 +15,21 @@ function useLocalStream() {
     const [selfStreamRef, setSelfStreamRef] = useRecoilState(userStreamRefState);
     const streamRef = useRef<MediaStream>();
 
-    const getSelfMedia: () => Promise<void> = useCallback(async () => {
-        // TODO: 캠과 마이크가 없는 경우 detect 후 처리
-        try {
-            const stream = await navigator.mediaDevices.getUserMedia({
-                video: true,
-                audio: true,
+    const getLocalStream = () => {
+        void navigator.mediaDevices.enumerateDevices().then(function (devices) {
+            const hasCam = devices.some(function (d) {
+                return d.kind === 'videoinput';
             });
+            const hasMic = devices.some(function (d) {
+                return d.kind === 'audioinput';
+            });
+            void getSelfMedia({ video: hasCam, audio: hasMic });
+        });
+    };
+
+    const getSelfMedia = useCallback(async (constraints: ConstraintsType) => {
+        try {
+            const stream = await navigator.mediaDevices.getUserMedia(constraints);
             streamRef.current = stream;
 
             setStream(stream);
@@ -38,7 +51,7 @@ function useLocalStream() {
 
     useEffect(() => {
         if (selfStreamRef) return;
-        void getSelfMedia();
+        void getLocalStream();
     }, []);
 }
 
