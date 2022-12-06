@@ -2,6 +2,7 @@ import { ReactNode, useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { Center } from '@styles/styled';
 import { motion, AnimatePresence } from 'framer-motion';
+import { slideVariants } from '@utils/framerMotion';
 import { useRecoilValue } from 'recoil';
 import { currentBookIdxState } from '@atoms/result';
 import SketchbookImg from '@assets/sketchbook.svg';
@@ -12,27 +13,6 @@ interface SketchbookCardType {
     center: ReactNode;
     right?: ReactNode;
 }
-
-const slideVariants = {
-    enter: ({ direction, xValue }: { direction: number; xValue: number }) => {
-        return {
-            x: direction * xValue * -1,
-            opacity: 0,
-        };
-    },
-    center: {
-        zIndex: 1,
-        x: 0,
-        opacity: 1,
-    },
-    exit: ({ direction, xValue }: { direction: number; xValue: number }) => {
-        return {
-            zIndex: 0,
-            x: direction * xValue,
-            opacity: 0,
-        };
-    },
-};
 
 function SketchbookCard({ left, center, right }: SketchbookCardType) {
     const currentBookIdx = useRecoilValue(currentBookIdxState);

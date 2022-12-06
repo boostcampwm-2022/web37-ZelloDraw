@@ -1,34 +1,11 @@
+import { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { Center } from '@styles/styled';
 import { useRecoilValue } from 'recoil';
 import { currentPageIdxState, currentSketchbookState } from '@atoms/result';
 import useCheckGuidePage from '@hooks/useCheckGuidePage';
 import { motion, AnimatePresence } from 'framer-motion';
-import { useEffect, useState } from 'react';
-
-const flipVariants = {
-    enter: (direction: number) => {
-        return {
-            opacity: 0,
-            rotateX: direction > 0 ? -120 : 0,
-            backgroundColor: direction > 0 ? '#A8B2C2' : '#F6F5F8',
-        };
-    },
-    center: {
-        zIndex: 2,
-        opacity: 1,
-        rotateX: 0,
-        backgroundColor: '#F6F5F8',
-    },
-    exit: (direction: number) => {
-        return {
-            zIndex: 0,
-            opacity: 0,
-            rotateX: direction < 0 ? -120 : 0,
-            backgroundColor: direction < 0 ? '#A8B2C2' : '#F6F5F8',
-        };
-    },
-};
+import { flipVariants } from '@utils/framerMotion';
 
 function QuizResultContent() {
     const currentSketchbook = useRecoilValue(currentSketchbookState);
