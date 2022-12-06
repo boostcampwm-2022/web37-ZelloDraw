@@ -23,7 +23,7 @@ jobs:
                         - 'backend/**'
 
     frontend:
-        needs: lint + build checking
+        needs: check
         if: ${{needs.check.outputs.frontend=='true'}}
         runs-on: ubuntu-latest
         steps:
@@ -52,32 +52,32 @@ jobs:
             - name: Run frontend build check
               run: cd frontend && npm run build
 
-backend:
-    needs: lint + build checking
-    if: ${{needs.check.outputs.backend=='true'}}
-    runs-on: ubuntu-latest
-    steps:
-        - name: Checkout
-          uses: actions/checkout@v3
+    backend:
+        needs: check
+        if: ${{needs.check.outputs.backend=='true'}}
+        runs-on: ubuntu-latest
+        steps:
+            - name: Checkout
+              uses: actions/checkout@v3
 
-        - name: Nodejs Setup
-          uses: actions/setup-node@v2
+            - name: Nodejs Setup
+              uses: actions/setup-node@v2
 
-        - name: Cache backend node modules
-          id: cache-backend
-          uses: actions/cache@v3
-          with:
-              path: backend/node_modules
-              key: npm-packages-backend-${{hashFiles('**/package-lock.json')}}
-              restore-keys: |
-                  npm-packages-backend-
+            - name: Cache backend node modules
+              id: cache-backend
+              uses: actions/cache@v3
+              with:
+                  path: backend/node_modules
+                  key: npm-packages-backend-${{hashFiles('**/package-lock.json')}}
+                  restore-keys: |
+                      npm-packages-backend-
 
-        - name: Install backend dependencies
-          if: ${{steps.cache-backend.outputs.cache-hit != 'true'}}
-          run: cd backend && npm install
+            - name: Install backend dependencies
+              if: ${{steps.cache-backend.outputs.cache-hit != 'true'}}
+              run: cd backend && npm install
 
-        - name: backend eslint check
-          run: ./backend/node_modules/.bin/eslint backend/src --ext .ts,.tsx
+            - name: backend eslint check
+              run: ./backend/node_modules/.bin/eslint backend/src --ext .ts,.tsx
 
-        - name: Run backend build check
-          run: cd backend && npm run build
+            - name: Run backend build check
+              run: cd backend && npm run build
