@@ -2,18 +2,12 @@ import { useEffect, useRef, useCallback } from 'react';
 import { userCamState, userMicState, userStreamState, userStreamRefState } from '@atoms/user';
 import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
 
-interface localStreamProps {
-    videoRef: React.RefObject<HTMLVideoElement> | null;
-}
-
-function useLocalStream(): localStreamProps {
+function useLocalStream() {
     const userCam = useRecoilValue<boolean>(userCamState);
     const userMic = useRecoilValue<boolean>(userMicState);
 
     const setStream = useSetRecoilState(userStreamState);
     const [selfStreamRef, setSelfStreamRef] = useRecoilState(userStreamRefState);
-
-    const videoRef: React.RefObject<HTMLVideoElement> | null = useRef(null);
     const streamRef = useRef<MediaStream>();
 
     const getSelfMedia: () => Promise<void> = useCallback(async () => {
@@ -24,8 +18,6 @@ function useLocalStream(): localStreamProps {
                 audio: true,
             });
             streamRef.current = stream;
-            if (!videoRef.current) return;
-            videoRef.current.srcObject = stream;
 
             setStream(stream);
             setSelfStreamRef(streamRef);
@@ -48,8 +40,6 @@ function useLocalStream(): localStreamProps {
         if (selfStreamRef) return;
         void getSelfMedia();
     }, []);
-
-    return { videoRef };
 }
 
 export default useLocalStream;
