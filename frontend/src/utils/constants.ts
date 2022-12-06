@@ -19,8 +19,8 @@ export enum ToolsType {
     RESET,
 }
 
-export const CANVAS_WIDTH = 742;
-export const CANVAS_HEIGHT = 468;
+export const CANVAS_WIDTH = 750;
+export const CANVAS_HEIGHT = 472;
 export const PEN_LINE_WIDTH = 5;
 export const PEN_DEFAULT_COLOR = '#001D2E';
 export const ERASER_COLOR = '#F6F5F8';

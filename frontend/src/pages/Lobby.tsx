@@ -21,6 +21,7 @@ import useWebRTC from '@hooks/useWebRTC';
 import { userState } from '@atoms/user';
 import useBeforeReload from '@hooks/useBeforeReload';
 import useRemoveParams from '@hooks/useRemoveParams';
+import { useResetGameState } from '@hooks/useResetGameState';
 
 function Lobby() {
     const [user, setUser] = useRecoilState(userState);
@@ -33,9 +34,12 @@ function Lobby() {
     const { createOffers } = useWebRTC();
     useRemoveParams();
     useBeforeReload();
+    const resetGameState = useResetGameState();
 
     useEffect(() => {
+        resetGameState();
         const payload: JoinLobbyRequest = { lobbyId };
+
         if (isNewLobby) {
             NetworkService.emit(
                 'join-lobby',

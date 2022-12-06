@@ -22,7 +22,7 @@ function Timer() {
 
     useEffect(() => {
         // 프로그레스바의 높이를 설정
-        setProgress((timeLeft / limitTime) * 100);
+        setProgress(timeLeft / limitTime);
     }, [timeLeft]);
 
     return (
@@ -55,12 +55,14 @@ const Bar = styled.div`
     height: 100%;
     background-color: ${({ theme }) => theme.color.blackT1};
     border: 1px solid ${({ theme }) => theme.color.primaryLight};
-    border-radius: 24px;
+    border-radius: 999px;
 `;
 
 const Progress = styled.div<{ progress: number; isTimeOver: boolean }>`
     width: 100%;
-    height: ${({ progress }) => progress}%;
+    height: 100%;
+    transform-origin: bottom;
+    transform: scaleY(${({ progress }) => progress});
     position: absolute;
     bottom: 0;
     left: 0;
@@ -68,5 +70,5 @@ const Progress = styled.div<{ progress: number; isTimeOver: boolean }>`
     border: 1px solid ${({ theme }) => theme.color.whiteT2};
     border-radius: 24px;
     opacity: ${({ isTimeOver }) => (isTimeOver ? 0 : 1)};
-    transition: height 1s linear;
+    transition: transform 1s linear;
 `;
