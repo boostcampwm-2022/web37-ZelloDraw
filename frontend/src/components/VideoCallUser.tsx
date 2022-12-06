@@ -18,13 +18,13 @@ function VideoCallUser({ userName, stream, audio, video }: VideoCallProps) {
     const videoRef: React.RefObject<HTMLVideoElement> | null = useRef(null);
 
     useEffect(() => {
-        if (!videoRef.current || !stream) return;
+        if (!videoRef.current || !stream || !video) return;
         videoRef.current.srcObject = stream;
-    }, [stream]);
+    }, [stream, video]);
 
     return (
         <Container>
-            {stream ? (
+            {video ? (
                 <>
                     <Video ref={videoRef} autoPlay playsInline></Video>
                     <CameraOnUserName>
