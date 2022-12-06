@@ -15,18 +15,15 @@ import ResultSketchbook from '@components/ResultSketchbook';
 import { networkServiceInstance as NetworkService } from '../services/socketService';
 import { JoinLobbyReEmitRequest } from '@backend/core/user.dto';
 import useBeforeReload from '@hooks/useBeforeReload';
-import { useResetGameState } from '@hooks/useResetGameState';
 
 function Game() {
     const [setPage] = useMovePage();
     const setGameResult = useSetRecoilState(gameResultState);
     const [isCompleteGame, setIsCompleteGame] = useState(false);
     const [userList, setUserList] = useRecoilState(userListState);
-    const resetGameState = useResetGameState();
     useBeforeReload();
 
     useEffect(() => {
-        resetGameState();
         onCountSubmittedQuiz();
         onCompleteGame(setGameResult, setIsCompleteGame);
 
@@ -52,7 +49,7 @@ function Game() {
                 <MicButton />
             </CamAndMicWrapper>
             <LogoWrapper onClick={() => setPage('/')}>
-                <img src={SmallLogo} />
+                <img src={SmallLogo} alt={'Logo'} />
             </LogoWrapper>
         </>
     );
