@@ -14,4 +14,3 @@ async function bootstrap() {
     await app.listen(8080);
 }
 void bootstrap();
-// 테스트를 위한 백엔드 소스코드 변경
