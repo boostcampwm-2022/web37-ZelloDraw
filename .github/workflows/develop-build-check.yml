@@ -1,0 +1,83 @@
+name: build + eslint
+
+on:
+    pull_request:
+        branches:
+            - develop
+
+jobs:
+    check:
+        name: lint + build checking
+        runs-on: ubuntu-latest
+        outputs:
+            frontend: ${{steps.filter.outputs.frontend}}
+            backend: ${{steps.filter.outputs.backend}}
+        steps:
+            - uses: dorny/paths-filter@v2
+              id: filter
+              with:
+                  filters: |
+                      frontend:
+                        - 'frontend/**'
+                      backend:
+                        - 'backend/**'
+
+    frontend:
+        needs: lint + build checking
+        if: ${{needs.check.outputs.frontend=='true'}}
+        runs-on: ubuntu-latest
+        steps:
+            - name: Checkout
+              uses: actions/checkout@v3
+
+            - name: Nodejs Setup
+              uses: actions/setup-node@v2
+
+            - name: Cache frontend node modules
+              id: cache-frontend
+              uses: actions/cache@v3
+              with:
+                  path: frontend/node_modules
+                  key: npm-packages-frontend-${{hashFiles('**/package-lock.json')}}
+                  restore-keys: |
+                      npm-packages-frontend-
+
+            - name: Install frontend dependencies
+              if: ${{steps.cache-frontend.outputs.cache-hit != 'true'}}
+              run: cd frontend && npm install
+
+            - name: Client eslint check
+              run: ./frontend/node_modules/.bin/eslint frontend/src --ext .ts,.tsx
+
+            - name: Run frontend build check
+              run: cd frontend && npm run build
+
+backend:
+    needs: lint + build checking
+    if: ${{needs.check.outputs.backend=='true'}}
+    runs-on: ubuntu-latest
+    steps:
+        - name: Checkout
+          uses: actions/checkout@v3
+
+        - name: Nodejs Setup
+          uses: actions/setup-node@v2
+
+        - name: Cache backend node modules
+          id: cache-backend
+          uses: actions/cache@v3
+          with:
+              path: backend/node_modules
+              key: npm-packages-backend-${{hashFiles('**/package-lock.json')}}
+              restore-keys: |
+                  npm-packages-backend-
+
+        - name: Install backend dependencies
+          if: ${{steps.cache-backend.outputs.cache-hit != 'true'}}
+          run: cd backend && npm install
+
+        - name: backend eslint check
+          run: ./backend/node_modules/.bin/eslint backend/src --ext .ts,.tsx
+
+        - name: Run backend build check
+          run: cd backend && npm run build
