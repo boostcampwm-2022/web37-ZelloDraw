@@ -1,13 +1,15 @@
 import styled from 'styled-components';
-import { getParam } from '@utils/common';
 import useCopyClipBoard from '@hooks/useCopyClipboard';
 import toast, { Toaster } from 'react-hot-toast';
+import { useRecoilValue } from 'recoil';
+import { lobbyIdState } from '@atoms/game';
 
 function InviteButton() {
     const [isCopied, onCopy] = useCopyClipBoard();
+    const lobbyId = useRecoilValue(lobbyIdState);
 
     const onClickInviteBtn = () => {
-        const invitationLink = `${window.location.origin}?id=${getParam('id')}`;
+        const invitationLink = `${window.location.origin}?id=${lobbyId}`;
         void onCopy(invitationLink);
         // TODO - setIsCopied 비동기 실행으로 인한 set 이슈 해결
         toast('🖇 클립보드에 복사되었습니다.');

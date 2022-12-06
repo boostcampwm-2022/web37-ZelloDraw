@@ -8,7 +8,6 @@ import { userListState } from '@atoms/game';
 import GameUsers from '@components/GameUsers';
 import MicButton from '@components/MicButton';
 import CameraButton from '@components/CameraButton';
-import useMovePage from '@hooks/useMovePage';
 import SmallLogo from '@assets/logo-s.png';
 import GameSketchbook from '@components/GameSketchbook';
 import ResultSketchbook from '@components/ResultSketchbook';
@@ -20,7 +19,6 @@ import { useResetGameState } from '@hooks/useResetGameState';
 
 function Game() {
     const [user, setUser] = useRecoilState(userState);
-    const [setPage] = useMovePage();
     const setGameResult = useSetRecoilState(gameResultState);
     const [isCompleteGame, setIsCompleteGame] = useState(false);
     const [userList, setUserList] = useRecoilState(userListState);
@@ -58,7 +56,7 @@ function Game() {
                 <CameraButton />
                 <MicButton />
             </CamAndMicWrapper>
-            <LogoWrapper onClick={() => setPage('/')}>
+            <LogoWrapper>
                 <img src={SmallLogo} />
             </LogoWrapper>
         </>

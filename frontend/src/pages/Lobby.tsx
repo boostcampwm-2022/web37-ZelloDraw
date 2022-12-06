@@ -12,7 +12,7 @@ import {
     SocketException,
 } from '../services/socketService';
 import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
-import { roundInfoState, userListState, userStreamListState } from '@atoms/game';
+import { lobbyIdState, roundInfoState, userListState, userStreamListState } from '@atoms/game';
 import { getParam } from '@utils/common';
 import { JoinLobbyReEmitRequest, JoinLobbyRequest } from '@backend/core/user.dto';
 import { StartRoundEmitRequest } from '@backend/core/game.dto';
@@ -20,21 +20,21 @@ import { onStartGame } from '@game/NetworkServiceUtils';
 import useWebRTC from '@hooks/useWebRTC';
 import { userState } from '@atoms/user';
 import useBeforeReload from '@hooks/useBeforeReload';
-import useLobbyId from '@hooks/useLobbyId';
+import useRemoveParams from '@hooks/useRemoveParams';
 
 function Lobby() {
     const [user, setUser] = useRecoilState(userState);
     const userStreamList = useRecoilValue(userStreamListState);
     const [userList, setUserList] = useRecoilState(userListState);
-    const [lobbyId, setLobbyId] = useLobbyId();
+    const lobbyId = useRecoilValue(lobbyIdState);
     const [setPage] = useMovePage();
     const isNewLobby = getParam('new') === 'true' || getParam('new') === '';
     const setRoundInfo = useSetRecoilState<StartRoundEmitRequest>(roundInfoState);
     const { createOffers } = useWebRTC();
+    useRemoveParams();
     useBeforeReload();
 
     useEffect(() => {
-        setLobbyId(lobbyId);
         const payload: JoinLobbyRequest = { lobbyId };
         if (isNewLobby) {
             NetworkService.emit(
@@ -84,7 +84,7 @@ function Lobby() {
 
     return (
         <>
-            <LogoWrapper onClick={() => setPage('/')}>
+            <LogoWrapper>
                 <img src={SmallLogo} />
             </LogoWrapper>
             <LobbyContainer>

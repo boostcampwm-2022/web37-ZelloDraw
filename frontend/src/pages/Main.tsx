@@ -7,15 +7,15 @@ import InfoCard from '@components/InfoCard';
 import GuestEntranceMessage from '@components/GuestMessageBox';
 import MadeByText from '@components/MadeByText';
 import useMovePage from '@hooks/useMovePage';
-import { useRecoilValue } from 'recoil';
+import { useRecoilState, useRecoilValue } from 'recoil';
 import { userState, userStateType } from '@atoms/user';
 import { networkServiceInstance as NetworkService } from '../services/socketService';
-import { getParam } from '@utils/common';
+import { lobbyIdState } from '@atoms/game';
 
 function Main() {
     const [setPage] = useMovePage();
     const user = useRecoilValue<userStateType>(userState);
-    const lobbyId = getParam('id');
+    const [lobbyId, setLobbyId] = useRecoilState(lobbyIdState);
 
     useEffect(() => {
         NetworkService.emit('update-user-name', user.name);
@@ -24,6 +24,7 @@ function Main() {
     const onClickEnterBtn = () => {
         if (user.isHost) {
             NetworkService.emit('create-lobby', { userName: user.name }, (res: string) => {
+                setLobbyId(res);
                 setPage(`/lobby?id=${res}`);
             });
         } else {

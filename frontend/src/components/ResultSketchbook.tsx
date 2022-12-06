@@ -27,11 +27,11 @@ import { emitOneMoreGame } from '@game/NetworkServiceUtils';
 import { useEffect } from 'react';
 import { networkServiceInstance as NetworkService } from '@services/socketService';
 import useMovePage from '@hooks/useMovePage';
-import useLobbyId from '@hooks/useLobbyId';
+import { lobbyIdState } from '@atoms/game';
 
 function ResultSketchbook() {
     const [setPage] = useMovePage();
-    const [lobbyId] = useLobbyId();
+    const lobbyId = useRecoilValue(lobbyIdState);
     const { maxPageNum, maxBookNum } = useRecoilValue(maxSketchbookState);
     const currentSketchbook = useRecoilValue(currentSketchbookState);
     const sketchbookAuthor = useRecoilValue(sketchbookAuthorState);
