@@ -1,9 +1,9 @@
 import { useEffect, useRef, useCallback } from 'react';
 import { networkServiceInstance as NetworkService } from '../services/socketService';
-import { JoinLobbyReEmitRequest } from '@backend/core/user.dto';
 import { userStreamRefState } from '@atoms/user';
 import { useRecoilValue, useRecoilState } from 'recoil';
 import { WebRTCUser, userStreamListState } from '@atoms/game';
+import { RTCOfferOptions } from '@utils/constants';
 
 function useWebRTC() {
     const pcsRef = useRef<{ [socketId: string]: RTCPeerConnection }>({});
@@ -11,7 +11,12 @@ function useWebRTC() {
     const [userStreamList, setUserStreamList] = useRecoilState<WebRTCUser[]>(userStreamListState);
 
     const createPeerConnection = useCallback(
-        async (peerSocketId: string, peerName: string): Promise<any> => {
+        async (
+            peerSocketId: string,
+            peerName: string,
+            audio?: boolean,
+            video?: boolean,
+        ): Promise<any> => {
             const res = await new Promise((resolve) => {
                 try {
                     const pc = new RTCPeerConnection({
@@ -45,6 +50,8 @@ function useWebRTC() {
                                     sid: peerSocketId,
                                     userName: peerName,
                                     stream: e.streams[0],
+                                    audio,
+                                    video,
                                 }),
                         );
                     };
@@ -65,13 +72,12 @@ function useWebRTC() {
         [],
     );
 
-    const createOffers = async (user: JoinLobbyReEmitRequest) => {
-        if (!selfStreamRef?.current) return;
-        const pc = await createPeerConnection(user.sid, user.userName);
+    const createOffers = async (user: WebRTCUser) => {
+        const pc = await createPeerConnection(user.sid, user.userName, user.audio, user.video);
         if (!pc) return;
         pcsRef.current = { ...pcsRef.current, [user.sid]: pc };
         try {
-            const localSdp = await pc.createOffer();
+            const localSdp = await pc.createOffer(RTCOfferOptions);
             await pc.setLocalDescription(new RTCSessionDescription(localSdp));
             NetworkService.emit('webrtc-offer', {
                 sdp: localSdp,
@@ -86,9 +92,14 @@ function useWebRTC() {
         NetworkService.on(
             'webrtc-offer',
             // eslint-disable-next-line @typescript-eslint/no-misused-promises
-            async (sdp: RTCSessionDescription, offerSendSid: string, userName: string) => {
-                if (!selfStreamRef?.current) return;
-                const pc = await createPeerConnection(offerSendSid, userName);
+            async (
+                sdp: RTCSessionDescription,
+                offerSendSid: string,
+                userName: string,
+                audio: boolean,
+                video: boolean,
+            ) => {
+                const pc = await createPeerConnection(offerSendSid, userName, audio, video);
                 if (!pc) return;
                 pcsRef.current = { ...pcsRef.current, [offerSendSid]: pc };
                 try {

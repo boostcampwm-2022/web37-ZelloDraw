@@ -21,13 +21,26 @@ export const userState = atom<userStateType>({
     },
 });
 
+export interface ConstraintsType {
+    video: boolean;
+    audio: boolean;
+}
+
+export const localDeviceState = atom<ConstraintsType>({
+    key: 'localDeviceState',
+    default: {
+        video: false,
+        audio: false,
+    },
+});
+
 /**
  * 사용자 카메라, 마이크 정보
  */
 
 export const userMicState = atom<boolean>({
     key: 'userMicState',
-    default: false,
+    default: true,
 });
 
 export const userCamState = atom<boolean>({
@@ -41,7 +54,7 @@ export const userCamState = atom<boolean>({
 
 export const userStreamState = atom<MediaStream>({
     key: 'userStreamState',
-    default: undefined,
+    default: new MediaStream(),
 });
 
 export const userStreamRefState = atom<React.MutableRefObject<MediaStream | undefined>>({

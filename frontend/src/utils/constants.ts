@@ -35,3 +35,25 @@ export enum CanvasState {
     PAINT,
     NONE,
 }
+
+export const RTCOfferOptions = { offerToReceiveAudio: true, offerToReceiveVideo: true };
+
+export const NOT_SUPPORTED_MESSAGE =
+    'mediaDevices API or getUserMedia method is not supported in this browser.';
+
+export const NOT_SUPPORT_USER_MESSAGE = 'To record audio, use browsers like Chrome and Firefox.';
+
+interface MediaError {
+    [key: string]: string;
+}
+
+export const MediaErrorType: MediaError = {
+    AbortError: 'An AbortError has occured.',
+    NotAllowedError: 'A NotAllowedError has occured. User might have denied permission.',
+    NotFoundError: 'A NotFoundError has occured.',
+    NotReadableError: 'A NotReadableError has occured.',
+    SecurityError: 'A SecurityError has occured.',
+    TypeError: 'A TypeError has occured.',
+    InvalidStateError: 'An InvalidStateError has occured.',
+    UnknownError: 'An UnknownError has occured.',
+};

@@ -91,7 +91,12 @@ export class CoreGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
             });
 
             return users.map((user) => {
-                return { userName: user.name, sid: user.socketId };
+                return {
+                    userName: user.name,
+                    sid: user.socketId,
+                    video: user.video,
+                    audio: user.audio,
+                };
             }) as JoinLobbyResponse;
         } catch (e) {
             throw new SocketException('BadRequest', e.message);
@@ -104,13 +109,12 @@ export class CoreGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
         if (user.lobbyId === undefined) return;
 
         await this.handleHostLeave(client, user);
-        const leftUsers = await this.lobbyService.leaveLobby(user, user.lobbyId);
-        const payload: JoinLobbyReEmitRequest[] = leftUsers.map((user) => ({
-            // TODO: LeaveLobbyReEmitRequest DTO를 생성해야함.
-            sid: client.id,
+        // const leftUsers = await this.lobbyService.leaveLobby(user, user.lobbyId);
+        const payload = {
             userName: user.name,
-        }));
-        this.emitLeaveLobby(client, user.lobbyId, payload);
+            sid: user.socketId,
+        };
+        client.broadcast.to(user.lobbyId).emit('leave-lobby', payload);
         await client.leave(user.lobbyId);
     }
 
@@ -185,7 +189,7 @@ export class CoreGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
         const user = this.userService.getUser(client.id);
         client.broadcast
             .to(body.offerReceiveID)
-            .emit('webrtc-offer', body.sdp, client.id, user.name);
+            .emit('webrtc-offer', body.sdp, client.id, user.name, user.audio, user.video);
     }
 
     @SubscribeMessage('webrtc-answer')
@@ -202,6 +206,18 @@ export class CoreGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
         client.broadcast
             .to(body.candidateReceiveID)
             .emit('webrtc-ice', body.ice, client.id, user.name);
+    }
+
+    @SubscribeMessage('update-user-stream')
+    async handleChangeStream(@ConnectedSocket() client: Socket, @MessageBody() body) {
+        const user = this.userService.getUser(client.id);
+        this.userService.updateUser(client.id, { video: body.video, audio: body.audio });
+        const payload = {
+            socketId: user.socketId,
+            video: body.video,
+            audio: body.audio,
+        };
+        client.to(user.lobbyId).emit('update-user-stream', payload);
     }
 
     @SubscribeMessage('watch-result-sketchbook')

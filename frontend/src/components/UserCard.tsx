@@ -1,18 +1,22 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useRef, useEffect } from 'react';
 import styled from 'styled-components';
 import Card from '@components/Card';
 import CameraButton from '@components/CameraButton';
 import MicButton from '@components/MicButton';
-import { userState } from '@atoms/user';
-import { useRecoilState } from 'recoil';
+import { userState, userStreamState, userCamState, userMicState } from '@atoms/user';
+import { useRecoilState, useRecoilValue } from 'recoil';
 import { networkServiceInstance as NetworkService } from '../services/socketService';
 import { debounce } from 'lodash';
-import { VideoProperty } from '@styles/styled';
 import useLocalStream from '@hooks/useLocalStream';
+import MainVideoCall from '@components/MainVideoCall';
 
 function UserCard() {
     const [user, setUserState] = useRecoilState(userState);
-    const { videoRef } = useLocalStream();
+    const userCam = useRecoilValue(userCamState);
+    const currentUser = useRecoilValue(userState);
+    const selfStream = useRecoilValue(userStreamState);
+
+    useLocalStream();
 
     const onChangeName = (e: React.ChangeEvent<HTMLInputElement>) => {
         const name = e.target.value;
@@ -30,9 +34,7 @@ function UserCard() {
     return (
         <Card>
             <CardInner>
-                <UserVideo>
-                    <Video ref={videoRef} autoPlay playsInline></Video>
-                </UserVideo>
+                <MainVideoCall userName={currentUser.name} stream={selfStream} video={userCam} />
                 <UserName>
                     <span>&#123;</span>
                     <NameInput
@@ -57,19 +59,6 @@ export default UserCard;
 const CardInner = styled.div`
     padding: 16px;
     height: 100%;
-`;
-
-const UserVideo = styled.div`
-    width: 328px;
-    height: 183.69px;
-    border: 2px solid ${({ theme }) => theme.color.whiteT2};
-    border-radius: 32px;
-    background: ${({ theme }) => theme.gradation.purplePrimary};
-    margin-bottom: 7.31px;
-`;
-
-const Video = styled(VideoProperty)`
-    border-radius: 32px;
 `;
 
 const UserName = styled.div`
