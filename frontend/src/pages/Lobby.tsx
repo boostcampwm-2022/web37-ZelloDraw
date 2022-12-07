@@ -25,6 +25,7 @@ import useWebRTC from '@hooks/useWebRTC';
 import useBeforeReload from '@hooks/useBeforeReload';
 import useRemoveParams from '@hooks/useRemoveParams';
 import { userCamState, userMicState, userState } from '@atoms/user';
+import { useResetGameState } from '@hooks/useResetGameState';
 
 function Lobby() {
     const userCam = useRecoilValue(userCamState);
@@ -38,8 +39,10 @@ function Lobby() {
     const { createOffers } = useWebRTC();
     useRemoveParams();
     useBeforeReload();
+    const resetGameState = useResetGameState();
 
     useEffect(() => {
+        resetGameState();
         const payload: JoinLobbyRequest = { lobbyId };
 
         if (isNewLobby) {
