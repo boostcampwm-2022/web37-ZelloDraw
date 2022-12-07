@@ -4,7 +4,7 @@ import { ScaledDiv, ScaledSection } from '@styles/styled';
 import { onCompleteGame, onCountSubmittedQuiz } from '@game/NetworkServiceUtils';
 import { useSetRecoilState, useRecoilState } from 'recoil';
 import { gameResultState } from '@atoms/result';
-import { submittedQuizReplyCountState, userListState, userStreamListState } from '@atoms/game';
+import { submittedQuizReplyCountState, userStreamListState } from '@atoms/game';
 import GameUsers from '@components/GameUsers';
 import MicButton from '@components/MicButton';
 import CameraButton from '@components/CameraButton';

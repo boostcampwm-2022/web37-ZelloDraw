@@ -13,14 +13,6 @@ export const lobbyIdState = atom<string>({
  * 로비(게임)에 접속한 유저 리스트
  */
 
-export const userListLengthState = selector({
-    key: 'userListLengthState',
-    get: ({ get }) => {
-        const userList = get(userListState);
-        return userList.length;
-    },
-});
-
 export interface WebRTCUser {
     sid: string; // socketID
     userName: string;
@@ -32,6 +24,14 @@ export interface WebRTCUser {
 export const userStreamListState = atom<WebRTCUser[]>({
     key: 'userStreamListState',
     default: [],
+});
+
+export const userListLengthState = selector({
+    key: 'userListLengthState',
+    get: ({ get }) => {
+        const userList = get(userStreamListState);
+        return userList.length;
+    },
 });
 
 /**
