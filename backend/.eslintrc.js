@@ -27,5 +27,6 @@ module.exports = {
         '@typescript-eslint/strict-boolean-expressions': 'off',
         '@typescript-eslint/no-non-null-assertion': 'off',
         eqeqeq: 'off',
+        'new-cap': 'off',
     },
 };
