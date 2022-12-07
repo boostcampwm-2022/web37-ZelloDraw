@@ -47,7 +47,13 @@ jobs:
               uses: actions/cache@v3
               with:
                   path: backend/node_modules
-                  key: npm-packages-backend-5a111209e4a9cee56766b5a67fa535bf4b56a9e3afd2895bd2435b0436a84e7b
+                  key: npm-packages-backend-${{hashFiles('**/package-lock.json')}}
+                  restore-keys: |
+                      npm-packages-backend-
+
+            - name: Install backend dependencies
+              if: ${{steps.cache-backend.outputs.cache-hit != 'true'}}
+              run: cd backend && npm install
 
             - name: Install frontend dependencies
               if: ${{steps.cache-frontend.outputs.cache-hit != 'true'}}
