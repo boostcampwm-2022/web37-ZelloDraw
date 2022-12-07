@@ -1,11 +1,11 @@
+import { canvasLineWidthValues } from './../utils/constants';
 import { useState, useRef, useEffect, useCallback } from 'react';
 import {
     CANVAS_WIDTH,
     CANVAS_HEIGHT,
-    PEN_LINE_WIDTH,
+    PEN_DEFAULT_LINE_WIDTH,
     PEN_DEFAULT_COLOR,
     ERASER_COLOR,
-    ERASER_LINE_WIDTH,
     CanvasState,
 } from '@utils/constants';
 import { convertHexToRgba, getPixelColor, isSameColor, setPixel } from '@utils/canvas';
@@ -50,7 +50,6 @@ function useCanvas() {
     const onClickPen = (selectedColor: string) => {
         drawState.current = CanvasState.NONE;
         ctxRef.current.strokeStyle = selectedColor;
-        ctxRef.current.lineWidth = PEN_LINE_WIDTH;
     };
 
     const floodFill = (x: number, y: number, fillColor: Uint8ClampedArray) => {
@@ -95,16 +94,18 @@ function useCanvas() {
         drawState.current = CanvasState.PAINT;
     };
 
+    const onLineWidthChange = (index: number) => {
+        ctxRef.current.lineWidth = canvasLineWidthValues[index];
+    };
+
     const onColorChange = (color: string) => {
         curColor.current = convertHexToRgba(color);
         ctxRef.current.strokeStyle = color;
-        ctxRef.current.lineWidth = PEN_LINE_WIDTH;
     };
 
     const onClickEraser = () => {
         drawState.current = CanvasState.NONE;
         ctxRef.current.strokeStyle = ERASER_COLOR;
-        ctxRef.current.lineWidth = ERASER_LINE_WIDTH;
     };
 
     const onClickReset = () => {
@@ -180,7 +181,7 @@ function useCanvas() {
         });
         if (!ctx) return;
         ctx.strokeStyle = PEN_DEFAULT_COLOR;
-        ctx.lineWidth = PEN_LINE_WIDTH;
+        ctx.lineWidth = PEN_DEFAULT_LINE_WIDTH;
         ctxRef.current = ctx;
     }, []);
 
@@ -189,7 +190,15 @@ function useCanvas() {
         ctxRef.current.clearRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
     }, [curRound]);
 
-    return { canvasRef, onClickPen, onClickPaint, onColorChange, onClickEraser, onClickReset };
+    return {
+        canvasRef,
+        onClickPen,
+        onClickPaint,
+        onColorChange,
+        onClickEraser,
+        onClickReset,
+        onLineWidthChange,
+    };
 }
 
 export default useCanvas;
