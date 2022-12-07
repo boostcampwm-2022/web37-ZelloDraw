@@ -59,6 +59,10 @@ export class GameLobby implements Lobby, Game {
         return this.host;
     }
 
+    getMaxRound() {
+        return this.maxRound;
+    }
+
     getRoundLimitTime(): number {
         return this.roundLimitTime;
     }
