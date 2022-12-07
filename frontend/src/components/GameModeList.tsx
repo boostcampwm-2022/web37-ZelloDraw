@@ -12,8 +12,8 @@ function GameModeList({ lobbyId }: { lobbyId: string }) {
 
     const modes = [
         {
-            title: 'RANDOM KEYWORD',
-            description: '무작위 단어로 시작해보세요!',
+            title: 'CUSTOM WORD',
+            description: '나만의 단어로 시작해보세요!',
             illustration: <GirlWithPencilChar />,
         },
     ];
@@ -61,7 +61,7 @@ const TextWrapper = styled.div`
     -webkit-text-stroke: 1px transparent;
 
     span {
-        font-family: 'Sniglet';
+        font-family: 'Sniglet', cursive;
         font-weight: 800;
         letter-spacing: -0.05em;
     }

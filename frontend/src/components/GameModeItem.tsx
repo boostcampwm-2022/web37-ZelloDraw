@@ -40,13 +40,16 @@ const FlexBox = styled.div`
 `;
 
 const GameTitle = styled.h1`
-    font-family: Sniglet;
+    font-family: 'Sniglet', cursive;
     font-size: ${({ theme }) => theme.typo.h1};
     font-weight: 400;
     line-height: 49px;
     letter-spacing: 0.01em;
     text-align: left;
     color: ${({ theme }) => theme.color.white};
+    background: ${({ theme }) => theme.gradation.yellowPurple};
+    -webkit-background-clip: text;
+    -webkit-text-stroke: 3px transparent;
     width: 193px;
     margin-bottom: 8px;
     padding-top: 22px;
@@ -60,4 +63,7 @@ const GameDescription = styled.h5`
     line-height: 26px;
     letter-spacing: -0.045em;
     color: ${({ theme }) => theme.color.white};
+    background: ${({ theme }) => theme.gradation.yellowPurple};
+    -webkit-background-clip: text;
+    -webkit-text-stroke: 1px transparent;
 `;

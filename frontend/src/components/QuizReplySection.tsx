@@ -6,6 +6,8 @@ import {
     isQuizTypeDrawState,
     quizSubmitState,
     roundNumberState,
+    submittedQuizReplyCountState,
+    userListLengthState,
     userReplyState,
 } from '@atoms/game';
 import PrimaryButton from '@components/PrimaryButton';
@@ -16,6 +18,10 @@ import useRoundTimeout from '@hooks/useRoundTimeout';
 function QuizReplySection() {
     const isDraw = useRecoilValue(isQuizTypeDrawState);
     const { curRound } = useRecoilValue(roundNumberState);
+
+    const submittedCount = useRecoilValue(submittedQuizReplyCountState);
+    const userListLength = useRecoilValue(userListLengthState);
+
     const [userReply, setUserReply] = useRecoilState(userReplyState);
     const [quizSubmitted, setQuizSubmitted] = useRecoilState(quizSubmitState);
     const { placeholder, sendRandomWordReplyToServer } = useZeroRound();
@@ -65,13 +71,18 @@ function QuizReplySection() {
             ) : (
                 <div />
             )}
-            <div onClick={submitBtnHandler}>
+            <ButtonWrapper onClick={submitBtnHandler}>
                 {quizSubmitted ? (
                     <PrimaryButton topText={'EDIT'} bottomText={'변경하기'} />
                 ) : (
                     <PrimaryButton topText={'SUBMIT'} bottomText={'제출하기'} />
                 )}
-            </div>
+                {submittedCount > 0 && (
+                    <SubmittedCount>
+                        {submittedCount}/{userListLength}
+                    </SubmittedCount>
+                )}
+            </ButtonWrapper>
         </Container>
     );
 }
@@ -108,4 +119,21 @@ const AnswerInput = styled.input<{ quizSubmitted: boolean }>`
         border-color: ${(props) =>
             props.quizSubmitted ? props.theme.color.yellow : props.theme.color.green};
     }
+`;
+
+const ButtonWrapper = styled.div`
+    position: relative;
+`;
+
+const SubmittedCount = styled.div`
+    position: absolute;
+    bottom: -36px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: ${({ theme }) => theme.gradation.yellowGreen};
+    ${({ theme }) => theme.layout.gradientTypo}
+    border: 1px solid ${({ theme }) => theme.color.blackT1};
+    font-family: 'Sniglet', cursive;
+    font-size: ${({ theme }) => theme.typo.h4};
+    -webkit-text-stroke: 1px ${({ theme }) => theme.color.blackT1};
 `;

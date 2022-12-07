@@ -4,7 +4,7 @@ import { ScaledDiv, ScaledSection } from '@styles/styled';
 import { onCompleteGame, onCountSubmittedQuiz } from '@game/NetworkServiceUtils';
 import { useSetRecoilState, useRecoilState } from 'recoil';
 import { gameResultState } from '@atoms/result';
-import { userStreamListState } from '@atoms/game';
+import { submittedQuizReplyCountState, userStreamListState } from '@atoms/game';
 import GameUsers from '@components/GameUsers';
 import MicButton from '@components/MicButton';
 import CameraButton from '@components/CameraButton';
@@ -20,11 +20,12 @@ function Game() {
     const [user, setUser] = useRecoilState(userState);
     const setGameResult = useSetRecoilState(gameResultState);
     const setUserStreamList = useSetRecoilState(userStreamListState);
+    const setSubmittedQuizReplyCount = useSetRecoilState(submittedQuizReplyCountState);
     const [isCompleteGame, setIsCompleteGame] = useState(false);
     useBeforeReload();
 
     useEffect(() => {
-        onCountSubmittedQuiz();
+        onCountSubmittedQuiz(setSubmittedQuizReplyCount);
         onCompleteGame(setGameResult, setIsCompleteGame);
 
         NetworkService.on('leave-game', (user: JoinLobbyReEmitRequest) => {

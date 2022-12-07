@@ -26,6 +26,14 @@ export const userStreamListState = atom<WebRTCUser[]>({
     default: [],
 });
 
+export const userListLengthState = selector({
+    key: 'userListLengthState',
+    get: ({ get }) => {
+        const userList = get(userStreamListState);
+        return userList.length;
+    },
+});
+
 /**
  * 라운드 정보
  */
@@ -53,7 +61,7 @@ export const quizReplyState = selector({
     get: ({ get }) => {
         const roundInfo = get(roundInfoState);
 
-        if (roundInfo === undefined || roundInfo.quizReply.content === undefined) {
+        if (roundInfo?.quizReply.content === undefined) {
             return '';
         }
 
@@ -82,4 +90,9 @@ export const quizSubmitState = atom<boolean>({
 export const userReplyState = atom<string>({
     key: 'userReplyState',
     default: '',
+});
+
+export const submittedQuizReplyCountState = atom<number>({
+    key: 'submittedQuizReplyCountState',
+    default: 0,
 });

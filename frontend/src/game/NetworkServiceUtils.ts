@@ -34,11 +34,11 @@ export const emitSubmitQuizReply = (submitReply: SubmitQuizReplyRequest) => {
 /**
  * 몇명이나 제출했는지 알려주는 이벤트, 클라이언트에서 'submit-quiz-reply' 발생시 서버에서 보내준다.
  */
-export const onCountSubmittedQuiz = () => {
+export const onCountSubmittedQuiz = (setSubmittedQuizReplyCount: SetterOrUpdater<number>) => {
     NetworkService.on(
         'submit-quiz-reply',
         ({ submittedQuizReplyCount }: SubmitQuizReplyEmitRequest) => {
-            console.log(submittedQuizReplyCount);
+            setSubmittedQuizReplyCount(submittedQuizReplyCount);
         },
     );
 };
