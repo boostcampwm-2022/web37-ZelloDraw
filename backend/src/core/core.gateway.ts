@@ -169,9 +169,7 @@ export class CoreGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
     }
 
     private broadCastQuizReplySubmitted(repliesCount: number, client: Socket, user: User) {
-        const payload: SubmitQuizReplyEmitRequest = {
-            submittedQuizReplyCount: repliesCount,
-        };
+        const payload = new SubmitQuizReplyEmitRequest(repliesCount);
         this.emitSubmitQuizReply(client, user.lobbyId, payload);
     }
 
@@ -243,10 +241,7 @@ export class CoreGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
     }
 
     private emitWatchResultSketchbook(client: Socket, bookIndex: number, isWatched: boolean) {
-        const payload: WatchResultSketchbookEmitRequest = {
-            bookIdx: bookIndex,
-            isWatched,
-        };
+        const payload = new WatchResultSketchbookEmitRequest(bookIndex, isWatched);
         client.nsp.emit('watch-result-sketchbook', payload);
     }
 
@@ -268,13 +263,14 @@ export class CoreGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
             const quizReply = (
                 await this.gameService.getCurrentRoundQuizReplyChain(lobbyId, user)
             ).getLastQuizReply();
-            const payload: StartRoundEmitRequest = {
+
+            const payload = new StartRoundEmitRequest(
+                game.getRoundType(),
                 quizReply,
-                roundType: game.getRoundType(),
-                curRound: game.curRound,
-                maxRound: game.maxRound,
-                limitTime: game.roundLimitTime,
-            };
+                game.curRound,
+                game.maxRound,
+                game.roundLimitTime,
+            );
             client.nsp.to(user.socketId).emit('start-round', payload);
         }
         await this.emitRoundTimeout(client, lobbyId);
@@ -305,17 +301,15 @@ export class CoreGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
     private async emitCompleteGame(client: Socket, lobbyId: string) {
         const quizReplyChains: QuizReplyChain[] =
             await this.gameService.getQuizReplyChainsWhenGameEnd(lobbyId);
-        const payload: CompleteGameEmitRequest = {
-            quizReplyLists: quizReplyChains.map((quizReplyChain) => quizReplyChain.quizReplyList),
-        };
+        const payload = new CompleteGameEmitRequest(
+            quizReplyChains.map((quizReplyChain) => quizReplyChain.quizReplyList),
+        );
+
         client.nsp.to(lobbyId).emit('complete-game', payload);
     }
 
     private emitLeaveGame(client: Socket, user: User) {
-        const payload: JoinLobbyReEmitRequest = {
-            userName: user.name,
-            sid: client.id,
-        };
+        const payload = new JoinLobbyReEmitRequest(user.name, client.id);
         client.nsp.to(user.lobbyId).emit('leave-game', payload);
     }
 

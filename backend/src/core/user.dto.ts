@@ -12,7 +12,12 @@ export type JoinLobbyResponse = Array<{
     audio: boolean;
 }>;
 
-export interface JoinLobbyReEmitRequest {
+export class JoinLobbyReEmitRequest {
     sid: string;
     userName: string;
+
+    constructor(userName: string, sid: string) {
+        this.userName = userName;
+        this.sid = sid;
+    }
 }
