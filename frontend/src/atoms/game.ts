@@ -17,6 +17,14 @@ export const userListState = atom<Array<{ userName: string; sid: string }>>({
     default: [],
 });
 
+export const userListLengthState = selector({
+    key: 'userListLengthState',
+    get: ({ get }) => {
+        const userList = get(userListState);
+        return userList.length;
+    },
+});
+
 export interface WebRTCUser {
     sid: string; // socketID
     userName: string;
@@ -84,4 +92,9 @@ export const quizSubmitState = atom<boolean>({
 export const userReplyState = atom<string>({
     key: 'userReplyState',
     default: '',
+});
+
+export const submittedQuizReplyCountState = atom<number>({
+    key: 'submittedQuizReplyCountState',
+    default: 0,
 });
