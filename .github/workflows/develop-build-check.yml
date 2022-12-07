@@ -42,6 +42,19 @@ jobs:
                   restore-keys: |
                       npm-packages-frontend-
 
+            - name: Cache backend node modules
+              id: cache-backend
+              uses: actions/cache@v3
+              with:
+                  path: backend/node_modules
+                  key: npm-packages-backend-${{hashFiles('**/package-lock.json')}}
+                  restore-keys: |
+                      npm-packages-backend-
+
+            - name: Install backend dependencies
+              if: ${{steps.cache-backend.outputs.cache-hit != 'true'}}
+              run: cd backend && npm install
+
             - name: Install frontend dependencies
               if: ${{steps.cache-frontend.outputs.cache-hit != 'true'}}
               run: cd frontend && npm install
@@ -50,7 +63,7 @@ jobs:
               run: ./frontend/node_modules/.bin/eslint frontend/src --ext .ts,.tsx
 
             - name: Run frontend build check
-              run: cd frontend && npm run build
+              run: cd frontend && CI='' npm run build
 
     backend:
         needs: check

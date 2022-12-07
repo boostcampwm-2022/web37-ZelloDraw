@@ -1,5 +1,12 @@
 import { io, Socket } from 'socket.io-client';
-import { SocketExceptionStatus } from '@backend/core/socket.exception';
+
+export type SocketExceptionStatus =
+    | 'BadRequest'
+    | 'Unauthorized'
+    | 'Forbidden'
+    | 'NotFound'
+    | 'Conflict'
+    | 'InternalServerError';
 
 export interface SocketException {
     status: SocketExceptionStatus;
