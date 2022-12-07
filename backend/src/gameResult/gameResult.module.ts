@@ -5,6 +5,10 @@ import { GameResultService } from './gameResult.service';
 
 @Module({
     imports: [MongooseModule.forFeature([{ name: GameResult.name, schema: GameResultSchema }])],
+    exports: [
+        GameResultService,
+        MongooseModule.forFeature([{ name: GameResult.name, schema: GameResultSchema }]),
+    ],
     controllers: [],
     providers: [GameResultService],
 })
