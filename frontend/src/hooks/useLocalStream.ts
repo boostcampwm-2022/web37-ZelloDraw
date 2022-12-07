@@ -1,17 +1,20 @@
 import { MediaErrorType, NOT_SUPPORT_USER_MESSAGE } from './../utils/constants';
 import { useEffect, useRef, useCallback } from 'react';
-import { userCamState, userMicState, userStreamState, userStreamRefState } from '@atoms/user';
-import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
+import {
+    userCamState,
+    userMicState,
+    userStreamState,
+    userStreamRefState,
+    ConstraintsType,
+    localDeviceState,
+} from '@atoms/user';
+import { useRecoilState, useSetRecoilState } from 'recoil';
 import { NOT_SUPPORTED_MESSAGE } from '@utils/constants';
 
-interface ConstraintsType {
-    video: boolean;
-    audio: boolean;
-}
-
 function useLocalStream() {
-    const userCam = useRecoilValue<boolean>(userCamState);
-    const userMic = useRecoilValue<boolean>(userMicState);
+    const setUserCam = useSetRecoilState<boolean>(userCamState);
+    const setUserMic = useSetRecoilState<boolean>(userMicState);
+    const setLocalDevices = useSetRecoilState(localDeviceState);
 
     const setStream = useSetRecoilState(userStreamState);
     const [selfStreamRef, setSelfStreamRef] = useRecoilState(userStreamRefState);
@@ -25,6 +28,9 @@ function useLocalStream() {
             const hasMic = devices.some(function (d) {
                 return d.kind === 'audioinput';
             });
+            setLocalDevices({ audio: hasMic, video: hasCam });
+            setUserCam(hasCam);
+            setUserMic(hasMic);
             if (!hasCam && !hasMic) alert(MediaErrorType.NotFoundError);
             else void getSelfMedia({ video: hasCam, audio: hasMic });
         });
@@ -45,16 +51,6 @@ function useLocalStream() {
             else alert(err.message);
         }
     }, []);
-
-    useEffect(() => {
-        if (!selfStreamRef?.current) return;
-        selfStreamRef.current.getVideoTracks().forEach((track) => (track.enabled = !track.enabled));
-    }, [userCam]);
-
-    useEffect(() => {
-        if (!selfStreamRef?.current) return;
-        selfStreamRef.current.getAudioTracks().forEach((track) => (track.enabled = !track.enabled));
-    }, [userMic]);
 
     useEffect(() => {
         if (selfStreamRef) return;

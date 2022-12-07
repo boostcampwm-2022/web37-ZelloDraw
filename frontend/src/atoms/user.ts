@@ -21,6 +21,19 @@ export const userState = atom<userStateType>({
     },
 });
 
+export interface ConstraintsType {
+    video: boolean;
+    audio: boolean;
+}
+
+export const localDeviceState = atom<ConstraintsType>({
+    key: 'localDeviceState',
+    default: {
+        video: false,
+        audio: false,
+    },
+});
+
 /**
  * 사용자 카메라, 마이크 정보
  */

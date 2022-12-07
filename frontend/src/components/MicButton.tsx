@@ -2,13 +2,14 @@ import micOffImg from '@assets/buttons/mic-off-btn.svg';
 import micOnImg from '@assets/buttons/mic-on-btn.svg';
 import styled from 'styled-components';
 import { useRecoilState, useRecoilValue } from 'recoil';
-import { userMicState, userCamState, userStreamRefState } from '@atoms/user';
+import { userMicState, userCamState, userStreamRefState, localDeviceState } from '@atoms/user';
 import { networkServiceInstance as NetworkService } from '../services/socketService';
 
 function MicButton() {
     const selfStreamRef = useRecoilValue(userStreamRefState);
     const [userMic, setUserMic] = useRecoilState(userMicState);
     const userCam = useRecoilValue(userCamState);
+    const localMicState = useRecoilValue(localDeviceState).audio;
     const onBtnClick = () => {
         if (!selfStreamRef?.current) return;
         selfStreamRef.current.getAudioTracks().forEach((track) => (track.enabled = !track.enabled));
@@ -20,7 +21,7 @@ function MicButton() {
 
     return (
         <MicBtnSet>
-            <MicBtn onClick={onBtnClick}>
+            <MicBtn onClick={onBtnClick} disabled={!localMicState}>
                 <img src={userMic ? micOnImg : micOffImg} />
             </MicBtn>
             <Label>MIC {userMic ? 'ON' : 'OFF'}</Label>
