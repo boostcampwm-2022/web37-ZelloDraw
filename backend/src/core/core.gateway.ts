@@ -16,6 +16,7 @@ import { UserService } from './user.service';
 import { SocketException } from './socket.exception';
 import { SocketExceptionFilter } from './socket.filter';
 import { GameService } from './game.service';
+import { GameResultService } from '../gameResult/gameResult.service';
 import {
     CompleteGameEmitRequest,
     StartRoundEmitRequest,
@@ -36,6 +37,7 @@ export class CoreGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
         private readonly lobbyService: LobbyService,
         private readonly gameService: GameService,
         private readonly userService: UserService,
+        private readonly gameResultService: GameResultService,
     ) {}
 
     handleConnection(client: any) {
@@ -175,6 +177,8 @@ export class CoreGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 
     private async proceedRound(user: User, client: Socket) {
         if (await this.gameService.isLastRound(user.lobbyId)) {
+            const game = await this.gameService.getGame(user.lobbyId);
+            await this.gameResultService.create(game);
             await this.emitCompleteGame(client, user.lobbyId);
         } else {
             await this.gameService.proceedRound(user.lobbyId);
