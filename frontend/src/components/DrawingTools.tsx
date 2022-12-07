@@ -11,6 +11,7 @@ interface PaletteType {
     onColorChange: (color: string) => void;
     onClickEraser: () => void;
     onClickReset: () => void;
+    onLineWidthChange: (index: number) => void;
 }
 
 interface DrawingToolsType {
@@ -18,8 +19,15 @@ interface DrawingToolsType {
 }
 
 function DrawingTools({ restProps }: DrawingToolsType) {
-    const { tools, selectedColor, selectedTool, onClickColor, onChangeTool } =
-        usePalette(restProps);
+    const {
+        tools,
+        selectedColor,
+        selectedTool,
+        selectedLineWidth,
+        onClickColor,
+        onChangeTool,
+        onClickLineWidth,
+    } = usePalette(restProps);
 
     return (
         <Container>
@@ -34,6 +42,16 @@ function DrawingTools({ restProps }: DrawingToolsType) {
                     </Tool>
                 ))}
             </Tools>
+            <LineWidthPicker>
+                {[4, 8, 16, 32].map((value, index) => (
+                    <LineWidth
+                        key={value}
+                        size={`${value}px`}
+                        onClick={() => onClickLineWidth(index)}
+                        isSelected={selectedLineWidth === index}
+                    ></LineWidth>
+                ))}
+            </LineWidthPicker>
             <ColorPicker>
                 {colorName.map((colorName, index) => (
                     <Color
@@ -61,7 +79,7 @@ const Tools = styled.div`
     grid-template-columns: repeat(2, 1fr);
     grid-template-rows: repeat(2, 1fr);
     grid-gap: 7px;
-    margin-bottom: 44px;
+    margin-top: 25px;
 `;
 
 const Tool = styled.button<{ isSelected: boolean }>`
@@ -70,7 +88,7 @@ const Tool = styled.button<{ isSelected: boolean }>`
     display: flex;
     justify-content: center;
     align-items: center;
-    background-color: ${({ theme }) => theme.color.whiteT2};
+    background-color: ${({ theme }) => theme.color.whiteT1};
     border-radius: 10px;
     border: 1px solid
         ${(props) => (props.isSelected ? props.theme.color.primaryDark : props.theme.color.brown)};
@@ -94,6 +112,31 @@ const Tool = styled.button<{ isSelected: boolean }>`
             transform: translate(3px, 4px);
         }
     }
+`;
+
+const LineWidthPicker = styled.div`
+    width: 100%;
+    height: 48px;
+    background: ${({ theme }) => theme.color.whiteT1};
+    border: 1px solid ${({ theme }) => theme.color.primaryLight};
+    box-shadow: ${({ theme }) => theme.shadow.btn};
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    margin: 16px 0px;
+`;
+
+const LineWidth = styled.div<{ size: string; isSelected: boolean }>`
+    width: ${(props) => props.size};
+    height: ${(props) => props.size};
+    background: ${(props) =>
+        props.isSelected ? props.theme.color.primaryDark : props.theme.color.white};
+    box-shadow: ${(props) => props.theme.shadow.btn};
+    border-radius: 50%;
+    cursor: pointer;
+    padding: 2px;
 `;
 
 const ColorPicker = styled.div`

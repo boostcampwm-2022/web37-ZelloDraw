@@ -22,6 +22,7 @@ interface PaletteType {
     onColorChange: (color: string) => void;
     onClickEraser: () => void;
     onClickReset: () => void;
+    onLineWidthChange: (index: number) => void;
 }
 
 function usePalette({
@@ -30,9 +31,11 @@ function usePalette({
     onColorChange,
     onClickEraser,
     onClickReset,
+    onLineWidthChange,
 }: PaletteType) {
     const [selectedColor, setSelectedColor] = useState<string>(colors.black);
     const [selectedTool, setSelectedTool] = useState<ToolsType>(ToolsType.PEN);
+    const [selectedLineWidth, setSelectedLineWidth] = useState<number>(1);
 
     const isSelectedTool = (type: ToolsType) => selectedTool === type;
 
@@ -59,6 +62,11 @@ function usePalette({
         },
     ];
 
+    const onClickLineWidth = (index: number) => {
+        setSelectedLineWidth(index);
+        onLineWidthChange(index);
+    };
+
     const onClickColor = (color: string) => {
         setSelectedColor(color);
         if (selectedTool === ToolsType.ERASER) setSelectedTool(ToolsType.PEN);
@@ -75,7 +83,15 @@ function usePalette({
         }
     };
 
-    return { tools, selectedColor, selectedTool, onClickColor, onChangeTool };
+    return {
+        tools,
+        selectedColor,
+        selectedTool,
+        selectedLineWidth,
+        onClickColor,
+        onChangeTool,
+        onClickLineWidth,
+    };
 }
 
 export default usePalette;
