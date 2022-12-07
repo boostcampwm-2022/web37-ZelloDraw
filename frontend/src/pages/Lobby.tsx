@@ -43,6 +43,7 @@ function Lobby() {
         const payload: JoinLobbyRequest = { lobbyId };
 
         if (isNewLobby) {
+            NetworkService.emit('update-user-stream', { video: userCam, audio: userMic });
             NetworkService.emit(
                 'join-lobby',
                 payload,
@@ -56,7 +57,6 @@ function Lobby() {
                     setPage('/');
                 },
             );
-            NetworkService.emit('update-user-stream', { video: userCam, audio: userMic });
         }
         NetworkService.on('leave-lobby', (user: JoinLobbyReEmitRequest) => {
             setUserStreamList((prev) =>
