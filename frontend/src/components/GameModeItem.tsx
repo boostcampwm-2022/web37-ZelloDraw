@@ -40,7 +40,7 @@ const FlexBox = styled.div`
 `;
 
 const GameTitle = styled.h1`
-    font-family: Sniglet;
+    font-family: 'Sniglet', cursive;
     font-size: ${({ theme }) => theme.typo.h1};
     font-weight: 400;
     line-height: 49px;

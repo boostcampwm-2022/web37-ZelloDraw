@@ -133,7 +133,7 @@ const SubmittedCount = styled.div`
     background: ${({ theme }) => theme.gradation.yellowGreen};
     ${({ theme }) => theme.layout.gradientTypo}
     border: 1px solid ${({ theme }) => theme.color.blackT1};
-    font-family: 'sniglet', cursive;
+    font-family: 'Sniglet', cursive;
     font-size: ${({ theme }) => theme.typo.h4};
     -webkit-text-stroke: 1px ${({ theme }) => theme.color.blackT1};
 `;

@@ -46,7 +46,7 @@ const CardInner = styled.div`
 `;
 
 const HeadingWelcome = styled.h1`
-    font-family: 'Sniglet';
+    font-family: 'Sniglet', cursive;
     font-style: normal;
     font-weight: 400;
     font-size: ${({ theme }) => theme.typo.h1};
@@ -62,7 +62,6 @@ const HeadingWelcome = styled.h1`
 `;
 
 const InfoDiv = styled.div`
-    font-family: 'IBM Plex Sans';
     font-style: normal;
     font-weight: 400;
     font-size: ${({ theme }) => theme.typo.h3};
