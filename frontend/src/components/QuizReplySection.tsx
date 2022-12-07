@@ -131,10 +131,7 @@ const SubmittedCount = styled.div`
     left: 50%;
     transform: translateX(-50%);
     background: ${({ theme }) => theme.gradation.yellowGreen};
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-    text-fill-color: transparent;
+    ${({ theme }) => theme.layout.gradientTypo}
     border: 1px solid ${({ theme }) => theme.color.blackT1};
     font-family: 'sniglet', cursive;
     font-size: ${({ theme }) => theme.typo.h4};

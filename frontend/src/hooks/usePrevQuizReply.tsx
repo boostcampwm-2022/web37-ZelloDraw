@@ -45,11 +45,8 @@ const Keyword = styled.div`
     border: 1px solid ${({ theme }) => theme.color.purple};
 
     span {
+        ${({ theme }) => theme.layout.gradientTypo}
         background: ${({ theme }) => theme.gradation.whitePurple};
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        background-clip: text;
-        text-fill-color: transparent;
         font-size: ${({ theme }) => theme.typo.h4};
     }
 `;
