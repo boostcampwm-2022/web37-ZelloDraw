@@ -12,21 +12,26 @@ import {
     SocketException,
 } from '../services/socketService';
 import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
-import { lobbyIdState, roundInfoState, userListState, userStreamListState } from '@atoms/game';
+import { roundInfoState, userStreamListState, WebRTCUser, lobbyIdState } from '@atoms/game';
 import { getParam } from '@utils/common';
-import { JoinLobbyReEmitRequest, JoinLobbyRequest } from '@backend/core/user.dto';
+import {
+    JoinLobbyResponse,
+    JoinLobbyRequest,
+    JoinLobbyReEmitRequest,
+} from '@backend/core/user.dto';
 import { StartRoundEmitRequest } from '@backend/core/game.dto';
 import { onStartGame } from '@game/NetworkServiceUtils';
 import useWebRTC from '@hooks/useWebRTC';
-import { userState } from '@atoms/user';
 import useBeforeReload from '@hooks/useBeforeReload';
 import useRemoveParams from '@hooks/useRemoveParams';
+import { userCamState, userMicState, userState } from '@atoms/user';
 import { useResetGameState } from '@hooks/useResetGameState';
 
 function Lobby() {
+    const userCam = useRecoilValue(userCamState);
+    const userMic = useRecoilValue(userMicState);
+    const [userStreamList, setUserStreamList] = useRecoilState<WebRTCUser[]>(userStreamListState);
     const [user, setUser] = useRecoilState(userState);
-    const userStreamList = useRecoilValue(userStreamListState);
-    const [userList, setUserList] = useRecoilState(userListState);
     const lobbyId = useRecoilValue(lobbyIdState);
     const [setPage] = useMovePage();
     const isNewLobby = getParam('new') === 'true' || getParam('new') === '';
@@ -41,18 +46,13 @@ function Lobby() {
         const payload: JoinLobbyRequest = { lobbyId };
 
         if (isNewLobby) {
+            NetworkService.emit('update-user-stream', { video: userCam, audio: userMic });
             NetworkService.emit(
                 'join-lobby',
                 payload,
-                (res: Array<{ userName: string; sid: string }>) => {
-                    setUserList(res);
+                (res: JoinLobbyResponse) => {
                     res.forEach((userInRoom) => {
-                        setTimeout(() => {
-                            if (user.name !== userInRoom.userName) {
-                                console.log('send offer from newbie');
-                                void createOffers(userInRoom);
-                            }
-                        }, 100);
+                        void createOffers(userInRoom);
                     });
                 },
                 (err: SocketException) => {
@@ -61,8 +61,10 @@ function Lobby() {
                 },
             );
         }
-        NetworkService.on('leave-lobby', (users: Array<{ userName: string; sid: string }>) => {
-            setUserList(users);
+        NetworkService.on('leave-lobby', (user: JoinLobbyReEmitRequest) => {
+            setUserStreamList((prev) =>
+                prev.filter((participant) => participant.userName !== user.userName),
+            );
         });
         NetworkService.on('succeed-host', () => {
             setUser({ ...user, isHost: true });
@@ -74,13 +76,26 @@ function Lobby() {
     }, []);
 
     useEffect(() => {
-        NetworkService.on('join-lobby', (user: JoinLobbyReEmitRequest) => {
-            setUserList([...userList, user]);
+        // NetworkService.on('join-lobby', (user: JoinLobbyReEmitRequest) => {
+        //
+        // });
+        NetworkService.on('update-user-stream', (payload) => {
+            setUserStreamList((prev) =>
+                prev.map((user) => {
+                    const prevUserValue = { ...user };
+                    if (payload.socketId === user.sid) {
+                        prevUserValue.audio = payload.audio;
+                        prevUserValue.video = payload.video;
+                    }
+                    return prevUserValue;
+                }),
+            );
         });
         return () => {
+            NetworkService.off('update-user-stream');
             NetworkService.off('join-lobby');
         };
-    }, [userList]);
+    }, [userStreamList]);
 
     useEffect(() => {
         onStartGame(setPage, setRoundInfo);
@@ -93,7 +108,7 @@ function Lobby() {
             </LogoWrapper>
             <LobbyContainer>
                 <FlexBox>
-                    <UserList userStreamList={userStreamList} />
+                    <UserList />
                     <GameModeList lobbyId={lobbyId} />
                 </FlexBox>
                 <ButtonWrapper>

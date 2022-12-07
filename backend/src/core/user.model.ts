@@ -8,6 +8,10 @@ export class User {
 
     lobbyId: string | undefined;
 
+    video: boolean;
+
+    audio: boolean;
+
     constructor(socketId: string, name: string) {
         this.socketId = socketId;
         this.name = name;
