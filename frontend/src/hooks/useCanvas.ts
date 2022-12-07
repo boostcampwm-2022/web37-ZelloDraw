@@ -90,6 +90,12 @@ function useCanvas() {
         [drawState],
     );
 
+    const clearCanvas = () => {
+        ctxRef.current.clearRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
+        ctxRef.current.fillStyle = ERASER_COLOR;
+        ctxRef.current.fillRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
+    };
+
     const onClickPaint = () => {
         drawState.current = CanvasState.PAINT;
     };
@@ -110,7 +116,7 @@ function useCanvas() {
 
     const onClickReset = () => {
         drawState.current = CanvasState.NONE;
-        ctxRef.current.clearRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
+        clearCanvas();
     };
 
     const onMove = useCallback(
@@ -183,11 +189,12 @@ function useCanvas() {
         ctx.strokeStyle = PEN_DEFAULT_COLOR;
         ctx.lineWidth = PEN_DEFAULT_LINE_WIDTH;
         ctxRef.current = ctx;
+        clearCanvas();
     }, []);
 
     useEffect(() => {
         // 라운드가 바뀌면 캔바스 초기화
-        ctxRef.current.clearRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
+        clearCanvas();
     }, [curRound]);
 
     return {
