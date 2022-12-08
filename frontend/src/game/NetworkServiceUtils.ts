@@ -64,7 +64,10 @@ export const queryAndSaveGameResult = async (
     setGameResult: SetterOrUpdater<Array<Array<PartialWithoutMethods<QuizReply>>>>,
     gameResultId: string,
 ) => {
-    const gameResult = await axios.get(`http://localhost:8080/game-result/${gameResultId}`);
+    const gameResult = await axios.get(
+        // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
+        `${process.env.REACT_APP_REST_URL}/game-result/${gameResultId}`,
+    );
     const gameReplyLists = createGameReplyLists(gameResult.data);
     setGameResult(gameReplyLists);
 };
