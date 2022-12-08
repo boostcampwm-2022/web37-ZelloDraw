@@ -1,26 +1,26 @@
-import React, { useEffect, useRef } from 'react';
 import styled from 'styled-components';
 import Card from '@components/Card';
 import InviteButton from '@components/InviteButton';
 import EmptyVideoCall from '@components/EmptyVideoCall';
 import VideoCallUser from '@components/VideoCallUser';
 import { useRecoilValue } from 'recoil';
-import { userStreamListState, WebRTCUser } from '@atoms/game';
+import { streamMapState, userListState, WebRTCUser } from '@atoms/game';
 import { userCamState, userMicState, userState, userStreamState } from '@atoms/user';
 
 function UserList() {
     const userCam = useRecoilValue(userCamState);
     const userMic = useRecoilValue(userMicState);
-    const userStreamList = useRecoilValue(userStreamListState);
+    const userList = useRecoilValue(userListState);
     const currentUser = useRecoilValue(userState);
     const selfStream = useRecoilValue(userStreamState);
+    const streamMap = useRecoilValue(streamMapState);
 
     return (
         <Card>
             <CardInner>
                 <FlexBox>
                     <CountBox>
-                        <PlayerCountText>{userStreamList.length}</PlayerCountText>
+                        <PlayerCountText>{userList.length}</PlayerCountText>
                         <PlayerCountSlash>/</PlayerCountSlash>
                         <PlayerCountText>8</PlayerCountText>
                     </CountBox>
@@ -33,16 +33,16 @@ function UserList() {
                         audio={userMic}
                         video={userCam}
                     />
-                    {userStreamList.map((user: WebRTCUser, idx: number) => (
+                    {userList.map((user: WebRTCUser, idx: number) => (
                         <VideoCallUser
                             key={idx}
                             userName={user.userName}
-                            stream={user.stream}
+                            stream={streamMap.get(user.sid)}
                             audio={user.audio}
                             video={user.video}
                         />
                     ))}
-                    {new Array(7 - userStreamList.length)
+                    {new Array(7 - userList.length)
                         .fill('empty')
                         .map((item: string, idx: number) => (
                             <EmptyVideoCall key={idx} />

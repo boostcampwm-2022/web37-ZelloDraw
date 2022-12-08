@@ -21,15 +21,20 @@ export interface WebRTCUser {
     video?: boolean;
 }
 
-export const userStreamListState = atom<WebRTCUser[]>({
-    key: 'userStreamListState',
+export const userListState = atom<WebRTCUser[]>({
+    key: 'userListState',
     default: [],
+});
+
+export const streamMapState = atom({
+    key: 'streamMapState',
+    default: new Map(),
 });
 
 export const userListLengthState = selector({
     key: 'userListLengthState',
     get: ({ get }) => {
-        const userList = get(userStreamListState);
+        const userList = get(userListState);
         return userList.length + 1;
     },
 });
