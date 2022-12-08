@@ -5,7 +5,7 @@ import { ScaledDiv, ScaledSection } from '@styles/styled';
 import { useEffect } from 'react';
 import { queryAndSaveGameResult } from '@game/NetworkServiceUtils';
 import { useRecoilState, useSetRecoilState } from 'recoil';
-import { gameResultState, isWatchedBookState } from '@atoms/result';
+import { gameResultIdState, gameResultState, isWatchedBookState } from '@atoms/result';
 import { userState } from '@atoms/user';
 import { useParams } from 'react-router-dom';
 import useMovePage from '@hooks/useMovePage';
@@ -16,12 +16,14 @@ export function ShareResult() {
     const [user, setUser] = useRecoilState(userState);
     const setIsWatched = useSetRecoilState(isWatchedBookState);
     const gameResultId = useParams().id;
+    const setGameResultId = useSetRecoilState(gameResultIdState);
 
     useEffect(() => {
         if (gameResultId === undefined) setPage('/');
         else {
             void queryAndSaveGameResult(setGameResult, gameResultId)
                 .then(() => {
+                    setGameResultId(gameResultId);
                     setIsWatched(true);
                     setUser({ ...user, isHost: true });
                 })

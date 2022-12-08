@@ -6,6 +6,7 @@ import {
     currentBookIdxState,
     currentPageIdxState,
     currentSketchbookState,
+    gameResultIdState,
     isStartedState,
     isWatchedBookState,
     maxSketchbookState,
@@ -28,10 +29,13 @@ import { useEffect } from 'react';
 import { networkServiceInstance as NetworkService } from '@services/socketService';
 import useMovePage from '@hooks/useMovePage';
 import { lobbyIdState } from '@atoms/game';
+import toast, { Toaster } from 'react-hot-toast';
+import useCopyClipBoard from '@hooks/useCopyClipboard';
 
 function ResultSketchbook(props: { isForShareResult: boolean }) {
     const [setPage] = useMovePage();
     const lobbyId = useRecoilValue(lobbyIdState);
+    const gameResultId = useRecoilValue(gameResultIdState);
     const { maxPageNum, maxBookNum } = useRecoilValue(maxSketchbookState);
     const currentSketchbook = useRecoilValue(currentSketchbookState);
     const sketchbookAuthor = useRecoilValue(sketchbookAuthorState);
@@ -48,6 +52,8 @@ function ResultSketchbook(props: { isForShareResult: boolean }) {
         props.isForShareResult,
     );
 
+    const [_, onCopy] = useCopyClipBoard();
+
     useEffect(() => {
         NetworkService.on('back-to-lobby', () => {
             setPage(`/lobby?id=${lobbyId}&new=false`);
@@ -58,8 +64,14 @@ function ResultSketchbook(props: { isForShareResult: boolean }) {
         };
     }, []);
 
+    const copyGameResultIdOnClipboard = () => {
+        const gameResultShareUrl = `${window.location.origin}/share-result/${gameResultId}`;
+        void onCopy(gameResultShareUrl);
+        toast('🖇 클립보드에 복사되었습니다.');
+    };
     return (
         <>
+            <Toaster position='top-center' reverseOrder={false} toastOptions={{ duration: 1500 }} />
             <SketchbookCard
                 center={
                     <>
@@ -114,6 +126,9 @@ function ResultSketchbook(props: { isForShareResult: boolean }) {
                                 <PrimaryButton topText='ONE MORE' bottomText='한판 더 하기' />
                             </OneMoreButtonWrapper>
                         )}
+                        <ResultShareButtonWrapper onClick={copyGameResultIdOnClipboard}>
+                            <PrimaryButton topText='결과 공유하기' bottomText='클립보드에 복사' />
+                        </ResultShareButtonWrapper>
                     </>
                 )}
             </SketchbookAuthor>
@@ -207,4 +222,10 @@ const DownArrowWrapper = styled.div<{ disable: boolean }>`
 const OneMoreButtonWrapper = styled.div`
     position: absolute;
     right: 0;
+`;
+
+const ResultShareButtonWrapper = styled.div`
+    position: absolute;
+    right: 0;
+    top: 100px;
 `;
