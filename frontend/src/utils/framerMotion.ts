@@ -42,3 +42,31 @@ export const flipVariants = {
         };
     },
 };
+
+export const countDownContainerVariants = {
+    enter: {
+        opacity: 1,
+    },
+    animate: {
+        opacity: 1,
+    },
+    exit: {
+        opacity: 0,
+    },
+};
+
+export const countDownVariants = {
+    enter: {
+        opacity: [0, 1],
+        scale: 1,
+        x: 0,
+    },
+    animate: {
+        opacity: 1,
+        scale: 15,
+        transition: {
+            opacity: { duration: 0.5 },
+            scale: { duration: 1.5 },
+        },
+    },
+};
