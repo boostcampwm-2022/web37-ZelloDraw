@@ -30,7 +30,7 @@ export const userListLengthState = selector({
     key: 'userListLengthState',
     get: ({ get }) => {
         const userList = get(userStreamListState);
-        return userList.length;
+        return userList.length + 1;
     },
 });
 
