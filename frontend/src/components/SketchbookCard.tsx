@@ -67,6 +67,7 @@ const LeftSide = styled.div`
     display: flex;
     align-items: end;
     width: 108px;
+    height: 100%;
 `;
 
 const SketchbookWrapper = styled.div`

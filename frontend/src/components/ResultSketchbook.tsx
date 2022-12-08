@@ -13,7 +13,7 @@ import {
 } from '@atoms/result';
 import { userState } from '@atoms/user';
 import SketchbookCard from '@components/SketchbookCard';
-import RoundNumber from '@components/RoundNumber';
+import CurAndMaxNumber from '@components/CurAndMaxNumber';
 import ResultGuide from '@components/ResultGuide';
 import QuizResultContent from '@components/QuizResultContent';
 import useCheckGuidePage from '@hooks/useCheckGuidePage';
@@ -79,7 +79,12 @@ function ResultSketchbook() {
                                         <UpArrowIcon onClick={addSketchbookPage} />
                                     </UpArrowWrapper>
                                 )}
-                                <RoundNumber cur={currentPageIdx} max={maxPageNum} round={false} />
+                                <CurAndMaxNumber
+                                    cur={currentPageIdx}
+                                    max={maxPageNum}
+                                    gradient={'whitePurple'}
+                                    strokeColor={'primaryLight'}
+                                />
                                 {isWatched && (
                                     <DownArrowWrapper disable={currentPageIdx === 0}>
                                         <DownArrowIcon onClick={subtractSketchbookPage} />
@@ -127,10 +132,9 @@ const QuizAuthor = styled.div`
 `;
 
 const QuizAuthorName = styled.span`
-    background: ${({ theme }) => theme.gradation.whitePurple};
+    background: ${({ theme }) => theme.gradation.whitePurple2};
     ${({ theme }) => theme.layout.gradientTypo}
     -webkit-text-stroke:${({ theme }) => theme.color.primaryLight};
-    text-stroke: ${({ theme }) => theme.color.primaryLight};
     font-size: ${({ theme }) => theme.typo.h5};
     font-weight: 600;
     word-break: keep-all;

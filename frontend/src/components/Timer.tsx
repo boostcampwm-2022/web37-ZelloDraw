@@ -40,7 +40,6 @@ export default Timer;
 
 const Container = styled(Center)`
     flex-direction: column;
-    margin-left: 32px;
 `;
 
 const ProgressBar = styled.div`
