@@ -20,7 +20,7 @@ export class GameLobby implements Lobby, Game {
     isPlaying: boolean;
 
     constructor(user: User) {
-        this.id = `${user.socketId}${new Date().getTime()}`;
+        this.id = this.createId(user.socketId);
         this.host = user;
         this.users = [];
         this.maxRound = 0;
@@ -67,6 +67,10 @@ export class GameLobby implements Lobby, Game {
         return this.roundLimitTime;
     }
 
+    createId(hostId: string): string {
+        return `${hostId}${new Date().getTime()}`;
+    }
+
     joinLobby(user: User) {
         this.users.push(user);
     }
@@ -94,6 +98,7 @@ export class GameLobby implements Lobby, Game {
     startGame() {
         this.curRound = 0;
         this.maxRound = this.users.length - 1;
+        this.curRound = 0;
         this.isPlaying = true;
         this.roundType = 'ANSWER';
         this.roundLimitTime = 60;
