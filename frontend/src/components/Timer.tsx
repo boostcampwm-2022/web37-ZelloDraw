@@ -1,35 +1,22 @@
 import { ReactComponent as TimerIcon } from '@assets/icons/timer-icon.svg';
-import { useEffect, useState } from 'react';
 import { useRecoilValue } from 'recoil';
 import styled from 'styled-components';
 import { Center } from '@styles/styled';
-import { roundInfoState, roundNumberState } from '@atoms/game';
-import useTimer from '@hooks/useTimer';
+import { roundInfoState } from '@atoms/game';
+import { motion } from 'framer-motion';
 
 function Timer() {
-    const [progress, setProgress] = useState<number>(100);
     const roundInfo = useRecoilValue(roundInfoState);
-    const { curRound } = useRecoilValue(roundNumberState);
-    const { limitTime, timeLeft, isTimeOver, setTimerTime } = useTimer({
-        interval: 1000,
-        clearTimerDeps: curRound,
-    });
-
-    useEffect(() => {
-        if (roundInfo === undefined) return;
-        setTimerTime(roundInfo.limitTime);
-    }, [roundInfo]);
-
-    useEffect(() => {
-        // 프로그레스바의 높이를 설정
-        setProgress(timeLeft / limitTime);
-    }, [timeLeft]);
 
     return (
         <Container>
             <ProgressBar>
-                <Bar></Bar>
-                <Progress progress={progress} isTimeOver={isTimeOver}></Progress>
+                <Bar />
+                <Progress
+                    initial={{ height: '100%' }}
+                    animate={{ height: '0%' }}
+                    transition={{ duration: roundInfo?.limitTime || 60 }}
+                />
             </ProgressBar>
             <TimerIcon />
         </Container>
@@ -40,7 +27,6 @@ export default Timer;
 
 const Container = styled(Center)`
     flex-direction: column;
-    margin-left: 32px;
 `;
 
 const ProgressBar = styled.div`
@@ -58,17 +44,14 @@ const Bar = styled.div`
     border-radius: 999px;
 `;
 
-const Progress = styled.div<{ progress: number; isTimeOver: boolean }>`
+const Progress = styled(motion.div)`
     width: 100%;
     height: 100%;
     transform-origin: bottom;
-    transform: scaleY(${({ progress }) => progress});
     position: absolute;
     bottom: 0;
     left: 0;
     background: ${({ theme }) => theme.gradation.primaryLightBrown};
     border: 1px solid ${({ theme }) => theme.color.whiteT2};
     border-radius: 24px;
-    opacity: ${({ isTimeOver }) => (isTimeOver ? 0 : 1)};
-    transition: transform 1s linear;
 `;

@@ -90,6 +90,8 @@ export class CoreGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
             this.emitJoinLobby(client, lobby.id, {
                 userName: user.name,
                 sid: client.id,
+                audio: user.audio,
+                video: user.video,
             });
 
             return users.map((user) => {
@@ -189,9 +191,7 @@ export class CoreGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
     @SubscribeMessage('webrtc-offer')
     async handleOffer(@ConnectedSocket() client: Socket, @MessageBody() body) {
         const user = this.userService.getUser(client.id);
-        client.broadcast
-            .to(body.offerReceiveID)
-            .emit('webrtc-offer', body.sdp, client.id, user.name, user.audio, user.video);
+        client.broadcast.to(body.offerReceiveID).emit('webrtc-offer', body.sdp, client.id);
     }
 
     @SubscribeMessage('webrtc-answer')

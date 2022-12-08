@@ -4,7 +4,7 @@ import { ScaledDiv, ScaledSection } from '@styles/styled';
 import { onCompleteGame, onCountSubmittedQuiz } from '@game/NetworkServiceUtils';
 import { useSetRecoilState, useRecoilState } from 'recoil';
 import { gameResultIdState, gameResultState } from '@atoms/result';
-import { submittedQuizReplyCountState, userStreamListState } from '@atoms/game';
+import { submittedQuizReplyCountState, userListState } from '@atoms/game';
 import GameUsers from '@components/GameUsers';
 import MicButton from '@components/MicButton';
 import CameraButton from '@components/CameraButton';
@@ -15,22 +15,28 @@ import { networkServiceInstance as NetworkService } from '../services/socketServ
 import { JoinLobbyReEmitRequest } from '@backend/core/user.dto';
 import { userState } from '@atoms/user';
 import useBeforeReload from '@hooks/useBeforeReload';
+import CountDown from '@components/CountDown';
+import { AnimatePresence } from 'framer-motion';
 
 function Game() {
     const [user, setUser] = useRecoilState(userState);
     const setGameResult = useSetRecoilState(gameResultState);
     const setGameResultId = useSetRecoilState(gameResultIdState);
-    const setUserStreamList = useSetRecoilState(userStreamListState);
+    const setuserList = useSetRecoilState(userListState);
     const setSubmittedQuizReplyCount = useSetRecoilState(submittedQuizReplyCountState);
     const [isCompleteGame, setIsCompleteGame] = useState(false);
+    const [isStarted, setIsStarted] = useState(false);
     useBeforeReload();
 
+    useEffect(() => {
+        setTimeout(() => setIsStarted(true), 2500);
+    }, []);
     useEffect(() => {
         onCountSubmittedQuiz(setSubmittedQuizReplyCount);
         onCompleteGame(setGameResultId, setGameResult, setIsCompleteGame);
 
         NetworkService.on('leave-game', (user: JoinLobbyReEmitRequest) => {
-            setUserStreamList((prev) =>
+            setuserList((prev) =>
                 prev.filter((participant) => participant.userName !== user.userName),
             );
         });
@@ -43,10 +49,11 @@ function Game() {
             NetworkService.off('leave-game');
             NetworkService.off('succeed-host');
         };
-    }, []);
+    }, [isStarted]);
 
     return (
         <>
+            <AnimatePresence>{!isStarted && <CountDown />}</AnimatePresence>
             <Container>
                 <GameUsers />
                 <SketchbookSection>

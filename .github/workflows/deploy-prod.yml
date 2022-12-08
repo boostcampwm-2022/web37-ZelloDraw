@@ -3,8 +3,6 @@ name: "deploy when push"
 on:
     push:
         branches: [develop]
-    pull_request:
-        branches: [develop]
 
 jobs:
     build:
@@ -23,7 +21,7 @@ jobs:
                   password: ${{ secrets.SERVER_PASSWORD }}
                   port: ${{ secrets.SERVER_PORT }}
                   script: |
-                      cd ~/web37-ZelloDraw/ && git pull origin develop
+                      cd ~/web37-ZelloDraw/ && git stash && git pull origin develop
                       cd ~/web37-ZelloDraw/frontend/
                       npm i
                       npm run build
