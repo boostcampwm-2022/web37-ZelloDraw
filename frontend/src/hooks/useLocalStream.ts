@@ -1,14 +1,37 @@
 import { useEffect, useRef, useCallback } from 'react';
 import { MediaErrorType, NOT_SUPPORT_USER_MESSAGE, NOT_SUPPORTED_MESSAGE } from '@utils/constants';
-import { userStreamState, userStreamRefState, ConstraintsType } from '@atoms/user';
-import { useRecoilState, useSetRecoilState } from 'recoil';
-import useSetDeviceState from '@hooks/useSetDeviceState';
+import {
+    userStreamState,
+    userStreamRefState,
+    ConstraintsType,
+    userCamState,
+    userMicState,
+    localDeviceState,
+} from '@atoms/user';
+import { useSetRecoilState, useRecoilState } from 'recoil';
 
 function useLocalStream() {
     const setStream = useSetRecoilState(userStreamState);
     const [selfStreamRef, setSelfStreamRef] = useRecoilState(userStreamRefState);
     const streamRef = useRef<MediaStream>();
-    const { setMicDeviceInfo, setCamDeviceInfo } = useSetDeviceState();
+
+    const setUserCam = useSetRecoilState<boolean>(userCamState);
+    const setUserMic = useSetRecoilState<boolean>(userMicState);
+    const setLocalDevices = useSetRecoilState(localDeviceState);
+
+    const setMicDeviceInfo = (audio: boolean) => {
+        setLocalDevices((prev) => {
+            return { ...prev, audio };
+        });
+        setUserMic(audio);
+    };
+
+    const setCamDeviceInfo = (video: boolean) => {
+        setLocalDevices((prev) => {
+            return { ...prev, video };
+        });
+        setUserCam(video);
+    };
 
     const getLocalStream = async () => {
         // 현재 연결된 마이크, 카메라 디바이스가 있는지 여부를 확인한다.
@@ -24,6 +47,7 @@ function useLocalStream() {
             alert(MediaErrorType.NotFoundError);
             setCamDeviceInfo(hasCam);
             setMicDeviceInfo(hasMic);
+            getFakeStream();
         } else void getUserPermission({ video: hasCam, audio: hasMic });
     };
 

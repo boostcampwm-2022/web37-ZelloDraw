@@ -1,69 +1,68 @@
 import { useEffect, useRef, useCallback } from 'react';
 import { networkServiceInstance as NetworkService } from '../services/socketService';
-import { userStreamRefState } from '@atoms/user';
+import { localDeviceState, userStreamRefState } from '@atoms/user';
 import { useRecoilValue, useRecoilState } from 'recoil';
 import { WebRTCUser, streamMapState } from '@atoms/game';
-import { RTCOfferOptions } from '@utils/constants';
 
 function useWebRTC() {
+    const localDevices = useRecoilValue(localDeviceState);
     const pcsRef = useRef<{ [socketId: string]: RTCPeerConnection }>({});
     const selfStreamRef = useRecoilValue(userStreamRefState);
     const [streamMap, setStreamMap] = useRecoilState<Map<string, MediaStream>>(streamMapState);
 
-    const createPeerConnection = useCallback(
-        async (peerSocketId: string): Promise<any> => {
-            const res = await new Promise((resolve) => {
-                try {
-                    const pc = new RTCPeerConnection({
-                        iceServers: [
-                            {
-                                urls: [
-                                    'stun:stun.l.google.com:19302',
-                                    'stun:stun1.l.google.com:19302',
-                                    'stun:stun2.l.google.com:19302',
-                                    'stun:stun3.l.google.com:19302',
-                                    'stun:stun4.l.google.com:19302',
-                                ],
-                            },
-                        ],
-                    });
+    const createPeerConnection = useCallback(async (peerSocketId: string): Promise<any> => {
+        const res = await new Promise((resolve) => {
+            try {
+                const pc = new RTCPeerConnection({
+                    iceServers: [
+                        {
+                            urls: [
+                                'stun:stun.l.google.com:19302',
+                                'stun:stun1.l.google.com:19302',
+                                'stun:stun2.l.google.com:19302',
+                                'stun:stun3.l.google.com:19302',
+                                'stun:stun4.l.google.com:19302',
+                            ],
+                        },
+                    ],
+                });
 
-                    pc.onicecandidate = (e) => {
-                        if (e.candidate) {
-                            NetworkService.emit('webrtc-ice', {
-                                ice: e.candidate,
-                                candidateReceiveID: peerSocketId,
-                            });
-                        }
-                    };
+                pc.onicecandidate = (e) => {
+                    if (e.candidate) {
+                        NetworkService.emit('webrtc-ice', {
+                            ice: e.candidate,
+                            candidateReceiveID: peerSocketId,
+                        });
+                    }
+                };
 
-                    pc.ontrack = (e) => {
-                        setStreamMap((prev) => new Map(prev).set(peerSocketId, e.streams[0]));
-                    };
+                pc.ontrack = (e) => {
+                    setStreamMap((prev) => new Map(prev).set(peerSocketId, e.streams[0]));
+                };
 
-                    if (!selfStreamRef?.current) return;
-                    selfStreamRef.current.getTracks().forEach((track) => {
-                        if (!selfStreamRef.current) return;
-                        pc.addTrack(track, selfStreamRef.current);
-                    });
-                    resolve(pc);
-                } catch (err) {
-                    console.log(err);
-                    return undefined;
-                }
-            });
-            return res;
-        },
-        [streamMap],
-    );
+                if (!selfStreamRef?.current) return;
+                selfStreamRef.current.getTracks().forEach((track) => {
+                    if (!selfStreamRef.current) return;
+                    pc.addTrack(track, selfStreamRef.current);
+                });
+                resolve(pc);
+            } catch (err) {
+                console.log(err);
+                return undefined;
+            }
+        });
+        return res;
+    }, []);
 
     const createOffers = async (user: WebRTCUser) => {
         const pc = await createPeerConnection(user.sid);
         if (!pc) return;
         pcsRef.current = { ...pcsRef.current, [user.sid]: pc };
         try {
-            pc.getTransceivers().forEach((t: { direction: string }) => (t.direction = 'recvonly'));
-            const localSdp = await pc.createOffer(RTCOfferOptions);
+            const localSdp = await pc.createOffer({
+                offerToReceiveAudio: localDevices.audio,
+                offerToReceiveVideo: localDevices.video,
+            });
             await pc.setLocalDescription(new RTCSessionDescription(localSdp));
             NetworkService.emit('webrtc-offer', {
                 sdp: localSdp,
