@@ -49,10 +49,12 @@ export const onRoundTimeout = (setIsRoundTimeout: SetterOrUpdater<boolean>) => {
 };
 
 export const onCompleteGame = (
+    setGameResultId: SetterOrUpdater<string>,
     setGameResult: SetterOrUpdater<Array<Array<PartialWithoutMethods<QuizReply>>>>,
     setIsCompleteGame: SetterOrUpdater<boolean>,
 ) => {
     NetworkService.on('complete-game', (gameResult: CompleteGameEmitRequest) => {
+        setGameResultId(gameResult.gameResultId);
         setGameResult(gameResult.quizReplyLists);
         setIsCompleteGame(true);
     });
