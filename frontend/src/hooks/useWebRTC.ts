@@ -117,14 +117,14 @@ function useWebRTC() {
             NetworkService.off('webrtc-offer');
             NetworkService.off('webrtc-answer');
             NetworkService.off('webrtc-ice');
-            streamMap.forEach((stream, sid) => {
-                if (!stream) return;
-                pcsRef.current[sid].close();
-                // eslint-disable-next-line @typescript-eslint/no-dynamic-delete
-                delete pcsRef.current[sid];
-            });
+            // streamMap.forEach((stream, sid) => {
+            //     if (!stream) return;
+            //     pcsRef.current[sid].close();
+            //     // eslint-disable-next-line @typescript-eslint/no-dynamic-delete
+            //     delete pcsRef.current[sid];
+            // });
         };
-    }, []);
+    }, [streamMap]);
 
     return { createOffers };
 }

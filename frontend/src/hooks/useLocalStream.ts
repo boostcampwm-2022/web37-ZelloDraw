@@ -20,16 +20,12 @@ function useLocalStream() {
     const setLocalDevices = useSetRecoilState(localDeviceState);
 
     const setMicDeviceInfo = (audio: boolean) => {
-        setLocalDevices((prev) => {
-            return { ...prev, audio };
-        });
+        setLocalDevices((prev) => ({ ...prev, audio }));
         setUserMic(audio);
     };
 
     const setCamDeviceInfo = (video: boolean) => {
-        setLocalDevices((prev) => {
-            return { ...prev, video };
-        });
+        setLocalDevices((prev) => ({ ...prev, video }));
         setUserCam(video);
     };
 
