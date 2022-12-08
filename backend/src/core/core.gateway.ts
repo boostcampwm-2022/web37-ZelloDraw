@@ -178,8 +178,8 @@ export class CoreGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
     private async proceedRound(user: User, client: Socket) {
         if (await this.gameService.isLastRound(user.lobbyId)) {
             const game = await this.gameService.getGame(user.lobbyId);
-            await this.gameResultService.create(game);
-            await this.emitCompleteGame(client, user.lobbyId);
+            const resultShareId = await this.gameResultService.create(game);
+            await this.emitCompleteGame(client, user.lobbyId, resultShareId);
         } else {
             await this.gameService.proceedRound(user.lobbyId);
             await this.emitStartRound(client, user.lobbyId);
@@ -302,10 +302,11 @@ export class CoreGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
         client.nsp.to(lobbyId).emit('submit-quiz-reply', payload);
     }
 
-    private async emitCompleteGame(client: Socket, lobbyId: string) {
+    private async emitCompleteGame(client: Socket, lobbyId: string, gameResultId: string) {
         const quizReplyChains: QuizReplyChain[] =
             await this.gameService.getQuizReplyChainsWhenGameEnd(lobbyId);
         const payload = new CompleteGameEmitRequest(
+            gameResultId,
             quizReplyChains.map((quizReplyChain) => quizReplyChain.quizReplyList),
         );
 

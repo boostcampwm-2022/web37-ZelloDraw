@@ -28,5 +28,6 @@ module.exports = {
         '@typescript-eslint/no-non-null-assertion': 'off',
         eqeqeq: 'off',
         'new-cap': 'off',
+        'n/handle-callback-err': 'off',
     },
 };

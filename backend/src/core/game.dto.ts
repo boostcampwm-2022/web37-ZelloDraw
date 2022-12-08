@@ -46,9 +46,14 @@ export class SubmitQuizReplyEmitRequest {
 }
 
 export class CompleteGameEmitRequest {
+    gameResultId: string;
     quizReplyLists: Array<Array<PartialWithoutMethods<QuizReply>>>;
 
-    constructor(quizReplyLists: Array<Array<PartialWithoutMethods<QuizReply>>>) {
+    constructor(
+        gameResultId: string,
+        quizReplyLists: Array<Array<PartialWithoutMethods<QuizReply>>>,
+    ) {
+        this.gameResultId = gameResultId;
         this.quizReplyLists = quizReplyLists;
     }
 }
