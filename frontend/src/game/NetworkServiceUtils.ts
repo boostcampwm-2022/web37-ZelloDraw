@@ -9,6 +9,7 @@ import {
 import { SetterOrUpdater } from 'recoil';
 import { QuizReply } from '@backend/core/quizReply.model';
 import { PartialWithoutMethods } from '@backend/utils/types';
+import axios from 'axios';
 
 export const emitStartGame = (lobbyId: string) => {
     NetworkService.emit('start-game', lobbyId);
@@ -54,6 +55,29 @@ export const onCompleteGame = (
     NetworkService.on('complete-game', (gameResult: CompleteGameEmitRequest) => {
         setGameResult(gameResult.quizReplyLists);
         setIsCompleteGame(true);
+    });
+};
+
+export const queryAndSaveGameResult = async (
+    setGameResult: SetterOrUpdater<Array<Array<PartialWithoutMethods<QuizReply>>>>,
+    gameResultId: string,
+) => {
+    const gameResult = await axios.get(`http://localhost:8080/game-result/${gameResultId}`);
+    const gameReplyLists = createGameReplyLists(gameResult.data);
+    setGameResult(gameReplyLists);
+};
+
+const createGameReplyLists = (gameResult: any) => {
+    return gameResult.quizReplyChains.map((quizReplyChain: any) => {
+        return quizReplyChain.quizReplyList.map((quizReply: any) => {
+            return {
+                author: {
+                    name: quizReply.author,
+                },
+                content: quizReply.content,
+                type: quizReply.type,
+            };
+        });
     });
 };
 
