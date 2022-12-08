@@ -16,6 +16,7 @@ import { UserService } from './user.service';
 import { SocketException } from './socket.exception';
 import { SocketExceptionFilter } from './socket.filter';
 import { GameService } from './game.service';
+import { GameResultService } from '../gameResult/gameResult.service';
 import {
     CompleteGameEmitRequest,
     StartRoundEmitRequest,
@@ -36,6 +37,7 @@ export class CoreGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
         private readonly lobbyService: LobbyService,
         private readonly gameService: GameService,
         private readonly userService: UserService,
+        private readonly gameResultService: GameResultService,
     ) {}
 
     handleConnection(client: any) {
@@ -177,7 +179,9 @@ export class CoreGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 
     private async proceedRound(user: User, client: Socket) {
         if (await this.gameService.isLastRound(user.lobbyId)) {
-            await this.emitCompleteGame(client, user.lobbyId);
+            const game = await this.gameService.getGame(user.lobbyId);
+            const resultShareId = await this.gameResultService.create(game);
+            await this.emitCompleteGame(client, user.lobbyId, resultShareId);
         } else {
             await this.gameService.proceedRound(user.lobbyId);
             await this.emitStartRound(client, user.lobbyId);
@@ -298,10 +302,11 @@ export class CoreGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
         client.nsp.to(lobbyId).emit('submit-quiz-reply', payload);
     }
 
-    private async emitCompleteGame(client: Socket, lobbyId: string) {
+    private async emitCompleteGame(client: Socket, lobbyId: string, gameResultId: string) {
         const quizReplyChains: QuizReplyChain[] =
             await this.gameService.getQuizReplyChainsWhenGameEnd(lobbyId);
         const payload = new CompleteGameEmitRequest(
+            gameResultId,
             quizReplyChains.map((quizReplyChain) => quizReplyChain.quizReplyList),
         );
 

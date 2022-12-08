@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import { ScaledDiv, ScaledSection } from '@styles/styled';
 import { onCompleteGame, onCountSubmittedQuiz } from '@game/NetworkServiceUtils';
 import { useSetRecoilState, useRecoilState } from 'recoil';
-import { gameResultState } from '@atoms/result';
+import { gameResultIdState, gameResultState } from '@atoms/result';
 import { submittedQuizReplyCountState, userListState } from '@atoms/game';
 import GameUsers from '@components/GameUsers';
 import MicButton from '@components/MicButton';
@@ -21,6 +21,7 @@ import { AnimatePresence } from 'framer-motion';
 function Game() {
     const [user, setUser] = useRecoilState(userState);
     const setGameResult = useSetRecoilState(gameResultState);
+    const setGameResultId = useSetRecoilState(gameResultIdState);
     const setuserList = useSetRecoilState(userListState);
     const setSubmittedQuizReplyCount = useSetRecoilState(submittedQuizReplyCountState);
     const [isCompleteGame, setIsCompleteGame] = useState(false);
@@ -32,7 +33,7 @@ function Game() {
     }, []);
     useEffect(() => {
         onCountSubmittedQuiz(setSubmittedQuizReplyCount);
-        onCompleteGame(setGameResult, setIsCompleteGame);
+        onCompleteGame(setGameResultId, setGameResult, setIsCompleteGame);
 
         NetworkService.on('leave-game', (user: JoinLobbyReEmitRequest) => {
             setuserList((prev) =>
@@ -56,7 +57,11 @@ function Game() {
             <Container>
                 <GameUsers />
                 <SketchbookSection>
-                    {isCompleteGame ? <ResultSketchbook /> : <GameSketchbook />}
+                    {isCompleteGame ? (
+                        <ResultSketchbook isForShareResult={false} />
+                    ) : (
+                        <GameSketchbook />
+                    )}
                 </SketchbookSection>
             </Container>
             <CamAndMicWrapper>

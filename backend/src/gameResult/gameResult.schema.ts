@@ -34,7 +34,7 @@ export class GameResult {
     user: string[];
 
     @Prop()
-    maxRound: string;
+    maxRound: number;
 
     @Prop({ type: [QuizReplyChainSchema], default: [] })
     quizReplyChains: QuizReplyChain[];

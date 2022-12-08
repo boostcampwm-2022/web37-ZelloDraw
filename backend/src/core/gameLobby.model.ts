@@ -20,7 +20,7 @@ export class GameLobby implements Lobby, Game {
     isPlaying: boolean;
 
     constructor(user: User) {
-        this.id = `${user.socketId}${new Date().getTime()}`;
+        this.id = this.createId(user.socketId);
         this.host = user;
         this.users = [];
         this.maxRound = 0;
@@ -59,8 +59,16 @@ export class GameLobby implements Lobby, Game {
         return this.host;
     }
 
+    getMaxRound() {
+        return this.maxRound;
+    }
+
     getRoundLimitTime(): number {
         return this.roundLimitTime;
+    }
+
+    createId(hostId: string): string {
+        return `${hostId}${new Date().getTime()}`;
     }
 
     joinLobby(user: User) {
@@ -88,7 +96,9 @@ export class GameLobby implements Lobby, Game {
 
     // TODO: 게임 시작시, 혹은 게임 종료 시 프로퍼티 초기화 로직 필요.
     startGame() {
+        this.curRound = 0;
         this.maxRound = this.users.length - 1;
+        this.curRound = 0;
         this.isPlaying = true;
         this.roundType = 'ANSWER';
         this.roundLimitTime = 60;
@@ -105,11 +115,6 @@ export class GameLobby implements Lobby, Game {
     }
 
     quitGame() {
-        this.maxRound = 0;
-        this.curRound = 0;
-        this.roundType = 'ANSWER';
-        this.roundLimitTime = 0;
-        this.quizReplyChains = [];
         this.isPlaying = false;
     }
 

@@ -5,6 +5,7 @@ import Main from '@pages/Main';
 import Lobby from '@pages/Lobby';
 import Game from '@pages/Game';
 import ProtectRoute from '@components/route/ProtectRoute';
+import { ShareResult } from '@pages/ShareResult';
 
 function App() {
     return (
@@ -27,6 +28,7 @@ function App() {
                         </ProtectRoute>
                     }
                 />
+                <Route path='/share-result/:id' element={<ShareResult />} />
                 <Route path='/*' element={<Navigate to='/' replace={true} />} />
             </Routes>
         </RecoilRoot>

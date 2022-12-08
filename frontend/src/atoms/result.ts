@@ -8,6 +8,11 @@ export const gameResultState = atom<Array<Array<PartialWithoutMethods<QuizReply>
     default: undefined,
 });
 
+export const gameResultIdState = atom<string>({
+    key: 'gameResultIdState',
+    default: undefined,
+});
+
 export const maxSketchbookState = selector({
     key: 'maxSketchbookState',
     get: ({ get }) => {
