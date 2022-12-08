@@ -31,18 +31,35 @@ function useLocalStream() {
             setLocalDevices({ audio: hasMic, video: hasCam });
             setUserCam(hasCam);
             setUserMic(hasMic);
-            if (!hasCam && !hasMic) alert(MediaErrorType.NotFoundError);
-            else void getSelfMedia({ video: hasCam, audio: hasMic });
+            // if (!hasCam && !hasMic) alert(MediaErrorType.NotFoundError);
+            // else
+            void getSelfMedia({ video: hasCam, audio: hasMic });
         });
     };
 
     const getSelfMedia = useCallback(async (constraints: ConstraintsType) => {
         try {
-            const stream = await navigator.mediaDevices.getUserMedia(constraints);
-            streamRef.current = stream;
+            const permissionName = 'camera' as PermissionName;
+            void navigator.permissions.query({ name: permissionName }).then((permission) => {
+                if (permission.state === 'granted') {
+                    // OK - Access has been granted to the microphone
+                    void navigator.mediaDevices.getUserMedia(constraints).then((stream) => {
+                        streamRef.current = stream;
 
-            setStream(stream);
-            setSelfStreamRef(streamRef);
+                        setStream(stream);
+                        setSelfStreamRef(streamRef);
+                    });
+                } else if (permission.state === 'denied') {
+                    // KO - Access has been denied. Microphone can't be used
+                } else {
+                    // Permission should be asked
+                    const fakeStream = new MediaStream();
+
+                    streamRef.current = fakeStream;
+                    setStream(fakeStream);
+                    setSelfStreamRef(streamRef);
+                }
+            });
         } catch (err: any) {
             if (err.message.includes(NOT_SUPPORTED_MESSAGE)) {
                 alert(NOT_SUPPORT_USER_MESSAGE);

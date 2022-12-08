@@ -52,7 +52,10 @@ function Lobby() {
                 payload,
                 (res: JoinLobbyResponse) => {
                     res.forEach((userInRoom) => {
-                        void createOffers(userInRoom);
+                        if (userInRoom.userName !== user.name) {
+                            setUserStreamList([...userStreamList, userInRoom]);
+                            void createOffers(userInRoom);
+                        }
                     });
                 },
                 (err: SocketException) => {
@@ -76,9 +79,9 @@ function Lobby() {
     }, []);
 
     useEffect(() => {
-        // NetworkService.on('join-lobby', (user: JoinLobbyReEmitRequest) => {
-        //
-        // });
+        NetworkService.on('join-lobby', (user: JoinLobbyReEmitRequest) => {
+            setUserStreamList([...userStreamList, user]);
+        });
         NetworkService.on('update-user-stream', (payload) => {
             setUserStreamList((prev) =>
                 prev.map((user) => {

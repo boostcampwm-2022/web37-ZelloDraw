@@ -2,13 +2,13 @@ import { useEffect, useRef, useCallback } from 'react';
 import { networkServiceInstance as NetworkService } from '../services/socketService';
 import { userStreamRefState } from '@atoms/user';
 import { useRecoilValue, useRecoilState } from 'recoil';
-import { WebRTCUser, userStreamListState } from '@atoms/game';
+import { WebRTCUser, StreamListType, streamListState } from '@atoms/game';
 import { RTCOfferOptions } from '@utils/constants';
 
 function useWebRTC() {
     const pcsRef = useRef<{ [socketId: string]: RTCPeerConnection }>({});
     const selfStreamRef = useRecoilValue(userStreamRefState);
-    const [userStreamList, setUserStreamList] = useRecoilState<WebRTCUser[]>(userStreamListState);
+    const [streamList, setStreamList] = useRecoilState<StreamListType>(streamListState);
 
     const createPeerConnection = useCallback(
         async (
@@ -43,17 +43,18 @@ function useWebRTC() {
                     };
 
                     pc.ontrack = (e) => {
-                        setUserStreamList((prevList) =>
-                            prevList
-                                .filter((user) => user.sid !== peerSocketId)
-                                .concat({
-                                    sid: peerSocketId,
-                                    userName: peerName,
-                                    stream: e.streams[0],
-                                    audio,
-                                    video,
-                                }),
-                        );
+                        setStreamList({ ...streamList, peerSocketId: e.streams[0] });
+                        // setUserStreamList((prevList) =>
+                        //     prevList
+                        //         .filter((user) => user.sid !== peerSocketId)
+                        //         .concat({
+                        //             sid: peerSocketId,
+                        //             userName: peerName,
+                        //             stream: e.streams[0],
+                        //             audio,
+                        //             video,
+                        //         }),
+                        // );
                     };
 
                     if (!selfStreamRef?.current) return;
@@ -69,7 +70,7 @@ function useWebRTC() {
             });
             return res;
         },
-        [],
+        [streamList],
     );
 
     const createOffers = async (user: WebRTCUser) => {
@@ -77,6 +78,7 @@ function useWebRTC() {
         if (!pc) return;
         pcsRef.current = { ...pcsRef.current, [user.sid]: pc };
         try {
+            pc.getTransceivers().forEach((t: { direction: string }) => (t.direction = 'recvonly'));
             const localSdp = await pc.createOffer(RTCOfferOptions);
             await pc.setLocalDescription(new RTCSessionDescription(localSdp));
             NetworkService.emit('webrtc-offer', {
@@ -138,12 +140,12 @@ function useWebRTC() {
             NetworkService.off('webrtc-offer');
             NetworkService.off('webrtc-answer');
             NetworkService.off('webrtc-ice');
-            userStreamList.forEach((user) => {
-                if (!pcsRef.current[user.sid]) return;
-                pcsRef.current[user.sid].close();
-                // eslint-disable-next-line @typescript-eslint/no-dynamic-delete
-                delete pcsRef.current[user.sid];
-            });
+            // streamList.forEach((user) => {
+            //     if (!pcsRef.current[user.sid]) return;
+            //     pcsRef.current[user.sid].close();
+            //     // eslint-disable-next-line @typescript-eslint/no-dynamic-delete
+            //     delete pcsRef.current[user.sid];
+            // });
         };
     }, []);
 

@@ -26,6 +26,15 @@ export const userStreamListState = atom<WebRTCUser[]>({
     default: [],
 });
 
+export interface StreamListType {
+    [key: string]: MediaStream;
+}
+
+export const streamListState = atom<StreamListType>({
+    key: 'streamListState',
+    default: {},
+});
+
 export const userListLengthState = selector({
     key: 'userListLengthState',
     get: ({ get }) => {

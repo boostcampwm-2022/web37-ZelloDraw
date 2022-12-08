@@ -5,7 +5,7 @@ import InviteButton from '@components/InviteButton';
 import EmptyVideoCall from '@components/EmptyVideoCall';
 import VideoCallUser from '@components/VideoCallUser';
 import { useRecoilValue } from 'recoil';
-import { userStreamListState, WebRTCUser } from '@atoms/game';
+import { streamListState, userStreamListState, WebRTCUser } from '@atoms/game';
 import { userCamState, userMicState, userState, userStreamState } from '@atoms/user';
 
 function UserList() {
@@ -14,6 +14,7 @@ function UserList() {
     const userStreamList = useRecoilValue(userStreamListState);
     const currentUser = useRecoilValue(userState);
     const selfStream = useRecoilValue(userStreamState);
+    const streamList = useRecoilValue(streamListState);
 
     return (
         <Card>
@@ -33,15 +34,18 @@ function UserList() {
                         audio={userMic}
                         video={userCam}
                     />
-                    {userStreamList.map((user: WebRTCUser, idx: number) => (
-                        <VideoCallUser
-                            key={idx}
-                            userName={user.userName}
-                            stream={user.stream}
-                            audio={user.audio}
-                            video={user.video}
-                        />
-                    ))}
+                    {userStreamList.map(
+                        (user: WebRTCUser, idx: number) =>
+                            streamList[user.sid] && (
+                                <VideoCallUser
+                                    key={idx}
+                                    userName={user.userName}
+                                    stream={streamList[user.sid]}
+                                    audio={user.audio}
+                                    video={user.video}
+                                />
+                            ),
+                    )}
                     {new Array(7 - userStreamList.length)
                         .fill('empty')
                         .map((item: string, idx: number) => (
