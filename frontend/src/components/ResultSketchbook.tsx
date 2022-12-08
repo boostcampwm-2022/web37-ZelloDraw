@@ -29,7 +29,7 @@ import { networkServiceInstance as NetworkService } from '@services/socketServic
 import useMovePage from '@hooks/useMovePage';
 import { lobbyIdState } from '@atoms/game';
 
-function ResultSketchbook() {
+function ResultSketchbook(props: { isForShareResult: boolean }) {
     const [setPage] = useMovePage();
     const lobbyId = useRecoilValue(lobbyIdState);
     const { maxPageNum, maxBookNum } = useRecoilValue(maxSketchbookState);
@@ -44,7 +44,9 @@ function ResultSketchbook() {
     const canOneMoreGame = useRecoilValue(canOneMoreGameState);
 
     const { checkIsNotGuidePage } = useCheckGuidePage();
-    const { addSketchbookPage, subtractSketchbookPage, changeSketchbook } = useResultSketchbook();
+    const { addSketchbookPage, subtractSketchbookPage, changeSketchbook } = useResultSketchbook(
+        props.isForShareResult,
+    );
 
     useEffect(() => {
         NetworkService.on('back-to-lobby', () => {
@@ -62,7 +64,7 @@ function ResultSketchbook() {
                 center={
                     <>
                         <QuizResultContent />
-                        <ResultGuide />
+                        {!props.isForShareResult && <ResultGuide />}
                     </>
                 }
                 right={
@@ -107,7 +109,7 @@ function ResultSketchbook() {
                         {isHost && currentBookIdx !== maxBookNum && (
                             <RightArrowIcon onClick={() => changeSketchbook(1)} />
                         )}
-                        {canOneMoreGame && isHost && (
+                        {!props.isForShareResult && canOneMoreGame && isHost && (
                             <OneMoreButtonWrapper onClick={emitOneMoreGame}>
                                 <PrimaryButton topText='ONE MORE' bottomText='한판 더 하기' />
                             </OneMoreButtonWrapper>

@@ -49,7 +49,11 @@ function Game() {
             <Container>
                 <GameUsers />
                 <SketchbookSection>
-                    {isCompleteGame ? <ResultSketchbook /> : <GameSketchbook />}
+                    {isCompleteGame ? (
+                        <ResultSketchbook isForShareResult={false} />
+                    ) : (
+                        <GameSketchbook />
+                    )}
                 </SketchbookSection>
             </Container>
             <CamAndMicWrapper>
