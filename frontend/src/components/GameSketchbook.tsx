@@ -47,7 +47,7 @@ function GameSketchbook() {
                                     strokeColor={'blackT1'}
                                 />
                             ) : (
-                                <div></div>
+                                <div />
                             )}
                         </RoundInfo>
                         <Timer />

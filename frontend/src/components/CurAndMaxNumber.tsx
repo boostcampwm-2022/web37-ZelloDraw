@@ -22,7 +22,6 @@ const CurAndMax = styled.div<{ gradient: string; stroke: string }>`
     background: ${(props) => props.theme.gradation[props.gradient]};
     ${({ theme }) => theme.layout.gradientTypo}
     -webkit-text-stroke: 1px ${(props) => props.theme.color[props.stroke]};
-    text-stroke: 1px ${(props) => props.theme.color[props.stroke]};
     font-family: 'Sniglet', cursive;
     font-weight: 800;
     font-size: 1.75rem;

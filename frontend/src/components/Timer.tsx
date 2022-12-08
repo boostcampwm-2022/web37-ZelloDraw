@@ -28,8 +28,8 @@ function Timer() {
     return (
         <Container>
             <ProgressBar>
-                <Bar></Bar>
-                <Progress progress={progress} isTimeOver={isTimeOver}></Progress>
+                <Bar />
+                <Progress progress={progress} isTimeOver={isTimeOver} />
             </ProgressBar>
             <TimerIcon />
         </Container>
