@@ -24,7 +24,7 @@ function VideoCallUser({ userName, stream, audio, video }: VideoCallProps) {
 
     return (
         <Container>
-            {video ? (
+            {video && stream ? (
                 <>
                     <Video ref={videoRef} autoPlay playsInline></Video>
                     <CameraOnUserName>
