@@ -3,7 +3,7 @@ import DrawingTools from '@components/DrawingTools';
 import QuizReplySection from '@components/QuizReplySection';
 import useCanvas from '@hooks/useCanvas';
 import usePrevQuizReply from '@hooks/usePrevQuizReply';
-import { useRecoilValue } from 'recoil';
+import { useRecoilState, useRecoilValue } from 'recoil';
 import {
     isQuizTypeDrawState,
     quizSubmitState,
@@ -14,15 +14,20 @@ import {
 import styled from 'styled-components';
 import CurAndMaxNumber from '@components/CurAndMaxNumber';
 import Timer from '@components/Timer';
+import { useEffect } from 'react';
 
 function GameSketchbook() {
     const { canvasRef, ...restProps } = useCanvas();
     const { renderPrevUserQuizReply } = usePrevQuizReply();
     const isDraw = useRecoilValue(isQuizTypeDrawState);
     const { curRound, maxRound } = useRecoilValue(roundNumberState);
-    const submittedCount = useRecoilValue(submittedQuizReplyCountState);
+    const [submittedCount, setSubmittedCount] = useRecoilState(submittedQuizReplyCountState);
     const userListLength = useRecoilValue(userListLengthState);
     const quizSubmitted = useRecoilValue(quizSubmitState);
+
+    useEffect(() => {
+        setSubmittedCount(0);
+    }, [curRound]);
 
     return (
         <>
