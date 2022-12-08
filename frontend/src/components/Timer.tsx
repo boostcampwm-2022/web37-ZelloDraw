@@ -28,8 +28,8 @@ function Timer() {
     return (
         <Container>
             <ProgressBar>
-                <Bar></Bar>
-                <Progress progress={progress} isTimeOver={isTimeOver}></Progress>
+                <Bar />
+                <Progress progress={progress} isTimeOver={isTimeOver} />
             </ProgressBar>
             <TimerIcon />
         </Container>
@@ -40,7 +40,6 @@ export default Timer;
 
 const Container = styled(Center)`
     flex-direction: column;
-    margin-left: 32px;
 `;
 
 const ProgressBar = styled.div`

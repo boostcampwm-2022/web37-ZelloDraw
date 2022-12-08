@@ -35,7 +35,7 @@ export const userListLengthState = selector({
     key: 'userListLengthState',
     get: ({ get }) => {
         const userList = get(userListState);
-        return userList.length;
+        return userList.length + 1;
     },
 });
 
