@@ -1,18 +1,22 @@
-import { userCamState, userMicState, ConstraintsType, localDeviceState } from '@atoms/user';
-import { useSetRecoilState } from 'recoil';
+import { userCamState, userMicState, localDeviceState } from '@atoms/user';
+import { useSetRecoilState, useRecoilState } from 'recoil';
 
 function useSetDeviceState() {
     const setUserCam = useSetRecoilState<boolean>(userCamState);
     const setUserMic = useSetRecoilState<boolean>(userMicState);
-    const setLocalDevices = useSetRecoilState(localDeviceState);
+    const [localDevices, setLocalDevices] = useRecoilState(localDeviceState);
 
-    const setDeviceInfo = ({ audio, video }: ConstraintsType) => {
-        setLocalDevices({ audio, video });
-        setUserCam(audio);
-        setUserMic(video);
+    const setMicDeviceInfo = (audio: boolean) => {
+        setLocalDevices({ ...localDevices, audio });
+        setUserMic(audio);
     };
 
-    return setDeviceInfo;
+    const setCamDeviceInfo = (video: boolean) => {
+        setLocalDevices({ ...localDevices, video });
+        setUserCam(video);
+    };
+
+    return { setMicDeviceInfo, setCamDeviceInfo };
 }
 
 export default useSetDeviceState;
