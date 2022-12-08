@@ -15,6 +15,8 @@ import { networkServiceInstance as NetworkService } from '../services/socketServ
 import { JoinLobbyReEmitRequest } from '@backend/core/user.dto';
 import { userState } from '@atoms/user';
 import useBeforeReload from '@hooks/useBeforeReload';
+import CountDown from '@components/CountDown';
+import { AnimatePresence } from 'framer-motion';
 
 function Game() {
     const [user, setUser] = useRecoilState(userState);
@@ -22,8 +24,12 @@ function Game() {
     const setUserStreamList = useSetRecoilState(userStreamListState);
     const setSubmittedQuizReplyCount = useSetRecoilState(submittedQuizReplyCountState);
     const [isCompleteGame, setIsCompleteGame] = useState(false);
+    const [isStarted, setIsStarted] = useState(false);
     useBeforeReload();
 
+    useEffect(() => {
+        setTimeout(() => setIsStarted(true), 2500);
+    }, []);
     useEffect(() => {
         onCountSubmittedQuiz(setSubmittedQuizReplyCount);
         onCompleteGame(setGameResult, setIsCompleteGame);
@@ -42,10 +48,11 @@ function Game() {
             NetworkService.off('leave-game');
             NetworkService.off('succeed-host');
         };
-    }, []);
+    }, [isStarted]);
 
     return (
         <>
+            <AnimatePresence>{!isStarted && <CountDown />}</AnimatePresence>
             <Container>
                 <GameUsers />
                 <SketchbookSection>
