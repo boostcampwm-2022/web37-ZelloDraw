@@ -10,7 +10,7 @@ export class GameResultService {
         @InjectModel(GameResult.name) private readonly gameResultModel: Model<GameResultDocument>,
     ) {}
 
-    async create(gameLobby: GameLobby) {
+    async create(gameLobby: GameLobby): Promise<string> {
         const gameResultDto: GameResult = {
             host: gameLobby.getHost().name,
             user: gameLobby.getUsers().map((user) => user.name),
@@ -28,6 +28,14 @@ export class GameResultService {
             }),
         };
         const gameResult = new this.gameResultModel(gameResultDto);
-        await gameResult.save();
+        return await new Promise((resolve) => {
+            gameResult.save((err, res) => {
+                resolve(res.id);
+            });
+        });
+    }
+
+    async findById(id: string): Promise<GameResult> {
+        return await this.gameResultModel.findById(id).exec();
     }
 }
