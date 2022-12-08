@@ -2,6 +2,7 @@ import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
 import { GameResult, GameResultSchema } from './gameResult.schema';
 import { GameResultService } from './gameResult.service';
+import { GameResultController } from './gameResult.controller';
 
 @Module({
     imports: [MongooseModule.forFeature([{ name: GameResult.name, schema: GameResultSchema }])],
@@ -9,7 +10,7 @@ import { GameResultService } from './gameResult.service';
         GameResultService,
         MongooseModule.forFeature([{ name: GameResult.name, schema: GameResultSchema }]),
     ],
-    controllers: [],
+    controllers: [GameResultController],
     providers: [GameResultService],
 })
 export class GameResultModule {}
