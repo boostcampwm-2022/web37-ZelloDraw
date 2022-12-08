@@ -13,7 +13,7 @@ import useTimer from '@hooks/useTimer';
 import { GUIDE_PAGE_IDX } from '@utils/constants';
 import { emitWatchResultSketchBook, onWatchResultSketchBook } from '@game/NetworkServiceUtils';
 
-function useResultSketchbook() {
+function useResultSketchbook(controlOnLocal: boolean) {
     const { isHost } = useRecoilValue(userState);
     const [isStarted, setIsStarted] = useRecoilState(isStartedState);
     const [isWatched, setIsWatched] = useRecoilState(isWatchedBookState);
@@ -31,10 +31,14 @@ function useResultSketchbook() {
     });
 
     useEffect(() => {
-        setTimeout(() => setIsStarted(false), 3000);
+        if (!controlOnLocal) {
+            setTimeout(() => setIsStarted(false), 3000);
+        } else {
+            setIsStarted(false);
+        }
         onWatchResultSketchBook(setCurrentBookIdx, setCurrentPageIdx, setIsWatched);
         // 가장 처음 나타나는 스케치북도 봤다고 서버에게 알린다.
-        if (isHost) emitWatchResultSketchBook(0);
+        if (isHost && !controlOnLocal) emitWatchResultSketchBook(0);
     }, []);
 
     useEffect(() => {
@@ -76,7 +80,13 @@ function useResultSketchbook() {
 
     function changeSketchbook(nextNum: number) {
         const nextBookIdx = currentBookIdx + nextNum;
-        emitWatchResultSketchBook(nextBookIdx);
+        if (controlOnLocal) {
+            setCurrentBookIdx(nextBookIdx);
+            setCurrentPageIdx(0);
+            setIsWatched(true);
+        } else {
+            emitWatchResultSketchBook(nextBookIdx);
+        }
     }
 
     return { addSketchbookPage, subtractSketchbookPage, changeSketchbook };
