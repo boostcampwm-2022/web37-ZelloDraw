@@ -88,17 +88,22 @@ const Tool = styled.button<{ isSelected: boolean }>`
     display: flex;
     justify-content: center;
     align-items: center;
-    background-color: ${({ theme }) => theme.color.whiteT1};
+    background-color: ${(props) =>
+        props.isSelected ? props.theme.color.whiteT2 : props.theme.color.whiteT1};
     border-radius: 10px;
-    border: 1px solid
-        ${(props) => (props.isSelected ? props.theme.color.primaryDark : props.theme.color.brown)};
+    border: ${(props) =>
+        props.isSelected
+            ? `2px solid ${String(props.theme.color.primaryDark)}`
+            : `1px solid ${String(props.theme.color.brown)}`};
     box-shadow: ${({ theme }) => theme.shadow.btn};
+
     &:first-of-type {
         //펜 아이콘 위치 수정
         img {
             transform: translateY(2px);
         }
     }
+
     &:nth-of-type(2) {
         //페인트 아이콘 위치 수정
         img {
