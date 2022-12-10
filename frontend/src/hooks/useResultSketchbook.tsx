@@ -1,12 +1,14 @@
 import { useEffect } from 'react';
 import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
 import {
+    bookDirectionState,
     canOneMoreGameState,
     currentBookIdxState,
     currentPageIdxState,
     isStartedState,
     isWatchedBookState,
     maxSketchbookState,
+    pageDirectionState,
 } from '@atoms/result';
 import { userState } from '@atoms/user';
 import useTimer from '@hooks/useTimer';
@@ -21,6 +23,8 @@ function useResultSketchbook(controlOnLocal: boolean) {
     const { maxPageNum, maxBookNum } = useRecoilValue(maxSketchbookState);
     const [currentBookIdx, setCurrentBookIdx] = useRecoilState(currentBookIdxState);
     const [currentPageIdx, setCurrentPageIdx] = useRecoilState(currentPageIdxState);
+    const setBookDirection = useSetRecoilState(bookDirectionState);
+    const setPageDirection = useSetRecoilState(pageDirectionState);
 
     const setCanOneMoreGame = useSetRecoilState(canOneMoreGameState);
     const aSketchBookLimitTime = maxBookNum + 1;
@@ -64,12 +68,14 @@ function useResultSketchbook(controlOnLocal: boolean) {
         // 유저가 페이지를 조작하는 상태에서 마지막 페이지가 왔을 경우
         if (currentPageIdx === maxPageNum && isWatched) return;
 
+        setPageDirection(1);
         goToNextPage(1);
     }
 
     function subtractSketchbookPage() {
         if (currentPageIdx === 0) return;
 
+        setPageDirection(-1);
         goToNextPage(-1);
     }
 
@@ -78,8 +84,10 @@ function useResultSketchbook(controlOnLocal: boolean) {
         setCurrentPageIdx(NextPageNumber);
     }
 
-    function changeSketchbook(nextNum: number) {
+    function changeSketchbook(nextNum: 1 | -1) {
+        setBookDirection(nextNum);
         const nextBookIdx = currentBookIdx + nextNum;
+
         if (controlOnLocal) {
             setCurrentBookIdx(nextBookIdx);
             setCurrentPageIdx(0);
