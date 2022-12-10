@@ -87,6 +87,19 @@ export const roundNumberState = selector({
     },
 });
 
+export const roundLimitTimeState = selector({
+    key: 'roundLimitTimeState',
+    get: ({ get }) => {
+        const roundInfo = get(roundInfoState);
+
+        if (roundInfo === undefined) {
+            return 60;
+        }
+
+        return roundInfo.limitTime;
+    },
+});
+
 export const quizSubmitState = atom<boolean>({
     key: 'quizSubmitState',
     default: false,
