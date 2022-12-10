@@ -62,7 +62,7 @@ function InfoCard({ onHandleEnterLobby }: { onHandleEnterLobby: () => void }) {
 export default InfoCard;
 
 const CardInner = styled.div`
-    padding: 40px 0px 44px;
+    padding: 40px 0 44px;
     position: relative;
 `;
 
