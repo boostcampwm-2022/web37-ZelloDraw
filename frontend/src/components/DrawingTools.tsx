@@ -38,7 +38,7 @@ function DrawingTools({ restProps }: DrawingToolsType) {
                         onClick={() => onChangeTool(tool.type)}
                         isSelected={selectedTool === tool.type}
                     >
-                        <img src={tool.element} onClick={tool.onclick} />
+                        <img src={tool.element} onClick={tool.onclick} alt={`${tool.type}`} />
                     </Tool>
                 ))}
             </Tools>
@@ -130,7 +130,7 @@ const LineWidthPicker = styled.div`
     align-items: center;
     justify-content: center;
     gap: 8px;
-    margin: 16px 0px;
+    margin: 16px 0;
 `;
 
 const LineWidth = styled.div<{ size: string; isSelected: boolean }>`
