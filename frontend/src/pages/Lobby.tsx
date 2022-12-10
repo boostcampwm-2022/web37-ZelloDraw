@@ -65,16 +65,11 @@ function Lobby() {
                 },
             );
         }
-        NetworkService.on('leave-lobby', (user: JoinLobbyReEmitRequest) => {
-            setuserList((prev) =>
-                prev.filter((participant) => participant.userName !== user.userName),
-            );
-        });
+
         NetworkService.on('succeed-host', () => {
             setUser({ ...user, isHost: true });
         });
         return () => {
-            NetworkService.off('leave-lobby');
             NetworkService.off('succeed-host');
         };
     }, []);
@@ -95,9 +90,16 @@ function Lobby() {
                 }),
             );
         });
+        NetworkService.on('leave-lobby', (user: JoinLobbyReEmitRequest) => {
+            setuserList((prev) =>
+                prev.filter((participant) => participant.userName !== user.userName),
+            );
+        });
+
         return () => {
             NetworkService.off('update-user-stream');
             NetworkService.off('join-lobby');
+            NetworkService.off('leave-lobby');
         };
     }, [userList]);
 

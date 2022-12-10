@@ -40,7 +40,7 @@ function useLocalStream() {
         });
 
         if (!hasCam && !hasMic) {
-            alert(MediaErrorType.NotFoundError);
+            // alert(MediaErrorType.NotFoundError);
             setCamDeviceInfo(hasCam);
             setMicDeviceInfo(hasMic);
             getFakeStream();

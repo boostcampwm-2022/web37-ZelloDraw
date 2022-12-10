@@ -31,9 +31,23 @@ function Game() {
     useEffect(() => {
         setTimeout(() => setIsStarted(true), 2500);
     }, []);
+
     useEffect(() => {
         onCountSubmittedQuiz(setSubmittedQuizReplyCount);
         onCompleteGame(setGameResultId, setGameResult, setIsCompleteGame);
+
+        NetworkService.on('update-user-stream', (payload) => {
+            setuserList((prev) =>
+                prev.map((user) => {
+                    const prevUserValue = { ...user };
+                    if (payload.socketId === user.sid) {
+                        prevUserValue.audio = payload.audio;
+                        prevUserValue.video = payload.video;
+                    }
+                    return prevUserValue;
+                }),
+            );
+        });
 
         NetworkService.on('leave-game', (user: JoinLobbyReEmitRequest) => {
             setuserList((prev) =>
@@ -46,6 +60,7 @@ function Game() {
         });
 
         return () => {
+            NetworkService.off('update-user-stream');
             NetworkService.off('leave-game');
             NetworkService.off('succeed-host');
         };
