@@ -57,16 +57,24 @@ export const countDownContainerVariants = {
 
 export const countDownVariants = {
     enter: {
-        opacity: [0, 1],
         scale: 1,
-        x: 0,
+    },
+    animate: {
+        scale: 15,
+        transition: {
+            scale: { duration: 1.7 },
+        },
+    },
+};
+
+export const countDownBgVariants = {
+    enter: {
+        opacity: 0,
     },
     animate: {
         opacity: 1,
-        scale: 15,
         transition: {
             opacity: { duration: 0.5 },
-            scale: { duration: 1.5 },
         },
     },
 };
