@@ -2,21 +2,26 @@ import { ReactComponent as TimerIcon } from '@assets/icons/timer-icon.svg';
 import { useRecoilValue } from 'recoil';
 import styled from 'styled-components';
 import { Center } from '@styles/styled';
-import { roundInfoState } from '@atoms/game';
-import { motion } from 'framer-motion';
+import { roundLimitTimeState, roundNumberState } from '@atoms/game';
+import { AnimatePresence, motion } from 'framer-motion';
 
 function Timer() {
-    const roundInfo = useRecoilValue(roundInfoState);
+    const { curRound } = useRecoilValue(roundNumberState);
+    const limitTime = useRecoilValue(roundLimitTimeState);
 
     return (
         <Container>
             <ProgressBar>
                 <Bar />
-                <Progress
-                    initial={{ height: '100%' }}
-                    animate={{ height: '0%' }}
-                    transition={{ duration: roundInfo?.limitTime || 60 }}
-                />
+                <AnimatePresence>
+                    <Progress
+                        key={curRound}
+                        initial={{ height: '100%' }}
+                        animate={{ height: '0%' }}
+                        exit={{ opacity: 0 }}
+                        transition={{ duration: limitTime }}
+                    />
+                </AnimatePresence>
             </ProgressBar>
             <TimerIcon />
         </Container>
