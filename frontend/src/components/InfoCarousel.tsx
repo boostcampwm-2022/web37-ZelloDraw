@@ -37,7 +37,7 @@ function InfoCarousel() {
         if (nextIndex < 0) nextIndex = carouselSize.current - 1;
         else if (nextIndex >= carouselSize.current) nextIndex = 0;
 
-        setDirection(i * -1);
+        setDirection(i);
         setCurrent(nextIndex);
     };
 
