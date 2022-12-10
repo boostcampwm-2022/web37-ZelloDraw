@@ -1,4 +1,3 @@
-import { canvasLineWidthValues } from './../utils/constants';
 import { useState, useRef, useEffect, useCallback } from 'react';
 import {
     CANVAS_WIDTH,
@@ -7,12 +6,15 @@ import {
     PEN_DEFAULT_COLOR,
     ERASER_COLOR,
     CanvasState,
+    canvasLineWidthValues,
 } from '@utils/constants';
 import { convertHexToRgba, getPixelColor, isSameColor, setPixel } from '@utils/canvas';
-import { useRecoilValue, useSetRecoilState } from 'recoil';
+import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
 import {
+    canClearCanvasState,
     isQuizTypeDrawState,
     quizSubmitState,
+    resetModalOpenState,
     roundNumberState,
     userReplyState,
 } from '@atoms/game';
@@ -30,10 +32,12 @@ function useCanvas() {
 
     const [pos, setPos] = useState<Coordinate | undefined>({ x: 0, y: 0 });
     const [isDrawing, setIsDrawing] = useState<boolean>(false);
+    const [canClearCanvas, setCanClearCanvas] = useRecoilState(canClearCanvasState);
     const quizSubmitted = useRecoilValue(quizSubmitState);
     const { curRound } = useRecoilValue(roundNumberState);
     const isTypeDraw = useRecoilValue(isQuizTypeDrawState);
     const setUserDrawingReply = useSetRecoilState(userReplyState);
+    const setResetModalOpen = useSetRecoilState(resetModalOpenState);
 
     const getCoordinates = (event: MouseEvent): Coordinate | undefined => {
         return { x: event.offsetX, y: event.offsetY };
@@ -90,12 +94,6 @@ function useCanvas() {
         [drawState],
     );
 
-    const clearCanvas = () => {
-        ctxRef.current.clearRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
-        ctxRef.current.fillStyle = ERASER_COLOR;
-        ctxRef.current.fillRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
-    };
-
     const onClickPaint = () => {
         drawState.current = CanvasState.PAINT;
     };
@@ -116,7 +114,21 @@ function useCanvas() {
 
     const onClickReset = () => {
         drawState.current = CanvasState.NONE;
-        clearCanvas();
+        setResetModalOpen(true);
+    };
+
+    useEffect(() => {
+        // 리셋 모달에서 '지울게요' 버튼을 누르면 캔바스가 초기화된다.
+        if (canClearCanvas) {
+            clearCanvas();
+            setCanClearCanvas(false);
+        }
+    }, [canClearCanvas]);
+
+    const clearCanvas = () => {
+        ctxRef.current.clearRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
+        ctxRef.current.fillStyle = ERASER_COLOR;
+        ctxRef.current.fillRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
     };
 
     const onMove = useCallback(
