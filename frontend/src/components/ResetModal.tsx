@@ -2,6 +2,7 @@ import styled from 'styled-components';
 import { Center } from '@styles/styled';
 import { canClearCanvasState, resetModalOpenState } from '@atoms/game';
 import { useSetRecoilState } from 'recoil';
+import { motion } from 'framer-motion';
 
 function ResetModal() {
     const setCanClearCanvas = useSetRecoilState(canClearCanvasState);
@@ -14,7 +15,11 @@ function ResetModal() {
 
     return (
         <Container>
-            <Modal>
+            <Modal
+                initial={{ scale: 0 }}
+                animate={{ scale: 1 }}
+                transition={{ duration: 0.2, damping: 40 }}
+            >
                 <Question>그림을 전부 지울까요?</Question>
                 <AnswerWrapper>
                     <div onClick={() => handleReset(false)}>아니요</div>
@@ -36,7 +41,7 @@ const Container = styled(Center)`
     z-index: 100;
 `;
 
-const Modal = styled(Center)`
+const Modal = styled(motion(Center))`
     flex-direction: column;
     width: 270px;
     height: 180px;
