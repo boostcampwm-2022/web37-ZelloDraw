@@ -1,10 +1,10 @@
-import { ReactNode, useEffect, useState } from 'react';
+import { ReactNode } from 'react';
 import styled from 'styled-components';
 import { Center } from '@styles/styled';
 import { motion, AnimatePresence } from 'framer-motion';
 import { slideVariants } from '@utils/framerMotion';
 import { useRecoilValue } from 'recoil';
-import { currentBookIdxState } from '@atoms/result';
+import { bookDirectionState, currentBookIdxState } from '@atoms/result';
 import SketchbookImg from '@assets/sketchbook.svg';
 import Card from '@components/Card';
 
@@ -16,18 +16,8 @@ interface SketchbookCardType {
 
 function SketchbookCard({ left, center, right }: SketchbookCardType) {
     const currentBookIdx = useRecoilValue(currentBookIdxState);
-    const [lastBookIdx, setLastBookIdx] = useState(0);
-    const [bookDirection, setBookDirection] = useState(1);
+    const bookDirection = useRecoilValue(bookDirectionState);
     const xValue = 600;
-
-    useEffect(() => {
-        if (currentBookIdx > lastBookIdx) {
-            setBookDirection(1);
-        } else {
-            setBookDirection(-1);
-        }
-        setLastBookIdx(currentBookIdx);
-    }, [currentBookIdx]);
 
     return (
         <Card>
