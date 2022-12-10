@@ -4,12 +4,19 @@ import { ReactComponent as LeftArrowIcon } from '@assets/icons/chevron-left-icon
 import { ReactComponent as RightArrowIcon } from '@assets/icons/chevron-right-icon.svg';
 import { motion, AnimatePresence } from 'framer-motion';
 import { slideVariants } from '@utils/framerMotion';
+import { Center } from '@styles/styled';
+import { SetterOrUpdater } from 'recoil';
 
-function InfoCarousel() {
-    const [current, setCurrent] = useState<number>(0);
+function InfoCarousel({
+    current,
+    setCurrent,
+}: {
+    current: number;
+    setCurrent: SetterOrUpdater<number>;
+}) {
     const [direction, setDirection] = useState(1);
-    const carouselSize = useRef(4);
-    const xValue = 439;
+    const carouselSize = useRef(5);
+    const xValue = 440;
 
     const contents: React.ReactNode[] = [
         <>
@@ -18,17 +25,24 @@ function InfoCarousel() {
             <h3>도움말을 읽어보세요.</h3>
         </>,
         <>
-            <h3>게임이 시작되면 각 플레이어는</h3>
-            <h3>랜덤 제시어를 확인할 수 있어요.</h3>
+            <h3>나만의 단어를 만들어봐요!</h3>
+            <h3>게임이 시작하면 다른 사람이 그릴</h3>
+            <h3>단어를 써서 제출해요.</h3>
         </>,
         <>
-            <h3>다른 사람의 제시어를 확인하고</h3>
-            <h3>제시어를 잘 묘사할 수 있는</h3>
-            <h3>독특한 그림을 그려보아요!</h3>
+            <h3>그림을 그려봐요!</h3>
+            <h3>다른 유저가 제출한 독특한 단어를</h3>
+            <h3>그림으로 묘사해요.</h3>
         </>,
         <>
-            <h3>다른 사람의 그림을 보고</h3>
-            <h3>답을 유추해보기도 해요!</h3>
+            <h3>무슨 그림인가요?</h3>
+            <h3>다른 유저가 무엇을 그렸는지</h3>
+            <h3>맞추어봐요.</h3>
+        </>,
+        <>
+            <h3>나만의 단어가 어떻게 변했을까요?</h3>
+            <h3>단어가 여러 유저를 거쳐</h3>
+            <h3>어떻게 바뀌었는지 다같이 봐요.</h3>
         </>,
     ];
 
@@ -44,7 +58,7 @@ function InfoCarousel() {
     return (
         <CarouselContainer>
             <Slide>
-                <LeftArrowIcon className={'arrowIcon'} onClick={() => moveSlide(-1)} />
+                <LeftArrowIcon onClick={() => moveSlide(-1)} />
                 <Window>
                     <AnimatePresence initial={false} custom={{ direction, xValue }}>
                         <SlideInner
@@ -60,7 +74,7 @@ function InfoCarousel() {
                         </SlideInner>
                     </AnimatePresence>
                 </Window>
-                <RightArrowIcon className={'arrowIcon'} onClick={() => moveSlide(1)} />
+                <RightArrowIcon onClick={() => moveSlide(1)} />
             </Slide>
             <DotButtonSet>
                 {contents.map((x, i) => (
@@ -76,17 +90,15 @@ export default InfoCarousel;
 const CarouselContainer = styled.div`
     display: flex;
     flex-direction: column;
-
-    .arrowIcon {
-        width: 18px;
-        height: 26px;
-        margin: 24px;
-        cursor: pointer;
-    }
+    margin-top: 3.5rem;
 `;
 
-const Slide = styled.div`
-    display: flex;
+const Slide = styled(Center)`
+    svg {
+        margin: 0 20px;
+        cursor: pointer;
+        transform: translateY(-12px);
+    }
 `;
 
 const SlideInner = styled(motion.div)`

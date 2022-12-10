@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import Card from '@components/Card';
 import PrimaryButton from '@components/PrimaryButton';
@@ -7,9 +7,12 @@ import { userState } from '@atoms/user';
 import { useRecoilState, useSetRecoilState } from 'recoil';
 import { lobbyIdState } from '@atoms/game';
 import { getParam } from '@utils/common';
+import { AnimatePresence, motion } from 'framer-motion';
+import { opacityVariants } from '@utils/framerMotion';
 
 function InfoCard({ onHandleEnterLobby }: { onHandleEnterLobby: () => void }) {
     const paramIdValue = getParam('id');
+    const [current, setCurrent] = useState<number>(0);
     const [user, setUser] = useRecoilState(userState);
     const setLobbyId = useSetRecoilState(lobbyIdState);
 
@@ -20,12 +23,29 @@ function InfoCard({ onHandleEnterLobby }: { onHandleEnterLobby: () => void }) {
         setLobbyId(paramIdValue);
     }, []);
 
+    const headingContents = [
+        'WELCOME!',
+        'MAKE YOUR WORD',
+        'DRAW THE WORD',
+        'GUESS THE DRAWING',
+        'ENJOY THE RESULTS!',
+    ];
     return (
         <Card>
             <CardInner>
-                <HeadingWelcome>WELCOME!</HeadingWelcome>
+                <AnimatePresence initial={false}>
+                    <Heading
+                        key={current}
+                        initial={'enter'}
+                        animate={'animate'}
+                        exit={'exit'}
+                        variants={opacityVariants}
+                    >
+                        {headingContents[current]}
+                    </Heading>
+                </AnimatePresence>
                 <InfoDiv>
-                    <InfoCarousel />
+                    <InfoCarousel current={current} setCurrent={setCurrent} />
                 </InfoDiv>
                 <ButtonWrapper onClick={onHandleEnterLobby}>
                     {user.isHost ? (
@@ -43,9 +63,11 @@ export default InfoCard;
 
 const CardInner = styled.div`
     padding: 40px 0px 44px;
+    position: relative;
 `;
 
-const HeadingWelcome = styled.h1`
+const Heading = styled(motion.h1)`
+    position: absolute;
     font-family: 'Sniglet', cursive;
     font-style: normal;
     font-weight: 400;
@@ -58,7 +80,7 @@ const HeadingWelcome = styled.h1`
 
     background: ${({ theme }) => theme.gradation.yellowPurple};
     -webkit-background-clip: text;
-    -webkit-text-stroke: 1px transparent;
+    -webkit-text-stroke: 2px transparent;
 `;
 
 const InfoDiv = styled.div`
