@@ -67,7 +67,7 @@ export const countDownVariants = {
     },
 };
 
-export const countDownBgVariants = {
+export const opacityVariants = {
     enter: {
         opacity: 0,
     },
@@ -76,5 +76,8 @@ export const countDownBgVariants = {
         transition: {
             opacity: { duration: 0.5 },
         },
+    },
+    exit: {
+        opacity: 0,
     },
 };
