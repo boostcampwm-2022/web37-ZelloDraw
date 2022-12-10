@@ -114,3 +114,13 @@ export const submittedQuizReplyCountState = atom<number>({
     key: 'submittedQuizReplyCountState',
     default: 0,
 });
+
+export const canClearCanvasState = atom<boolean>({
+    key: 'canClearCanvasState',
+    default: false,
+});
+
+export const resetModalOpenState = atom<boolean>({
+    key: 'resetModalState',
+    default: false,
+});

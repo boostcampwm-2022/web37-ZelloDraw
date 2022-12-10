@@ -2,7 +2,7 @@ import { motion } from 'framer-motion';
 import styled from 'styled-components';
 import { Center } from '@styles/styled';
 import {
-    countDownBgVariants,
+    opacityVariants,
     countDownContainerVariants,
     countDownVariants,
 } from '@utils/framerMotion';
@@ -16,13 +16,13 @@ function CountDown() {
             exit={'exit'}
             transition={{ type: 'spring', staggerChildren: 0.7 }}
         >
-            <BackGround variants={countDownBgVariants}>
+            <BackGround variants={opacityVariants}>
                 <CountDownText variants={countDownVariants}>3</CountDownText>
             </BackGround>
-            <BackGround variants={countDownBgVariants}>
+            <BackGround variants={opacityVariants}>
                 <CountDownText variants={countDownVariants}>2</CountDownText>
             </BackGround>
-            <BackGround variants={countDownBgVariants}>
+            <BackGround variants={opacityVariants}>
                 <CountDownText variants={countDownVariants}>1</CountDownText>
             </BackGround>
         </Container>
