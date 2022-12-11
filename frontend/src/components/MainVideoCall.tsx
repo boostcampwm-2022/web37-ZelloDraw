@@ -45,7 +45,7 @@ const Container = styled.div`
 `;
 
 const Video = styled(VideoProperty)`
-    border-radius: 32px;
+    border-radius: 30px;
 `;
 
 const CameraOffUserName = styled(Center)`
