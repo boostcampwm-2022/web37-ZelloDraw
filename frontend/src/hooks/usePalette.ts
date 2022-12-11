@@ -1,5 +1,5 @@
-import { useState } from 'react';
-import { ToolsType } from '@utils/constants';
+import { useEffect, useState } from 'react';
+import { PEN_DEFAULT_COLOR, ToolsType } from '@utils/constants';
 import pen from '@assets/icons/pen-icon.svg';
 import paint from '@assets/icons/paint-icon.svg';
 import eraser from '@assets/icons/eraser-icon.svg';
@@ -37,6 +37,12 @@ function usePalette({
     const [selectedColor, setSelectedColor] = useRecoilState(canvasSelectedColorState);
     const [selectedTool, setSelectedTool] = useState<ToolsType>(ToolsType.PEN);
     const [selectedLineWidth, setSelectedLineWidth] = useState<number>(1);
+
+    useEffect(() => {
+        // 도구 초기화
+        onClickColor(PEN_DEFAULT_COLOR);
+        onClickLineWidth(1);
+    }, []);
 
     const isSelectedTool = (type: ToolsType) => selectedTool === type;
 
