@@ -40,12 +40,12 @@ export class CoreGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
         private readonly gameResultService: GameResultService,
     ) {}
 
-    handleConnection(client: any) {
-        this.userService.createUser(client.id, 'noname');
+    async handleConnection(client: any) {
+        await this.userService.createUser(client.id, 'noname');
     }
 
     async handleDisconnect(@ConnectedSocket() client: Socket) {
-        const user = this.userService.getUser(client.id);
+        const user = await this.userService.getUser(client.id);
 
         if (user.lobbyId === undefined) return;
         const gameLobby = await this.gameService.getGame(user.lobbyId);
@@ -54,7 +54,7 @@ export class CoreGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
         } else {
             await this.handleLeaveLobby(client);
         }
-        this.userService.deleteUser(client.id);
+        await this.userService.deleteUser(client.id);
     }
 
     afterInit(server: any) {
@@ -63,14 +63,14 @@ export class CoreGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 
     @SubscribeMessage('update-user-name')
     async handleCreateUser(@ConnectedSocket() client: Socket, @MessageBody() userName: string) {
-        return this.userService.updateUser(client.id, { name: userName });
+        return await this.userService.updateUser(client.id, { name: userName });
     }
 
     @SubscribeMessage('create-lobby')
     // TODO: return type WsResponse 로 바꿔야함. + 학습 필요.
     async handleCreateLobby(@ConnectedSocket() client: Socket) {
         // TODO: socket connection 라이프 사이클에 user 생성, 삭제 로직 할당
-        const user = this.userService.getUser(client.id);
+        const user = await this.userService.getUser(client.id);
         const lobbyId = await this.lobbyService.createLobby(user);
         await client.join(lobbyId);
         return lobbyId;
@@ -83,7 +83,7 @@ export class CoreGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
     ) {
         try {
             const lobby = await this.lobbyService.getLobby(body.lobbyId);
-            const user = this.userService.getUser(client.id);
+            const user = await this.userService.getUser(client.id);
 
             const users: User[] = await this.lobbyService.joinLobby(user, lobby.id);
             await client.join(body.lobbyId);
@@ -109,7 +109,7 @@ export class CoreGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 
     @SubscribeMessage('leave-lobby')
     async handleLeaveLobby(@ConnectedSocket() client: Socket) {
-        const user = this.userService.getUser(client.id);
+        const user = await this.userService.getUser(client.id);
         if (user.lobbyId === undefined) return;
 
         await this.handleHostLeave(client, user);
@@ -124,7 +124,7 @@ export class CoreGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 
     @SubscribeMessage('leave-game')
     async handleLeaveGame(@ConnectedSocket() client: Socket) {
-        const user = this.userService.getUser(client.id);
+        const user = await this.userService.getUser(client.id);
         if (user.lobbyId === undefined) return;
 
         await this.handleHostLeave(client, user);
@@ -146,7 +146,7 @@ export class CoreGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 
     @SubscribeMessage('start-game')
     async handleStartGame(@ConnectedSocket() client: Socket, @MessageBody() lobbyId: string) {
-        const user = this.userService.getUser(client.id);
+        const user = await this.userService.getUser(client.id);
         if (!(await this.lobbyService.isLobbyHost(user, lobbyId)))
             throw new Error('Only host can start game');
 
@@ -161,7 +161,7 @@ export class CoreGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
         @ConnectedSocket() client: Socket,
         @MessageBody() request: SubmitQuizReplyRequest,
     ) {
-        const user = this.userService.getUser(client.id);
+        const user = await this.userService.getUser(client.id);
         // TODO: 시간 초과 시 라운드 넘어가는 로직 추가 필요
         await this.gameService.submitQuizReply(user.lobbyId, user, request.quizReply);
         const repliesCount = await this.gameService.getSubmittedQuizRepliesCount(user.lobbyId);
@@ -190,13 +190,12 @@ export class CoreGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 
     @SubscribeMessage('webrtc-offer')
     async handleOffer(@ConnectedSocket() client: Socket, @MessageBody() body) {
-        const user = this.userService.getUser(client.id);
         client.broadcast.to(body.offerReceiveID).emit('webrtc-offer', body.sdp, client.id);
     }
 
     @SubscribeMessage('webrtc-answer')
     async handleAnswer(@ConnectedSocket() client: Socket, @MessageBody() body) {
-        const user = this.userService.getUser(client.id);
+        const user = await this.userService.getUser(client.id);
         client.broadcast
             .to(body.answerReceiveID)
             .emit('webrtc-answer', body.sdp, client.id, user.name);
@@ -204,7 +203,7 @@ export class CoreGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 
     @SubscribeMessage('webrtc-ice')
     async handleIce(@ConnectedSocket() client: Socket, @MessageBody() body) {
-        const user = this.userService.getUser(client.id);
+        const user = await this.userService.getUser(client.id);
         client.broadcast
             .to(body.candidateReceiveID)
             .emit('webrtc-ice', body.ice, client.id, user.name);
@@ -212,8 +211,8 @@ export class CoreGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 
     @SubscribeMessage('update-user-stream')
     async handleChangeStream(@ConnectedSocket() client: Socket, @MessageBody() body) {
-        const user = this.userService.getUser(client.id);
-        this.userService.updateUser(client.id, { video: body.video, audio: body.audio });
+        const user = await this.userService.getUser(client.id);
+        await this.userService.updateUser(client.id, { video: body.video, audio: body.audio });
         const payload = {
             socketId: user.socketId,
             video: body.video,
@@ -227,7 +226,7 @@ export class CoreGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
         @ConnectedSocket() client: Socket,
         @MessageBody() payload: WatchResultSketchbookRequest,
     ) {
-        const user = this.userService.getUser(client.id);
+        const user = await this.userService.getUser(client.id);
         const isWatched: boolean = await this.gameService.getIsWatchedQuizReplyChain(
             user.lobbyId,
             payload.bookIdx,
@@ -238,7 +237,7 @@ export class CoreGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 
     @SubscribeMessage('back-to-lobby')
     async onPlayNextGame(@ConnectedSocket() client: Socket) {
-        const user = this.userService.getUser(client.id);
+        const user = await this.userService.getUser(client.id);
         await this.gameService.quitGame(user.lobbyId);
 
         this.emitBackToLobby(client);
