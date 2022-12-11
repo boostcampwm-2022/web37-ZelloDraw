@@ -18,7 +18,7 @@ function MainVideoCall({ userName, stream, video }: VideoCallProps) {
 
     return (
         <Container>
-            {video ? (
+            {video && stream ? (
                 <Video ref={videoRef} autoPlay playsInline></Video>
             ) : (
                 <>
