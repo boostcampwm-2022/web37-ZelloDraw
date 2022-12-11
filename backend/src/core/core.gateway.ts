@@ -113,7 +113,7 @@ export class CoreGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
         if (user.lobbyId === undefined) return;
 
         await this.handleHostLeave(client, user);
-        // const leftUsers = await this.lobbyService.leaveLobby(user, user.lobbyId);
+        await this.lobbyService.leaveLobby(user, user.lobbyId);
         const payload = {
             userName: user.name,
             sid: user.socketId,
