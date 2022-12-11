@@ -30,7 +30,7 @@ export class LobbyService {
     async leaveLobby(user: User, lobbyId: string): Promise<void> {
         const lobby = await this.getLobby(lobbyId);
         lobby.leaveLobby(user);
-        if (lobby.users.length === 0) {
+        if (lobby.users.length <= 0) {
             await this.gameLobbyRepository.delete(lobby);
         } else {
             await this.gameLobbyRepository.save(lobby);
