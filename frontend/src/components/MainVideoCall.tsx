@@ -23,9 +23,9 @@ function MainVideoCall({ userName, stream, video }: VideoCallProps) {
             ) : (
                 <>
                     <CameraOffUserName>
-                        <span>&#123;</span>
+                        <span>{'{'}</span>
                         <span>{userName}</span>
-                        <span>&#125;</span>
+                        <span>{'}'}</span>
                     </CameraOffUserName>
                 </>
             )}
@@ -45,7 +45,7 @@ const Container = styled.div`
 `;
 
 const Video = styled(VideoProperty)`
-    border-radius: 32px;
+    border-radius: 30px;
 `;
 
 const CameraOffUserName = styled(Center)`
