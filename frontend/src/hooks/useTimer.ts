@@ -31,7 +31,7 @@ function useTimer({ interval, clearTimerDeps }: { interval: number; clearTimerDe
             setIntervalId(undefined);
             setIsTimeOver(true);
         }
-    }, [timeLeft]);
+    }, [timeLeft, clearTimerDeps]);
 
     return { limitTime, timeLeft, isTimeOver, setTimerTime };
 }
