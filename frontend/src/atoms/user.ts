@@ -40,12 +40,12 @@ export const localDeviceState = atom<ConstraintsType>({
 
 export const userMicState = atom<boolean>({
     key: 'userMicState',
-    default: true,
+    default: undefined,
 });
 
 export const userCamState = atom<boolean>({
     key: 'userCamState',
-    default: true,
+    default: undefined,
 });
 
 /**
