@@ -24,6 +24,7 @@ import { ReactComponent as LeftArrowIcon } from '@assets/icons/chevron-left-grad
 import { ReactComponent as RightArrowIcon } from '@assets/icons/chevron-right-gradient.svg';
 import { ReactComponent as DownArrowIcon } from '@assets/icons/chevron-down.svg';
 import { ReactComponent as UpArrowIcon } from '@assets/icons/chevron-up.svg';
+import { ReactComponent as ExportIcon } from '@assets/icons/export-icon.svg';
 import { emitOneMoreGame } from '@game/NetworkServiceUtils';
 import { useEffect } from 'react';
 import { networkServiceInstance as NetworkService } from '@services/socketService';
@@ -126,14 +127,12 @@ function ResultSketchbook(props: { isForShareResult: boolean }) {
                         {isHost && currentBookIdx !== maxBookNum && (
                             <RightArrowIcon onClick={() => changeSketchbook(1)} />
                         )}
+                        <ExportIcon onClick={copyGameResultIdOnClipboard}></ExportIcon>
                         {!props.isForShareResult && canOneMoreGame && isHost && (
                             <OneMoreButtonWrapper onClick={emitOneMoreGame}>
                                 <PrimaryButton topText='ONE MORE' bottomText='한판 더 하기' />
                             </OneMoreButtonWrapper>
                         )}
-                        <ResultShareButtonWrapper onClick={copyGameResultIdOnClipboard}>
-                            <PrimaryButton topText='결과 공유하기' bottomText='클립보드에 복사' />
-                        </ResultShareButtonWrapper>
                     </>
                 )}
             </SketchbookAuthor>
