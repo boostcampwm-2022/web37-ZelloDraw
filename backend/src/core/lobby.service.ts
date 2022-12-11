@@ -22,7 +22,7 @@ export class LobbyService {
             throw Error('초대받은 방이 꽉 차버렸네요!');
         }
         lobby.joinLobby(user);
-        this.userService.updateUser(user.socketId, { lobbyId });
+        await this.userService.updateUser(user.socketId, { lobbyId });
         await this.gameLobbyRepository.save(lobby);
         return lobby.getUsers();
     }
@@ -34,7 +34,7 @@ export class LobbyService {
             await this.gameLobbyRepository.delete(lobby);
             return [];
         }
-        this.userService.updateUser(user.socketId, { lobbyId: undefined });
+        await this.userService.updateUser(user.socketId, { lobbyId: undefined });
         await this.gameLobbyRepository.save(lobby);
         return lobby.getUsers();
     }
