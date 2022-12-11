@@ -1,6 +1,5 @@
 import { useState } from 'react';
 import { ToolsType } from '@utils/constants';
-import { colors } from '@styles/ZelloTheme';
 import pen from '@assets/icons/pen-icon.svg';
 import paint from '@assets/icons/paint-icon.svg';
 import eraser from '@assets/icons/eraser-icon.svg';
@@ -9,6 +8,8 @@ import actPen from '@assets/icons/pen-icon-activated.svg';
 import actPaint from '@assets/icons/paint-icon-activated.svg';
 import actEraser from '@assets/icons/eraser-icon-activated.svg';
 import actReset from '@assets/icons/reset-icon-activated.svg';
+import { useRecoilState } from 'recoil';
+import { canvasSelectedColorState } from '@atoms/game';
 
 interface ToolType {
     element: any;
@@ -17,7 +18,7 @@ interface ToolType {
 }
 
 interface PaletteType {
-    onClickPen: (color: string) => void;
+    onClickPen: () => void;
     onClickPaint: () => void;
     onColorChange: (color: string) => void;
     onClickEraser: () => void;
@@ -33,7 +34,7 @@ function usePalette({
     onClickReset,
     onLineWidthChange,
 }: PaletteType) {
-    const [selectedColor, setSelectedColor] = useState<string>(colors.black);
+    const [selectedColor, setSelectedColor] = useRecoilState(canvasSelectedColorState);
     const [selectedTool, setSelectedTool] = useState<ToolsType>(ToolsType.PEN);
     const [selectedLineWidth, setSelectedLineWidth] = useState<number>(1);
 
@@ -78,7 +79,7 @@ function usePalette({
         if (tool === ToolsType.RESET) {
             setTimeout(() => {
                 setSelectedTool(ToolsType.PEN);
-                onClickPen(selectedColor);
+                onClickPen();
             }, 200);
         }
     };

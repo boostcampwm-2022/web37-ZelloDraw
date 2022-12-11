@@ -6,7 +6,7 @@ import { colors } from '@styles/ZelloTheme';
 import usePalette from '@hooks/usePalette';
 
 interface PaletteType {
-    onClickPen: (color: string) => void;
+    onClickPen: () => void;
     onClickPaint: () => void;
     onColorChange: (color: string) => void;
     onClickEraser: () => void;
