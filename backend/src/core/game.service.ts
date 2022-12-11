@@ -94,6 +94,11 @@ export class GameService {
     async leaveWhenPlayingGame(user: User, lobbyId: string) {
         const game = await this.getGame(lobbyId);
         game.leaveWhenPlayingGame(user);
+        if (game.getNumOfAliveUsers() === 0) {
+            await this.gameLobbyRepository.delete(game);
+        } else {
+            await this.gameLobbyRepository.save(game);
+        }
         await this.gameLobbyRepository.save(game);
     }
 

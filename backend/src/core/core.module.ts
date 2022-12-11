@@ -5,9 +5,17 @@ import { UserService } from './user.service';
 import { GameService } from './game.service';
 import { GameLobbyRepository } from './gamelobby.repository';
 import { GameResultModule } from '../gameResult/gameResult.module';
+import { UserRepository } from './user.repository';
 
 @Module({
     imports: [GameResultModule],
-    providers: [CoreGateway, LobbyService, UserService, GameService, GameLobbyRepository],
+    providers: [
+        CoreGateway,
+        LobbyService,
+        UserService,
+        GameService,
+        GameLobbyRepository,
+        UserRepository,
+    ],
 })
 export class CoreModule {}

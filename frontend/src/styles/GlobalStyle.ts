@@ -22,6 +22,10 @@ export const GlobalStyle = createGlobalStyle`
     background: url(${BackgroundImage});
     background-repeat : no-repeat;
     background-size : cover;
+    -webkit-user-select:none;
+    -moz-user-select:none;
+    -ms-user-select:none;
+    user-select:none
   }
 
   #root {

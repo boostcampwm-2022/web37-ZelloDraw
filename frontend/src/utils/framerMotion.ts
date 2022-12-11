@@ -1,7 +1,7 @@
 export const slideVariants = {
     enter: ({ direction, xValue }: { direction: number; xValue: number }) => {
         return {
-            x: direction * xValue * -1,
+            x: direction * xValue,
             opacity: 0,
         };
     },
@@ -13,7 +13,7 @@ export const slideVariants = {
     exit: ({ direction, xValue }: { direction: number; xValue: number }) => {
         return {
             zIndex: 0,
-            x: direction * xValue,
+            x: direction * xValue * -1,
             opacity: 0,
         };
     },
@@ -23,8 +23,8 @@ export const flipVariants = {
     enter: (direction: number) => {
         return {
             opacity: 0,
-            rotateX: direction > 0 ? -120 : 0,
-            backgroundColor: direction > 0 ? '#A8B2C2' : '#F6F5F8',
+            rotateX: direction < 0 ? -120 : 0,
+            backgroundColor: direction < 0 ? '#A8B2C2' : '#F6F5F8',
         };
     },
     center: {
@@ -37,8 +37,8 @@ export const flipVariants = {
         return {
             zIndex: 0,
             opacity: 0,
-            rotateX: direction < 0 ? -120 : 0,
-            backgroundColor: direction < 0 ? '#A8B2C2' : '#F6F5F8',
+            rotateX: direction > 0 ? -120 : 0,
+            backgroundColor: direction > 0 ? '#A8B2C2' : '#F6F5F8',
         };
     },
 };
@@ -57,16 +57,27 @@ export const countDownContainerVariants = {
 
 export const countDownVariants = {
     enter: {
-        opacity: [0, 1],
         scale: 1,
-        x: 0,
+    },
+    animate: {
+        scale: 15,
+        transition: {
+            scale: { duration: 1.7 },
+        },
+    },
+};
+
+export const opacityVariants = {
+    enter: {
+        opacity: 0,
     },
     animate: {
         opacity: 1,
-        scale: 15,
         transition: {
             opacity: { duration: 0.5 },
-            scale: { duration: 1.5 },
         },
+    },
+    exit: {
+        opacity: 0,
     },
 };

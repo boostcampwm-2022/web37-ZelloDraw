@@ -14,16 +14,23 @@ export class GameLobbyRepository {
     }
 
     async delete(gameLobby: GameLobby) {
-        await this.redis.del(gameLobby.getId());
+        const key = this.toKey(gameLobby.getId());
+        await this.redis.del(key);
     }
 
     async findById(lobbyId: string): Promise<GameLobby> {
-        const gameLobby: string = await this.redis.get(lobbyId);
+        const key = this.toKey(lobbyId);
+        const gameLobby: string = await this.redis.get(key);
         return this.jsonToGameLobby(gameLobby);
     }
 
     async save(gameLobby: GameLobby) {
-        await this.redis.set(gameLobby.getId(), this.gameLobbyToJson(gameLobby));
+        const key = this.toKey(gameLobby.getId());
+        await this.redis.set(key, this.gameLobbyToJson(gameLobby));
+    }
+
+    private toKey(gameLobbyId: string): string {
+        return `game-lobby:${gameLobbyId}`;
     }
 
     private jsonToGameLobby(json: string): GameLobby {

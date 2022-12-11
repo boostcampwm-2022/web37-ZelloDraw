@@ -87,6 +87,19 @@ export const roundNumberState = selector({
     },
 });
 
+export const roundLimitTimeState = selector({
+    key: 'roundLimitTimeState',
+    get: ({ get }) => {
+        const roundInfo = get(roundInfoState);
+
+        if (roundInfo === undefined) {
+            return 60;
+        }
+
+        return roundInfo.limitTime;
+    },
+});
+
 export const quizSubmitState = atom<boolean>({
     key: 'quizSubmitState',
     default: false,
@@ -100,4 +113,14 @@ export const userReplyState = atom<string>({
 export const submittedQuizReplyCountState = atom<number>({
     key: 'submittedQuizReplyCountState',
     default: 0,
+});
+
+export const canClearCanvasState = atom<boolean>({
+    key: 'canClearCanvasState',
+    default: false,
+});
+
+export const resetModalOpenState = atom<boolean>({
+    key: 'resetModalState',
+    default: false,
 });

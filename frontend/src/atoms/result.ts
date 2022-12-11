@@ -84,3 +84,13 @@ export const canOneMoreGameState = atom<boolean>({
     key: 'isCanOneMoreState',
     default: false,
 });
+
+export const bookDirectionState = atom<1 | -1>({
+    key: 'bookDirectionState',
+    default: 1,
+});
+
+export const pageDirectionState = atom<1 | -1>({
+    key: 'pageDirectionState',
+    default: 1,
+});

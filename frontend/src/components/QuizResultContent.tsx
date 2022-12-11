@@ -1,8 +1,7 @@
-import { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { Center } from '@styles/styled';
 import { useRecoilValue } from 'recoil';
-import { currentPageIdxState, currentSketchbookState } from '@atoms/result';
+import { currentPageIdxState, currentSketchbookState, pageDirectionState } from '@atoms/result';
 import useCheckGuidePage from '@hooks/useCheckGuidePage';
 import { motion, AnimatePresence } from 'framer-motion';
 import { flipVariants } from '@utils/framerMotion';
@@ -11,17 +10,7 @@ function QuizResultContent() {
     const currentSketchbook = useRecoilValue(currentSketchbookState);
     const { checkIsNotGuidePage } = useCheckGuidePage();
     const currentPageIdx = useRecoilValue(currentPageIdxState);
-    const [pageDirection, setPageDirection] = useState(1);
-    const [lastPageIdx, setLastPageIdx] = useState(0);
-
-    useEffect(() => {
-        if (currentPageIdx > lastPageIdx) {
-            setPageDirection(1);
-        } else {
-            setPageDirection(-1);
-        }
-        setLastPageIdx(currentPageIdx);
-    }, [currentPageIdx]);
+    const pageDirection = useRecoilValue(pageDirectionState);
 
     return (
         <>
