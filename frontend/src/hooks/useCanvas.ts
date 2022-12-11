@@ -202,6 +202,8 @@ function useCanvas() {
         if (!ctx) return;
         ctx.strokeStyle = PEN_DEFAULT_COLOR;
         ctx.lineWidth = PEN_DEFAULT_LINE_WIDTH;
+        ctx.lineCap = 'round';
+        ctx.lineJoin = 'round';
         ctxRef.current = ctx;
         clearCanvas();
     }, []);
