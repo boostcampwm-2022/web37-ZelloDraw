@@ -30,7 +30,7 @@ import { useResetGameState } from '@hooks/useResetGameState';
 function Lobby() {
     const userCam = useRecoilValue(userCamState);
     const userMic = useRecoilValue(userMicState);
-    const [userList, setuserList] = useRecoilState<WebRTCUser[]>(userListState);
+    const [userList, setUserList] = useRecoilState<WebRTCUser[]>(userListState);
     const [user, setUser] = useRecoilState(userState);
     const lobbyId = useRecoilValue(lobbyIdState);
     const [setPage] = useMovePage();
@@ -52,7 +52,7 @@ function Lobby() {
                 'join-lobby',
                 payload,
                 (res: JoinLobbyResponse) => {
-                    setuserList(res.filter((cur) => cur.userName !== user.name));
+                    setUserList(res.filter((cur) => cur.userName !== user.name));
                     res.forEach((userInRoom) => {
                         if (userInRoom.userName !== user.name) {
                             void createOffers(userInRoom);
@@ -76,10 +76,10 @@ function Lobby() {
 
     useEffect(() => {
         NetworkService.on('join-lobby', (user: JoinLobbyReEmitRequest) => {
-            setuserList([...userList, user]);
+            setUserList([...userList, user]);
         });
         NetworkService.on('update-user-stream', (payload) => {
-            setuserList((prev) =>
+            setUserList((prev) =>
                 prev.map((user) => {
                     const prevUserValue = { ...user };
                     if (payload.socketId === user.sid) {
@@ -91,7 +91,7 @@ function Lobby() {
             );
         });
         NetworkService.on('leave-lobby', (user: JoinLobbyReEmitRequest) => {
-            setuserList((prev) =>
+            setUserList((prev) =>
                 prev.filter((participant) => participant.userName !== user.userName),
             );
         });

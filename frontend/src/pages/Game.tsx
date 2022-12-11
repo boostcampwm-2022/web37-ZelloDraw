@@ -39,7 +39,7 @@ function Game() {
         onCompleteGame(setGameResultId, setGameResult, setIsCompleteGame);
 
         NetworkService.on('update-user-stream', (payload) => {
-            setuserList((prev) =>
+            setUserList((prev) =>
                 prev.map((user) => {
                     const prevUserValue = { ...user };
                     if (payload.socketId === user.sid) {
