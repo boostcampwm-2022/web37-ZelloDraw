@@ -127,7 +127,9 @@ function ResultSketchbook(props: { isForShareResult: boolean }) {
                         {isHost && currentBookIdx !== maxBookNum && (
                             <RightArrowIcon onClick={() => changeSketchbook(1)} />
                         )}
-                        <ExportIcon onClick={copyGameResultIdOnClipboard}></ExportIcon>
+                        {(props.isForShareResult || canOneMoreGame) && (
+                            <ExportIcon onClick={copyGameResultIdOnClipboard} />
+                        )}
                         {!props.isForShareResult && canOneMoreGame && isHost && (
                             <OneMoreButtonWrapper onClick={emitOneMoreGame}>
                                 <PrimaryButton topText='ONE MORE' bottomText='한판 더 하기' />
@@ -225,10 +227,4 @@ const DownArrowWrapper = styled.div<{ disable: boolean }>`
 const OneMoreButtonWrapper = styled.div`
     position: absolute;
     right: 0;
-`;
-
-const ResultShareButtonWrapper = styled.div`
-    position: absolute;
-    right: 0;
-    top: 100px;
 `;
