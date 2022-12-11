@@ -1,4 +1,4 @@
-import React, { useCallback, useRef, useEffect } from 'react';
+import React, { useCallback, useState } from 'react';
 import styled from 'styled-components';
 import Card from '@components/Card';
 import CameraButton from '@components/CameraButton';
@@ -9,16 +9,23 @@ import { networkServiceInstance as NetworkService } from '../services/socketServ
 import { debounce } from 'lodash';
 import useLocalStream from '@hooks/useLocalStream';
 import MainVideoCall from '@components/MainVideoCall';
+import { Center } from '@styles/styled';
+import { motion } from 'framer-motion';
+import { opacityVariants } from '@utils/framerMotion';
 
 function UserCard() {
     const [user, setUserState] = useRecoilState(userState);
     const userCam = useRecoilValue(userCamState);
     const currentUser = useRecoilValue(userState);
     const selfStream = useRecoilValue(userStreamState);
+    const [isFirstUserNameChanging, setIsFirstUserNameChanging] = useState(true);
 
     useLocalStream();
 
     const onChangeName = (e: React.ChangeEvent<HTMLInputElement>) => {
+        // 유저 이름을 바꾼 적 있는지 확인
+        isFirstUserNameChanging && setIsFirstUserNameChanging(false);
+
         const name = e.target.value;
         setUserState({ ...user, name });
         debounceOnChange(name);
@@ -45,6 +52,15 @@ function UserCard() {
                     />
                     <span>{'}'}</span>
                 </UserName>
+                {isFirstUserNameChanging && (
+                    <Blink
+                        animate={'enter'}
+                        variants={opacityVariants}
+                        transition={{ repeat: Infinity, repeatType: 'reverse', duration: 0.5 }}
+                    >
+                        WRITE YOUR USERNAME
+                    </Blink>
+                )}
                 <ButtonWrapper>
                     <CameraButton />
                     <MicButton />
@@ -56,13 +72,15 @@ function UserCard() {
 
 export default UserCard;
 
-const CardInner = styled.div`
+const CardInner = styled(Center)`
+    flex-direction: column;
     padding: 16px;
     height: 100%;
 `;
 
 const UserName = styled.div`
     text-align: center;
+
     span {
         // 중괄호
         color: ${({ theme }) => theme.color.whiteT2};
@@ -83,7 +101,7 @@ const ButtonWrapper = styled.div`
 `;
 
 const NameInput = styled.input`
-    width: 201px;
+    width: 200px;
     background: transparent;
     text-align: center;
     margin: 0 2px;
@@ -95,4 +113,13 @@ const NameInput = styled.input`
     letter-spacing: -0.05em;
     color: ${({ theme }) => theme.color.yellow};
     -webkit-text-stroke: 1px ${({ theme }) => theme.color.blackT1};
+`;
+
+const Blink = styled(motion.div)`
+    position: absolute;
+    margin-top: 110px;
+    color: ${({ theme }) => theme.color.yellow};
+    font-family: 'Sniglet', cursive;
+    font-size: ${({ theme }) => theme.typo.h5};
+    letter-spacing: 0.02em;
 `;
