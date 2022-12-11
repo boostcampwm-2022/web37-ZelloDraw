@@ -68,7 +68,7 @@ const UserName = styled.div`
         color: ${({ theme }) => theme.color.whiteT2};
         font-family: 'Sniglet', cursive;
         font-weight: 800;
-        font-size: 2rem;
+        font-size: 2.5rem;
         padding: 4px;
     }
 `;
