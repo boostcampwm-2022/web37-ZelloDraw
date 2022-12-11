@@ -1,17 +1,17 @@
 import React, { useCallback, useState } from 'react';
-import styled from 'styled-components';
-import Card from '@components/Card';
-import CameraButton from '@components/CameraButton';
-import MicButton from '@components/MicButton';
-import { userState, userStreamState, userCamState, userMicState } from '@atoms/user';
-import { useRecoilState, useRecoilValue } from 'recoil';
-import { networkServiceInstance as NetworkService } from '../services/socketService';
 import { debounce } from 'lodash';
-import useLocalStream from '@hooks/useLocalStream';
-import MainVideoCall from '@components/MainVideoCall';
+import styled from 'styled-components';
 import { Center } from '@styles/styled';
 import { motion } from 'framer-motion';
 import { opacityVariants } from '@utils/framerMotion';
+import { userState, userStreamState, userCamState } from '@atoms/user';
+import { useRecoilState, useRecoilValue } from 'recoil';
+import { networkServiceInstance as NetworkService } from '../services/socketService';
+import Card from '@components/Card';
+import CameraButton from '@components/CameraButton';
+import MicButton from '@components/MicButton';
+import useLocalStream from '@hooks/useLocalStream';
+import MainVideoCall from '@components/MainVideoCall';
 
 function UserCard() {
     const [user, setUserState] = useRecoilState(userState);
