@@ -36,14 +36,14 @@ function UserCard() {
             <CardInner>
                 <MainVideoCall userName={currentUser.name} stream={selfStream} video={userCam} />
                 <UserName>
-                    <span>&#123;</span>
+                    <span>{'{'}</span>
                     <NameInput
                         type='text'
                         placeholder={user.name}
                         onChange={onChangeName}
                         maxLength={7}
                     />
-                    <span>&#125;</span>
+                    <span>{'}'}</span>
                 </UserName>
                 <ButtonWrapper>
                     <CameraButton />

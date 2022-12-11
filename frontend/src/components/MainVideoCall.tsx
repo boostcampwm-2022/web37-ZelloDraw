@@ -23,9 +23,9 @@ function MainVideoCall({ userName, stream, video }: VideoCallProps) {
             ) : (
                 <>
                     <CameraOffUserName>
-                        <span>&#123;</span>
+                        <span>{'{'}</span>
                         <span>{userName}</span>
-                        <span>&#125;</span>
+                        <span>{'}'}</span>
                     </CameraOffUserName>
                 </>
             )}
