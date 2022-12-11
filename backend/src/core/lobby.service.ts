@@ -27,16 +27,15 @@ export class LobbyService {
         return lobby.getUsers();
     }
 
-    async leaveLobby(user: User, lobbyId: string): Promise<User[]> {
+    async leaveLobby(user: User, lobbyId: string): Promise<void> {
         const lobby = await this.getLobby(lobbyId);
         lobby.leaveLobby(user);
-        if (lobby.users.length === 0) {
+        if (lobby.users.length <= 0) {
             await this.gameLobbyRepository.delete(lobby);
-            return [];
+        } else {
+            await this.gameLobbyRepository.save(lobby);
         }
         await this.userService.updateUser(user.socketId, { lobbyId: undefined });
-        await this.gameLobbyRepository.save(lobby);
-        return lobby.getUsers();
     }
 
     async validateLobby(lobbyId: string): Promise<void> {
@@ -54,5 +53,10 @@ export class LobbyService {
     async getLobby(lobbyId: string): Promise<GameLobby | undefined> {
         await this.validateLobby(lobbyId);
         return await this.gameLobbyRepository.findById(lobbyId);
+    }
+
+    async getNumOfUsers(lobbyId: string): Promise<number> {
+        const lobby = await this.getLobby(lobbyId);
+        return lobby.getUsers().length;
     }
 }

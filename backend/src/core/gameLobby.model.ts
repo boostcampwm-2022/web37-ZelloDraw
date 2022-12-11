@@ -81,8 +81,13 @@ export class GameLobby implements Lobby, Game {
 
     leaveWhenPlayingGame(user: User) {
         const leavedUserIdx = this.getUserIndex(user);
+        // 게임 중일 때는 soft-delete 하고, 게임 종료 시 hard-delete (게임 중에는 나간 유저라도 유저 정보를 유지해야 함)
         this.usersAliveState[leavedUserIdx] = false;
         this.polyFillQuizReply(user);
+    }
+
+    getNumOfAliveUsers(): number {
+        return this.usersAliveState.filter((isAlive) => isAlive).length;
     }
 
     isHost(user: User): boolean {
@@ -116,6 +121,7 @@ export class GameLobby implements Lobby, Game {
 
     quitGame() {
         this.isPlaying = false;
+        this.users = this.users.filter((user, idx) => this.usersAliveState[idx]);
     }
 
     getCurrentRoundQuizReplyChain(user: User): QuizReplyChain {
