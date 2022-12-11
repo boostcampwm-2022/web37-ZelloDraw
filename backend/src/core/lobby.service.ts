@@ -55,4 +55,9 @@ export class LobbyService {
         await this.validateLobby(lobbyId);
         return await this.gameLobbyRepository.findById(lobbyId);
     }
+
+    async getNumOfUsers(lobbyId: string): Promise<number> {
+        const lobby = await this.getLobby(lobbyId);
+        return lobby.getUsers().length;
+    }
 }

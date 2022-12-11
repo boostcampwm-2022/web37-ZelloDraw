@@ -135,13 +135,13 @@ export class CoreGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 
     async handleHostLeave(client: Socket, user: User) {
         const isGameHost = await this.gameService.isHost(user.lobbyId, user);
-        console.log('handleHostLeave', isGameHost);
-        if (isGameHost) {
-            await this.gameService.succeedHost(user.lobbyId);
-            const hostUser = await this.gameService.getGameHost(user.lobbyId);
-            console.log('handleHostLeaveEmit', hostUser);
-            client.to(hostUser.socketId).emit('succeed-host');
-        }
+        if (!isGameHost) return;
+        const numOfUsersInLobby = await this.lobbyService.getNumOfUsers(user.lobbyId);
+        if (numOfUsersInLobby <= 1) return;
+
+        await this.gameService.succeedHost(user.lobbyId);
+        const hostUser = await this.gameService.getGameHost(user.lobbyId);
+        client.to(hostUser.socketId).emit('succeed-host');
     }
 
     @SubscribeMessage('start-game')
