@@ -148,7 +148,7 @@ export class GameLobby implements Lobby, Game {
     }
 
     getSubmittedQuizRepliesCount(): number {
-        return this.submittedQuizRepliesOnCurrentRound.filter((quizReply) => quizReply == undefined)
+        return this.submittedQuizRepliesOnCurrentRound.filter((quizReply) => quizReply != undefined)
             .length;
     }
 
