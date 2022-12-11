@@ -53,4 +53,7 @@ const Keyword = styled.div`
 
 const UserDrawing = styled.div`
     ${({ theme }) => theme.layout.sketchBook};
+    > img {
+        border-radius: 28px;
+    }
 `;
