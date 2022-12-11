@@ -2,11 +2,15 @@ import { Injectable } from '@nestjs/common';
 
 import { User } from './user.model';
 import { UserRepository } from './user.repository';
+import { GameLobbyRepository } from './gamelobby.repository';
 
 @Injectable()
 export class UserService {
     // TODO: 고민해보고 Map으로 변경할지 확인
-    constructor(private readonly userRepository: UserRepository) {}
+    constructor(
+        private readonly userRepository: UserRepository,
+        private readonly gameLobbyRepository: GameLobbyRepository,
+    ) {}
 
     async validateUser(socketId: string): Promise<void> {
         if ((await this.userRepository.findById(socketId)) === undefined) {
@@ -33,6 +37,12 @@ export class UserService {
         const user = await this.getUser(socketId);
         for (const key in param) {
             user[key] = param[key];
+        }
+        try {
+            const lobby = await this.gameLobbyRepository.findById(user.lobbyId);
+            await this.gameLobbyRepository.updateUser(lobby, user);
+        } catch {
+            console.log('로비 생성 전');
         }
         await this.userRepository.save(user);
     }
