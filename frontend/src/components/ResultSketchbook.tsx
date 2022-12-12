@@ -32,6 +32,7 @@ import useMovePage from '@hooks/useMovePage';
 import { lobbyIdState } from '@atoms/game';
 import toast, { Toaster } from 'react-hot-toast';
 import useCopyClipBoard from '@hooks/useCopyClipboard';
+import { playResultInSound } from '@utils/audio';
 
 function ResultSketchbook(props: { isForShareResult: boolean }) {
     const [setPage] = useMovePage();
@@ -56,6 +57,8 @@ function ResultSketchbook(props: { isForShareResult: boolean }) {
     const [_, onCopy] = useCopyClipBoard();
 
     useEffect(() => {
+        if (!props.isForShareResult) playResultInSound();
+
         NetworkService.on('back-to-lobby', () => {
             setPage(`/lobby?id=${lobbyId}&new=false`);
         });

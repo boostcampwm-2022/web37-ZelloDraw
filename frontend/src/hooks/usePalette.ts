@@ -10,6 +10,7 @@ import actEraser from '@assets/icons/eraser-icon-activated.svg';
 import actReset from '@assets/icons/reset-icon-activated.svg';
 import { useRecoilState } from 'recoil';
 import { canvasSelectedColorState } from '@atoms/game';
+import { playSelectedSound } from '@utils/audio';
 
 interface ToolType {
     element: any;
@@ -89,6 +90,8 @@ function usePalette({
                 onClickPen();
             }, 200);
         }
+
+        playSelectedSound();
     };
 
     return {

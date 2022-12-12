@@ -19,6 +19,7 @@ import {
     roundNumberState,
     userReplyState,
 } from '@atoms/game';
+import { playSelectedSound } from '@utils/audio';
 
 interface Coordinate {
     x: number;
@@ -101,10 +102,12 @@ function useCanvas() {
     };
 
     const onLineWidthChange = (index: number) => {
+        playSelectedSound();
         ctxRef.current.lineWidth = canvasLineWidthValues[index];
     };
 
     const onColorChange = (color: string) => {
+        playSelectedSound();
         curColor.current = convertHexToRgba(color);
         ctxRef.current.strokeStyle = color;
     };

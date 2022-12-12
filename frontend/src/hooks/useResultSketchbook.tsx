@@ -14,6 +14,7 @@ import { userState } from '@atoms/user';
 import useTimer from '@hooks/useTimer';
 import { GUIDE_PAGE_IDX } from '@utils/constants';
 import { emitWatchResultSketchBook, onWatchResultSketchBook } from '@game/NetworkServiceUtils';
+import { playBookMovedSound, playPageDownSound, playPageUpSound } from '@utils/audio';
 
 function useResultSketchbook(controlOnLocal: boolean) {
     const { isHost } = useRecoilValue(userState);
@@ -73,6 +74,8 @@ function useResultSketchbook(controlOnLocal: boolean) {
 
         setPageDirection(1);
         goToNextPage(1);
+
+        playPageUpSound();
     }
 
     function subtractSketchbookPage() {
@@ -80,6 +83,8 @@ function useResultSketchbook(controlOnLocal: boolean) {
 
         setPageDirection(-1);
         goToNextPage(-1);
+
+        playPageDownSound();
     }
 
     function goToNextPage(nextNum: number) {
@@ -90,6 +95,8 @@ function useResultSketchbook(controlOnLocal: boolean) {
     function changeSketchbook(nextNum: 1 | -1) {
         setBookDirection(nextNum);
         const nextBookIdx = currentBookIdx + nextNum;
+
+        playBookMovedSound();
 
         if (controlOnLocal) {
             setCurrentBookIdx(nextBookIdx);
@@ -102,4 +109,5 @@ function useResultSketchbook(controlOnLocal: boolean) {
 
     return { addSketchbookPage, subtractSketchbookPage, changeSketchbook };
 }
+
 export default useResultSketchbook;

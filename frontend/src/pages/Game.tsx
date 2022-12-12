@@ -18,6 +18,7 @@ import useBeforeReload from '@hooks/useBeforeReload';
 import CountDown from '@components/CountDown';
 import { AnimatePresence } from 'framer-motion';
 import ResetModal from '@components/ResetModal';
+import { playCountdownSound } from '@utils/audio';
 
 function Game() {
     const [user, setUser] = useRecoilState(userState);
@@ -31,6 +32,7 @@ function Game() {
     useBeforeReload();
 
     useEffect(() => {
+        playCountdownSound();
         setTimeout(() => setIsStarted(true), 2500);
     }, []);
 
