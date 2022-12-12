@@ -116,6 +116,11 @@ function useWebRTC() {
             NetworkService.off('webrtc-offer');
             NetworkService.off('webrtc-answer');
             NetworkService.off('webrtc-ice');
+        };
+    }, [streamMap]);
+
+    useEffect(() => {
+        return () => {
             streamMap.forEach((stream, sid) => {
                 if (!stream || !pcsRef.current[sid]) return;
                 pcsRef.current[sid].close();
@@ -123,7 +128,7 @@ function useWebRTC() {
                 delete pcsRef.current[sid];
             });
         };
-    }, [streamMap]);
+    }, []);
 
     return { createOffers };
 }

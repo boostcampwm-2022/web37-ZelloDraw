@@ -24,7 +24,7 @@ function Main() {
     }, []);
 
     useEffect(() => {
-        if (userCam && userMic) {
+        if (userCam !== undefined && userMic !== undefined) {
             NetworkService.emit('update-user-stream', { video: userCam, audio: userMic });
         }
     }, [userCam, userMic]);
