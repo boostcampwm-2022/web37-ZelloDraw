@@ -4,6 +4,7 @@ import { QuizReply } from './quizReply.model';
 import { QuizReplyChain } from './quizReplyChain.model';
 import { User } from './user.model';
 import { PartialWithoutMethods } from '../utils/types';
+import { getRandomKeyWord } from 'src/utils/randomKeyWord';
 
 export class GameLobby implements Lobby, Game {
     readonly id: string;
@@ -118,7 +119,7 @@ export class GameLobby implements Lobby, Game {
         this.quizReplyChains = this.users.map(() => {
             const quizReplyChain = new QuizReplyChain();
             // TODO: 랜덤 키워드는 외부 모듈에 의존하도록 수정
-            const randomKeyword = `RANDOM${Math.floor(Math.random() * 100)}`;
+            const randomKeyword = getRandomKeyWord();
             quizReplyChain.add(new QuizReply('ANSWER', randomKeyword));
             return quizReplyChain;
         });
