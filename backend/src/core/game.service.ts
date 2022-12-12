@@ -28,6 +28,11 @@ export class GameService {
         await this.gameLobbyRepository.save(game);
     }
 
+    async getCurRound(lobbyId: string): Promise<number> {
+        const game = await this.getGame(lobbyId);
+        return game.getCurRound();
+    }
+
     async getCurrentRoundQuizReplyChain(lobbyId: string, user: User) {
         const game = await this.getGame(lobbyId);
         return game.getCurrentRoundQuizReplyChain(user);

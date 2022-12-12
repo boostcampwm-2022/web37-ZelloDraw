@@ -55,6 +55,10 @@ export class GameLobby implements Lobby, Game {
         this.users = users;
     }
 
+    getCurRound(): number {
+        return this.curRound;
+    }
+
     getRoundType(): 'DRAW' | 'ANSWER' {
         return this.roundType;
     }
