@@ -11,9 +11,10 @@ interface VideoCallProps {
     stream?: MediaStream;
     audio?: boolean;
     video?: boolean;
+    isCurUser?: boolean;
 }
 
-function VideoCallUser({ userName, stream, audio, video }: VideoCallProps) {
+function VideoCallUser({ userName, stream, audio, video, isCurUser = false }: VideoCallProps) {
     const [hostState, setHostState] = useState<boolean>(false);
     const videoRef: React.RefObject<HTMLVideoElement> | null = useRef(null);
 
@@ -26,7 +27,7 @@ function VideoCallUser({ userName, stream, audio, video }: VideoCallProps) {
         <Container>
             {video && stream ? (
                 <>
-                    <Video ref={videoRef} autoPlay playsInline></Video>
+                    <Video ref={videoRef} autoPlay playsInline muted={!!isCurUser}></Video>
                     <CameraOnUserName>
                         <span>{userName}</span>
                         {hostState && <HostIconS />}

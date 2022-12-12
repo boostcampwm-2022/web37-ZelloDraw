@@ -20,6 +20,7 @@ function GameUsers() {
                 stream={selfStream}
                 audio={userMic}
                 video={userCam}
+                isCurUser={true}
             />
             {userList.map((user: WebRTCUser, idx: number) => (
                 <VideoCallUser

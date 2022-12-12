@@ -19,7 +19,7 @@ function MainVideoCall({ userName, stream, video }: VideoCallProps) {
     return (
         <Container>
             {video && stream ? (
-                <Video ref={videoRef} autoPlay playsInline></Video>
+                <Video ref={videoRef} autoPlay playsInline muted={true}></Video>
             ) : (
                 <>
                     <CameraOffUserName>
