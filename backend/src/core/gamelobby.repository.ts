@@ -31,13 +31,7 @@ export class GameLobbyRepository {
 
     async save(gameLobby: GameLobby) {
         const key = this.toKey(gameLobby.getId());
-        try {
-            console.log('before', await this.findById(gameLobby.getId()));
-        } catch {}
         await this.redis.set(key, this.gameLobbyToJson(gameLobby));
-        try {
-            console.log('after', await this.findById(gameLobby.getId()));
-        } catch {}
     }
 
     private toKey(gameLobbyId: string): string {
