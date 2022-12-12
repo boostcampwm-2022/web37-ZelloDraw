@@ -42,6 +42,10 @@ function Lobby() {
     useRemoveParams();
     useBeforeReload();
 
+    const leaveLobbyBylickLogo = () => {
+        location.reload();
+    };
+
     useEffect(() => {
         resetGameState();
         const payload: JoinLobbyRequest = { lobbyId };
@@ -109,7 +113,7 @@ function Lobby() {
 
     return (
         <>
-            <LogoWrapper>
+            <LogoWrapper onClick={leaveLobbyBylickLogo}>
                 <img src={SmallLogo} />
             </LogoWrapper>
             <LobbyContainer>
