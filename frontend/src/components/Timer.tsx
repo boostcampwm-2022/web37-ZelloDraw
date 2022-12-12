@@ -17,12 +17,12 @@ function Timer() {
                     <motion.div
                         initial={{ y: 1 }}
                         animate={{ y: 437 }}
-                        transition={{ duration: limitTime }}
+                        transition={{ duration: limitTime, ease: 'linear' }}
                     />
                     <motion.div
                         initial={{ scaleY: 1 }}
                         animate={{ scaleY: 0 }}
-                        transition={{ duration: limitTime }}
+                        transition={{ duration: limitTime, ease: 'linear' }}
                     ></motion.div>
                     <div />
                 </Progress>

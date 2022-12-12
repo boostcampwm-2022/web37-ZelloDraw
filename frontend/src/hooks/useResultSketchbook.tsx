@@ -35,18 +35,21 @@ function useResultSketchbook(controlOnLocal: boolean) {
     });
 
     useEffect(() => {
-        if (!controlOnLocal) {
-            setTimeout(() => setIsStarted(false), 3000);
-        } else {
+        // 결과 공유 페이지일 경우 설명페이지 없이 바로 결과만 볼 수 있도록 한다.
+        if (controlOnLocal) {
             setIsStarted(false);
+            return;
         }
+
+        setTimeout(() => setIsStarted(false), 3000);
         onWatchResultSketchBook(setCurrentBookIdx, setCurrentPageIdx, setIsWatched);
+
         // 가장 처음 나타나는 스케치북도 봤다고 서버에게 알린다.
         if (isHost && !controlOnLocal) emitWatchResultSketchBook(0);
     }, []);
 
     useEffect(() => {
-        if (isStarted || isWatched) return;
+        if (isStarted || isWatched || controlOnLocal) return;
         setTimerTime(aSketchBookLimitTime);
     }, [currentBookIdx, isStarted, isWatched]);
 
