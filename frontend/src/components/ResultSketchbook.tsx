@@ -127,14 +127,17 @@ function ResultSketchbook(props: { isForShareResult: boolean }) {
                         {isHost && currentBookIdx !== maxBookNum && (
                             <RightArrowIcon onClick={() => changeSketchbook(1)} />
                         )}
-                        {(props.isForShareResult || canOneMoreGame) && (
-                            <ExportIcon onClick={copyGameResultIdOnClipboard} />
-                        )}
-                        {!props.isForShareResult && canOneMoreGame && isHost && (
-                            <OneMoreButtonWrapper onClick={emitOneMoreGame}>
-                                <PrimaryButton topText='ONE MORE' bottomText='한판 더 하기' />
-                            </OneMoreButtonWrapper>
-                        )}
+
+                        <ButtonWrapper>
+                            {(props.isForShareResult || canOneMoreGame) && (
+                                <ExportIcon onClick={copyGameResultIdOnClipboard} />
+                            )}
+                            {!props.isForShareResult && canOneMoreGame && isHost && (
+                                <div onClick={emitOneMoreGame}>
+                                    <PrimaryButton topText='ONE MORE' bottomText='한판 더 하기' />
+                                </div>
+                            )}
+                        </ButtonWrapper>
                     </>
                 )}
             </SketchbookAuthor>
@@ -166,7 +169,7 @@ const SketchbookAuthor = styled(Center)`
     color: ${({ theme }) => theme.color.whiteT2};
     font-size: ${({ theme }) => theme.typo.h2};
 
-    > svg {
+    svg {
         margin: 0 28px;
         transform: scale(1.3) translateY(2px);
         cursor: pointer;
@@ -224,7 +227,8 @@ const DownArrowWrapper = styled.div<{ disable: boolean }>`
     }
 `;
 
-const OneMoreButtonWrapper = styled.div`
+const ButtonWrapper = styled(Center)`
+    display: flex;
     position: absolute;
     right: 0;
 `;
