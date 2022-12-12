@@ -163,7 +163,7 @@ export class GameLobby implements Lobby, Game {
     getNotSubmittedUsers() {
         return this.submittedQuizRepliesOnCurrentRound.reduce(
             (acc: User[], quizReply: QuizReply | undefined, idx: number) => {
-                if (quizReply === undefined) {
+                if (quizReply == undefined) {
                     acc.push(this.users[idx]);
                 }
                 return acc;
