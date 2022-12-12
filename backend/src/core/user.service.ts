@@ -41,9 +41,7 @@ export class UserService {
         try {
             const lobby = await this.gameLobbyRepository.findById(user.lobbyId);
             await this.gameLobbyRepository.updateUser(lobby, user);
-        } catch {
-            console.log('로비 생성 전');
-        }
+        } catch {}
         await this.userRepository.save(user);
     }
 }

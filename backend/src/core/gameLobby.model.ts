@@ -45,7 +45,6 @@ export class GameLobby implements Lobby, Game {
     }
 
     getUsers(): User[] {
-        console.log('get users', this.users);
         return this.users;
     }
 
