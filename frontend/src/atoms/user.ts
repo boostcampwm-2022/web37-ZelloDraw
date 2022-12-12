@@ -23,7 +23,7 @@ export const userState = atom<userStateType>({
 
 export interface ConstraintsType {
     video: boolean;
-    audio: boolean;
+    audio: any;
 }
 
 export const localDeviceState = atom<ConstraintsType>({
