@@ -8,7 +8,7 @@ import GuestEntranceMessage from '@components/GuestMessageBox';
 import MadeByText from '@components/MadeByText';
 import useMovePage from '@hooks/useMovePage';
 import { useRecoilState, useRecoilValue } from 'recoil';
-import { userState, userStateType } from '@atoms/user';
+import { userCamState, userMicState, userState, userStateType } from '@atoms/user';
 import { networkServiceInstance as NetworkService } from '../services/socketService';
 import { lobbyIdState } from '@atoms/game';
 
@@ -16,10 +16,18 @@ function Main() {
     const [setPage] = useMovePage();
     const user = useRecoilValue<userStateType>(userState);
     const [lobbyId, setLobbyId] = useRecoilState(lobbyIdState);
+    const userCam = useRecoilValue(userCamState);
+    const userMic = useRecoilValue(userMicState);
 
     useEffect(() => {
         NetworkService.emit('update-user-name', user.name);
     }, []);
+
+    useEffect(() => {
+        if (userCam && userMic) {
+            NetworkService.emit('update-user-stream', { video: userCam, audio: userMic });
+        }
+    }, [userCam, userMic]);
 
     const onClickEnterBtn = () => {
         if (user.isHost) {

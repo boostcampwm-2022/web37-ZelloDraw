@@ -1,7 +1,7 @@
 import VideoCallUser from '@components/VideoCallUser';
 import styled from 'styled-components';
 import { useRecoilValue } from 'recoil';
-import { userListState, WebRTCUser } from '@atoms/game';
+import { streamMapState, userListState, WebRTCUser } from '@atoms/game';
 import { userState, userStreamState, userMicState, userCamState } from '@atoms/user';
 import { Center } from '@styles/styled';
 
@@ -11,6 +11,7 @@ function GameUsers() {
     const userList = useRecoilValue(userListState);
     const currentUser = useRecoilValue(userState);
     const selfStream = useRecoilValue(userStreamState);
+    const streamMap = useRecoilValue(streamMapState);
 
     return (
         <Container>
@@ -24,7 +25,7 @@ function GameUsers() {
                 <VideoCallUser
                     key={idx}
                     userName={user.userName}
-                    stream={user.stream}
+                    stream={streamMap.get(user.sid)}
                     audio={user.audio}
                     video={user.video}
                 />
