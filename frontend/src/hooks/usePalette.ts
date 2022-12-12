@@ -42,6 +42,7 @@ function usePalette({
         // 도구 초기화
         onClickColor(PEN_DEFAULT_COLOR);
         onClickLineWidth(1);
+        onChangeTool(ToolsType.PEN);
     }, []);
 
     const isSelectedTool = (type: ToolsType) => selectedTool === type;
