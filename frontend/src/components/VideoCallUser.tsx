@@ -18,30 +18,50 @@ function VideoCallUser({ userName, stream, audio, video, isCurUser = false }: Vi
     const [hostState, setHostState] = useState<boolean>(false);
     const videoRef: React.RefObject<HTMLVideoElement> | null = useRef(null);
 
+    const getCameraOnComponent = () => {
+        return (
+            <CameraOnUserName>
+                <span>{userName}</span>
+                {hostState && <HostIconS />}
+            </CameraOnUserName>
+        );
+    };
+
+    const getCameraOffComponent = () => {
+        return (
+            <CameraOffUserName>
+                <span>&#123;</span>
+                <span>{userName}</span>
+                <span>&#125;</span>
+                {hostState && <HostIconL />}
+            </CameraOffUserName>
+        );
+    };
+
     useEffect(() => {
-        if (!videoRef.current || !stream || !video) return;
+        if (!videoRef.current || !stream) return;
         videoRef.current.srcObject = stream;
-    }, [stream, video]);
+    }, [stream, video, audio]);
 
     return (
         <Container>
-            {video && stream ? (
+            {video ? (
                 <>
                     <Video ref={videoRef} autoPlay playsInline muted={!!isCurUser}></Video>
-                    <CameraOnUserName>
-                        <span>{userName}</span>
-                        {hostState && <HostIconS />}
-                    </CameraOnUserName>
+                    {getCameraOnComponent()}
+                </>
+            ) : audio ? (
+                <>
+                    <EmptyVideo
+                        ref={videoRef}
+                        autoPlay
+                        playsInline
+                        muted={!!isCurUser}
+                    ></EmptyVideo>
+                    {getCameraOffComponent()}
                 </>
             ) : (
-                <>
-                    <CameraOffUserName>
-                        <span>&#123;</span>
-                        <span>{userName}</span>
-                        <span>&#125;</span>
-                        {hostState && <HostIconL />}
-                    </CameraOffUserName>
-                </>
+                <>{getCameraOffComponent()}</>
             )}
             <MicIconWrapper>{audio ? <MicOnIcon /> : <MicOffIcon />}</MicIconWrapper>
         </Container>
@@ -109,6 +129,10 @@ const CameraOnUserName = styled(Center)`
 
 const Video = styled(VideoProperty)`
     border-radius: 22px;
+`;
+
+const EmptyVideo = styled(VideoProperty)`
+    display: none;
 `;
 
 const MicIconWrapper = styled.div`

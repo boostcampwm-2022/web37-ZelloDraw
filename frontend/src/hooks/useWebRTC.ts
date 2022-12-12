@@ -121,7 +121,6 @@ function useWebRTC() {
 
     useEffect(() => {
         return () => {
-            console.log('done');
             streamMap.forEach((stream, sid) => {
                 if (!stream || !pcsRef.current[sid]) return;
                 pcsRef.current[sid].close();
