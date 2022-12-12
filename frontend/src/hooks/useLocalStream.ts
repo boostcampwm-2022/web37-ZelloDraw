@@ -83,6 +83,9 @@ function useLocalStream() {
 
     const getSelfMedia = useCallback(async (constraints: ConstraintsType) => {
         try {
+            if (constraints.audio) {
+                constraints.audio = { echoCancellation: true, noiseSuppression: true };
+            }
             // 유저 MediaStream을 받아온다.
             const stream = await navigator.mediaDevices.getUserMedia(constraints);
             streamRef.current = stream;
