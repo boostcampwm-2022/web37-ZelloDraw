@@ -284,8 +284,10 @@ export class CoreGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
         // eslint-disable-next-line @typescript-eslint/no-misused-promises
         setTimeout(async () => {
             try {
-                (await this.gameService.getNotSubmittedUsers(lobbyId)).forEach((user) => {
-                    client.nsp.to(user.socketId).emit('round-timeout');
+                (await this.gameService.getNotSubmittedUsers(lobbyId)).forEach((user, index) => {
+                    setTimeout(() => {
+                        client.nsp.to(user.socketId).emit('round-timeout');
+                    }, index * 100);
                 });
             } catch (e) {
                 console.log('종료된 게임입니다.');
