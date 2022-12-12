@@ -46,7 +46,7 @@ function useResultSketchbook(controlOnLocal: boolean) {
     }, []);
 
     useEffect(() => {
-        if (isStarted || isWatched) return;
+        if (isStarted || isWatched || controlOnLocal) return;
         setTimerTime(aSketchBookLimitTime);
     }, [currentBookIdx, isStarted, isWatched]);
 
