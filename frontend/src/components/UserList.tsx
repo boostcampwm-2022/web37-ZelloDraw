@@ -20,7 +20,7 @@ function UserList() {
             <CardInner>
                 <FlexBox>
                     <CountBox>
-                        <PlayerCountText>{userList.length}</PlayerCountText>
+                        <PlayerCountText>{userList.length + 1}</PlayerCountText>
                         <PlayerCountSlash>/</PlayerCountSlash>
                         <PlayerCountText>8</PlayerCountText>
                     </CountBox>
