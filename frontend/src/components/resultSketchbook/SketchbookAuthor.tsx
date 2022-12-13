@@ -12,10 +12,14 @@ import { userState } from '@atoms/user';
 import { ReactComponent as LeftArrowIcon } from '@assets/icons/chevron-left-gradient.svg';
 import { ReactComponent as RightArrowIcon } from '@assets/icons/chevron-right-gradient.svg';
 import bookMovedSound from '@assets/sounds/book-moved.wav';
-import { emitWatchResultSketchBook } from '@game/NetworkServiceUtils';
 import useSoundEffect from '@hooks/useSoundEffect';
 
-function SketchbookAuthor({ isForShareResult }: { isForShareResult: boolean }) {
+interface SketchbookAuthorProps {
+    isForShareResult: boolean;
+    emitWatchResultSketchBook: (nextBookIdx: number) => void;
+}
+
+function SketchbookAuthor({ isForShareResult, emitWatchResultSketchBook }: SketchbookAuthorProps) {
     const authorName = useRecoilValue(sketchbookAuthorState);
     const { maxBookNum } = useRecoilValue(maxSketchbookState);
     const [currentBookIdx, setCurrentBookIdx] = useRecoilState(currentBookIdxState);

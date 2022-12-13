@@ -1,44 +1,20 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import styled from 'styled-components';
 import { ScaledDiv, ScaledSection } from '@styles/styled';
-import UserCard from '@components/UserCard';
+import { useRecoilValue } from 'recoil';
+import { userState, userStateType } from '@atoms/user';
 import Logo from '@assets/zellodraw-logo.png';
+import UserCard from '@components/UserCard';
 import InfoCard from '@components/InfoCard';
 import GuestEntranceMessage from '@components/GuestMessageBox';
 import MadeByText from '@components/MadeByText';
 import useMovePage from '@hooks/useMovePage';
-import { useRecoilState, useRecoilValue } from 'recoil';
-import { userCamState, userMicState, userState, userStateType } from '@atoms/user';
-import { networkServiceInstance as NetworkService } from '../services/socketService';
-import { lobbyIdState } from '@atoms/game';
+import useMainSocket from '@hooks/socket/useMainSocket';
 
 function Main() {
     const [setPage] = useMovePage();
     const user = useRecoilValue<userStateType>(userState);
-    const [lobbyId, setLobbyId] = useRecoilState(lobbyIdState);
-    const userCam = useRecoilValue(userCamState);
-    const userMic = useRecoilValue(userMicState);
-
-    useEffect(() => {
-        NetworkService.emit('update-user-name', user.name);
-    }, []);
-
-    useEffect(() => {
-        if (userCam !== undefined && userMic !== undefined) {
-            NetworkService.emit('update-user-stream', { video: userCam, audio: userMic });
-        }
-    }, [userCam, userMic]);
-
-    const onClickEnterBtn = () => {
-        if (user.isHost) {
-            NetworkService.emit('create-lobby', { userName: user.name }, (res: string) => {
-                setLobbyId(res);
-                setPage(`/lobby?id=${res}`);
-            });
-        } else {
-            setPage(`/lobby?id=${lobbyId}`);
-        }
-    };
+    const { enterLobby, emitUpdateUserName } = useMainSocket({ user, setPage });
 
     return (
         <>
@@ -51,8 +27,8 @@ function Main() {
                     <img src={Logo} alt={'Logo'} width={554} height={124} />
                 </LogoWrapper>
                 <CardContainer>
-                    <UserCard />
-                    <InfoCard onHandleEnterLobby={onClickEnterBtn} />
+                    <UserCard emitUpdateUserName={emitUpdateUserName} />
+                    <InfoCard onHandleEnterLobby={enterLobby} />
                 </CardContainer>
                 {!user.isHost && <GuestEntranceMessage />}
             </MainContainer>

@@ -4,28 +4,33 @@ import { Center } from '@styles/styled';
 import { useRecoilState, useRecoilValue } from 'recoil';
 import {
     isQuizTypeDrawState,
+    isRoundTimeoutState,
     quizSubmitState,
     roundNumberState,
     userReplyState,
 } from '@atoms/game';
 import PrimaryButton from '@components/PrimaryButton';
-import { emitSubmitQuizReply } from '@game/NetworkServiceUtils';
 import useZeroRound from '@hooks/useZeroRound';
-import useRoundTimeout from '@hooks/useRoundTimeout';
 import { debounce } from 'lodash';
+import { SubmitQuizReplyRequest } from '@backend/core/game.dto';
 
-function QuizReplySection() {
+function QuizReplySection({
+    emitSubmitQuizReply,
+}: {
+    emitSubmitQuizReply: (quizReply: SubmitQuizReplyRequest) => void;
+}) {
     const isDraw = useRecoilValue(isQuizTypeDrawState);
     const { curRound } = useRecoilValue(roundNumberState);
     const [userReply, setUserReply] = useRecoilState(userReplyState);
     const [quizSubmitted, setQuizSubmitted] = useRecoilState(quizSubmitState);
-    const { placeholder, sendRandomWordReplyToServer } = useZeroRound();
-    const { isRoundTimeout } = useRoundTimeout();
+    const { placeholder, sendRandomWordReplyToServer } = useZeroRound(emitSubmitQuizReply);
+    const [isRoundTimeout, setIsRoundTimeout] = useRecoilState(isRoundTimeoutState);
 
     useEffect(() => {
-        // 라운드가 새로 시작하면 제출 상태와 유저 답변을 초기화한다.
+        // 라운드가 새로 시작하면 초기화한다.
         setQuizSubmitted(false);
         setUserReply('');
+        setIsRoundTimeout(false);
     }, [curRound]);
 
     useEffect(() => {

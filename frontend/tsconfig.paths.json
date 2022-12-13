@@ -9,7 +9,7 @@
             "@hooks/*": ["./hooks/*"],
             "@atoms/*": ["./atoms/*"],
             "@utils/*": ["./utils/*"],
-            "@game/*": ["./game/*"],
+            "@axios/*": ["./axios/*"],
             "@services/*": ["./services/*"],
             "@backend/*": ["../../backend/src/*"]
         }

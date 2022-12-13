@@ -6,7 +6,6 @@ import { motion } from 'framer-motion';
 import { opacityVariants } from '@utils/framerMotion';
 import { userState, userStreamState, userCamState } from '@atoms/user';
 import { useRecoilState, useRecoilValue } from 'recoil';
-import { networkServiceInstance as NetworkService } from '../services/socketService';
 import Card from '@components/Card';
 import CameraButton from '@components/CameraButton';
 import MicButton from '@components/MicButton';
@@ -14,8 +13,9 @@ import useLocalStream from '@hooks/useLocalStream';
 import MainVideoCall from '@components/MainVideoCall';
 import { getParam } from '@utils/common';
 
-function UserCard() {
+function UserCard({ emitUpdateUserName }: { emitUpdateUserName: (name: string) => void }) {
     const paramIdValue = getParam('id');
+
     const [user, setUserState] = useRecoilState(userState);
     const userCam = useRecoilValue(userCamState);
     const currentUser = useRecoilValue(userState);
@@ -34,7 +34,7 @@ function UserCard() {
     const debounceOnChange = useCallback(
         debounce((name: string) => {
             setUserState({ name, isHost: paramIdValue === '' });
-            NetworkService.emit('update-user-name', name);
+            emitUpdateUserName(name);
         }, 500),
         [],
     );

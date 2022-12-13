@@ -124,3 +124,8 @@ export const resetModalOpenState = atom<boolean>({
     key: 'resetModalState',
     default: false,
 });
+
+export const isRoundTimeoutState = atom<boolean>({
+    key: 'isRoundTimeoutState',
+    default: false,
+});
