@@ -19,6 +19,7 @@ import QuizAuthor from '@components/resultSketchbook/QuizAuthor';
 import CurSketchbookPage from '@components/resultSketchbook/CurSketchbookPage';
 import SketchbookAuthor from '@components/resultSketchbook/SketchbookAuthor';
 import OneMoreGameButton from '@components/resultSketchbook/OneMoreGameButton';
+import useResultSketchbook from '@hooks/useResultSketchbook';
 
 function ResultSketchbook({ isForShareResult }: { isForShareResult: boolean }) {
     const [setPage] = useMovePage();
@@ -31,6 +32,7 @@ function ResultSketchbook({ isForShareResult }: { isForShareResult: boolean }) {
     const { checkIsNotGuidePage } = useCheckGuidePage();
     const [_, onCopy] = useCopyClipBoard();
     const { playSoundEffect } = useSoundEffect();
+    useResultSketchbook(isForShareResult);
 
     useEffect(() => {
         if (!isForShareResult) playSoundEffect(resultInSound);

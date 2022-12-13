@@ -1,17 +1,44 @@
 import styled from 'styled-components';
-import { useRecoilValue } from 'recoil';
-import { currentBookIdxState, maxSketchbookState, sketchbookAuthorState } from '@atoms/result';
+import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
+import {
+    bookDirectionState,
+    currentBookIdxState,
+    currentPageIdxState,
+    isWatchedBookState,
+    maxSketchbookState,
+    sketchbookAuthorState,
+} from '@atoms/result';
 import { userState } from '@atoms/user';
 import { ReactComponent as LeftArrowIcon } from '@assets/icons/chevron-left-gradient.svg';
 import { ReactComponent as RightArrowIcon } from '@assets/icons/chevron-right-gradient.svg';
-import useResultSketchbook from '@hooks/useResultSketchbook';
+import bookMovedSound from '@assets/sounds/book-moved.wav';
+import { emitWatchResultSketchBook } from '@game/NetworkServiceUtils';
+import useSoundEffect from '@hooks/useSoundEffect';
 
 function SketchbookAuthor({ isForShareResult }: { isForShareResult: boolean }) {
     const authorName = useRecoilValue(sketchbookAuthorState);
-    const currentBookIdx = useRecoilValue(currentBookIdxState);
     const { maxBookNum } = useRecoilValue(maxSketchbookState);
+    const [currentBookIdx, setCurrentBookIdx] = useRecoilState(currentBookIdxState);
+    const setCurrentPageIdx = useSetRecoilState(currentPageIdxState);
+    const setBookDirection = useSetRecoilState(bookDirectionState);
+    const setIsWatched = useSetRecoilState(isWatchedBookState);
     const { isHost } = useRecoilValue(userState);
-    const { changeSketchbook } = useResultSketchbook(isForShareResult);
+    const { playSoundEffect } = useSoundEffect();
+
+    function changeSketchbook(nextNum: 1 | -1) {
+        setBookDirection(nextNum);
+        const nextBookIdx = currentBookIdx + nextNum;
+
+        playSoundEffect(bookMovedSound);
+
+        if (isForShareResult) {
+            setCurrentBookIdx(nextBookIdx);
+            setCurrentPageIdx(0);
+            setIsWatched(true);
+        } else {
+            emitWatchResultSketchBook(nextBookIdx);
+        }
+    }
 
     return (
         <>

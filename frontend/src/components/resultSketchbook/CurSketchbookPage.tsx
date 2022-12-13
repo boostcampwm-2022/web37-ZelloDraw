@@ -1,17 +1,77 @@
 import styled from 'styled-components';
 import { Center } from '@styles/styled';
-import { useRecoilValue } from 'recoil';
-import { currentPageIdxState, isWatchedBookState, maxSketchbookState } from '@atoms/result';
+import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
+import {
+    currentBookIdxState,
+    currentPageIdxState,
+    isStartedState,
+    isWatchedBookState,
+    maxSketchbookState,
+    pageDirectionState,
+} from '@atoms/result';
+import { GUIDE_PAGE_IDX } from '@utils/constants';
 import { ReactComponent as DownArrowIcon } from '@assets/icons/chevron-down.svg';
 import { ReactComponent as UpArrowIcon } from '@assets/icons/chevron-up.svg';
+import pageUpSound from '@assets/sounds/page-up.wav';
+import pageDownSound from '@assets/sounds/page-down.wav';
 import CurAndMaxNumber from '@components/CurAndMaxNumber';
-import useResultSketchbook from '@hooks/useResultSketchbook';
+import useSoundEffect from '@hooks/useSoundEffect';
+import { useEffect } from 'react';
+import useTimer from '@hooks/useTimer';
 
 function CurSketchbookPage({ isForShareResult }: { isForShareResult: boolean }) {
     const isWatchedSketchbook = useRecoilValue(isWatchedBookState);
-    const currentPageIdx = useRecoilValue(currentPageIdxState);
-    const { maxPageNum } = useRecoilValue(maxSketchbookState);
-    const { addSketchbookPage, subtractSketchbookPage } = useResultSketchbook(isForShareResult);
+    const isStartedResult = useRecoilValue(isStartedState);
+    const { maxPageNum, maxBookNum } = useRecoilValue(maxSketchbookState);
+    const currentBookIdx = useRecoilValue(currentBookIdxState);
+    const [currentPageIdx, setCurrentPageIdx] = useRecoilState(currentPageIdxState);
+    const setPageDirection = useSetRecoilState(pageDirectionState);
+    const aSketchBookLimitTime = maxBookNum + 1;
+    const interval = 2000;
+    const { timeLeft, setTimerTime } = useTimer({
+        interval,
+        clearTimerDeps: currentBookIdx,
+    });
+    const { playSoundEffect } = useSoundEffect();
+
+    useEffect(() => {
+        if (isStartedResult || isWatchedSketchbook || isForShareResult) return;
+        setTimerTime(aSketchBookLimitTime);
+    }, [currentBookIdx, isStartedResult, isWatchedSketchbook]);
+
+    useEffect(() => {
+        if (timeLeft === 0 || timeLeft === aSketchBookLimitTime) return;
+        addSketchbookPage();
+    }, [timeLeft]);
+
+    function addSketchbookPage() {
+        if (currentPageIdx === maxPageNum && !isWatchedSketchbook) {
+            setCurrentPageIdx(GUIDE_PAGE_IDX);
+            return;
+        }
+
+        // 유저가 페이지를 조작하는 상태에서 마지막 페이지가 왔을 경우
+        if (currentPageIdx === maxPageNum && isWatchedSketchbook) return;
+
+        setPageDirection(1);
+        goToNextPage(1);
+
+        playSoundEffect(pageUpSound);
+    }
+
+    function subtractSketchbookPage() {
+        if (currentPageIdx === 0) return;
+
+        setPageDirection(-1);
+        goToNextPage(-1);
+
+        playSoundEffect(pageDownSound);
+    }
+
+    function goToNextPage(nextNum: number) {
+        const NextPageNumber = currentPageIdx + nextNum;
+        setCurrentPageIdx(NextPageNumber);
+    }
 
     return (
         <CurPageWrapper>
