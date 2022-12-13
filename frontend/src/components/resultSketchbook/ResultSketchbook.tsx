@@ -20,6 +20,7 @@ import CurSketchbookPage from '@components/resultSketchbook/CurSketchbookPage';
 import SketchbookAuthor from '@components/resultSketchbook/SketchbookAuthor';
 import OneMoreGameButton from '@components/resultSketchbook/OneMoreGameButton';
 import useResultSketchbook from '@hooks/useResultSketchbook';
+import useResultSocket from '@hooks/socket/useResultSocket';
 
 function ResultSketchbook({ isForShareResult }: { isForShareResult: boolean }) {
     const [setPage] = useMovePage();
@@ -32,6 +33,7 @@ function ResultSketchbook({ isForShareResult }: { isForShareResult: boolean }) {
     const { checkIsNotGuidePage } = useCheckGuidePage();
     const [_, onCopy] = useCopyClipBoard();
     const { playSoundEffect } = useSoundEffect();
+    const { emitWatchResultSketchBook, emitOneMoreGame } = useResultSocket(isForShareResult);
     useResultSketchbook(isForShareResult);
 
     useEffect(() => {
@@ -73,7 +75,10 @@ function ResultSketchbook({ isForShareResult }: { isForShareResult: boolean }) {
             <OutsideOfCard>
                 {!isStarted && (
                     <>
-                        <SketchbookAuthor isForShareResult={isForShareResult} />
+                        <SketchbookAuthor
+                            isForShareResult={isForShareResult}
+                            emitWatchResultSketchBook={emitWatchResultSketchBook}
+                        />
                         <ButtonWrapper>
                             {(isForShareResult || canOneMoreGame) && (
                                 <ExportIcon
@@ -82,7 +87,10 @@ function ResultSketchbook({ isForShareResult }: { isForShareResult: boolean }) {
                                     aria-label={'게임 결과 페이지 링크 복사'}
                                 />
                             )}
-                            <OneMoreGameButton isForShareResult={isForShareResult} />
+                            <OneMoreGameButton
+                                isForShareResult={isForShareResult}
+                                emitOneMoreGame={emitOneMoreGame}
+                            />
                         </ButtonWrapper>
                     </>
                 )}

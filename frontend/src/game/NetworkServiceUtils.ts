@@ -1,5 +1,3 @@
-import { networkServiceInstance as NetworkService } from '@services/socketService';
-import { WatchResultSketchbookEmitRequest } from '@backend/core/game.dto';
 import { SetterOrUpdater } from 'recoil';
 import { QuizReply } from '@backend/core/quizReply.model';
 import { PartialWithoutMethods } from '@backend/utils/types';
@@ -29,27 +27,4 @@ const createGameReplyLists = (gameResult: any) => {
             };
         });
     });
-};
-
-export const emitWatchResultSketchBook = (nextBookIdx: number) => {
-    NetworkService.emit('watch-result-sketchbook', { bookIdx: nextBookIdx });
-};
-
-export const onWatchResultSketchBook = (
-    setCurrentBookIdx: SetterOrUpdater<number>,
-    setCurrentPageIdx: SetterOrUpdater<number>,
-    setIsWatched: SetterOrUpdater<boolean>,
-) => {
-    NetworkService.on(
-        'watch-result-sketchbook',
-        (bookIdxInfo: WatchResultSketchbookEmitRequest) => {
-            setCurrentBookIdx(bookIdxInfo.bookIdx);
-            setCurrentPageIdx(0);
-            setIsWatched(bookIdxInfo.isWatched);
-        },
-    );
-};
-
-export const emitOneMoreGame = () => {
-    NetworkService.emit('back-to-lobby');
 };
