@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import styled from 'styled-components';
 import { ScaledDiv, ScaledSection } from '@styles/styled';
 import UserCard from '@components/UserCard';
-import Logo from '@assets/logo-l.png';
+import Logo from '@assets/zellodraw-logo.png';
 import InfoCard from '@components/InfoCard';
 import GuestEntranceMessage from '@components/GuestMessageBox';
 import MadeByText from '@components/MadeByText';
@@ -48,7 +48,7 @@ function Main() {
                     role={'button'}
                     aria-label={'새로고침을 위해 메인화면으로 이동'}
                 >
-                    <img src={Logo} alt={'Logo'} />
+                    <img src={Logo} alt={'Logo'} width={554} height={124} />
                 </LogoWrapper>
                 <CardContainer>
                     <UserCard />

@@ -8,7 +8,7 @@ import { resetModalOpenState, submittedQuizReplyCountState, userListState } from
 import GameUsers from '@components/GameUsers';
 import MicButton from '@components/MicButton';
 import CameraButton from '@components/CameraButton';
-import SmallLogo from '@assets/logo-s.png';
+import SmallLogo from '@assets/zellodraw-logo.png';
 import GameSketchbook from '@components/GameSketchbook';
 import ResultSketchbook from '@components/ResultSketchbook';
 import { networkServiceInstance as NetworkService } from '../services/socketService';
@@ -92,7 +92,7 @@ function Game() {
                 <MicButton />
             </CamAndMicWrapper>
             <LogoWrapper>
-                <img src={SmallLogo} alt={'Logo'} />
+                <img src={SmallLogo} alt={'Logo'} width={363} height={75} />
             </LogoWrapper>
             <SoundControlButtonWrapper>
                 <SoundControlButton />

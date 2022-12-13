@@ -27,7 +27,7 @@ import UserList from '@components/UserList';
 import CameraButton from '@components/CameraButton';
 import MicButton from '@components/MicButton';
 import SoundControlButton from '@components/SoundControlButton';
-import SmallLogo from '@assets/logo-s.png';
+import SmallLogo from '@assets/zellodraw-logo.png';
 import lobbyInSound from '@assets/sounds/lobby-in.mp3';
 
 function Lobby() {
@@ -123,7 +123,7 @@ function Lobby() {
                 role={'button'}
                 aria-label={'게임 로비 나가기'}
             >
-                <img src={SmallLogo} alt={'Logo'} />
+                <img src={SmallLogo} alt={'Logo'} width={363} height={75} />
             </LogoWrapper>
             <LobbyContainer>
                 <FlexBox>
