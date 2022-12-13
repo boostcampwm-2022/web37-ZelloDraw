@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import { useEffect, useCallback } from 'react';
 import styled from 'styled-components';
 import { Center } from '@styles/styled';
 import { useRecoilState, useRecoilValue } from 'recoil';
@@ -12,6 +12,7 @@ import PrimaryButton from '@components/PrimaryButton';
 import { emitSubmitQuizReply } from '@game/NetworkServiceUtils';
 import useZeroRound from '@hooks/useZeroRound';
 import useRoundTimeout from '@hooks/useRoundTimeout';
+import { debounce } from 'lodash';
 
 function QuizReplySection() {
     const isDraw = useRecoilValue(isQuizTypeDrawState);
@@ -53,12 +54,19 @@ function QuizReplySection() {
         });
     }
 
+    const debounceOnChange = useCallback(
+        debounce((value: string) => {
+            setUserReply(value);
+        }, 500),
+        [],
+    );
+
     return (
         <Container>
             {!isDraw ? (
                 <AnswerInput
                     placeholder={placeholder}
-                    onChange={(e) => setUserReply(e.target.value)}
+                    onChange={(e) => debounceOnChange(e.target.value)}
                     readOnly={quizSubmitted}
                     quizSubmitted={quizSubmitted}
                 />

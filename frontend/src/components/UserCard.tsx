@@ -25,14 +25,13 @@ function UserCard() {
     const onChangeName = (e: React.ChangeEvent<HTMLInputElement>) => {
         // 유저 이름을 바꾼 적 있는지 확인
         isFirstUserNameChanging && setIsFirstUserNameChanging(false);
-
         const name = e.target.value;
-        setUserState({ ...user, name });
         debounceOnChange(name);
     };
 
     const debounceOnChange = useCallback(
         debounce((name: string) => {
+            setUserState({ ...user, name });
             NetworkService.emit('update-user-name', name);
         }, 500),
         [],
