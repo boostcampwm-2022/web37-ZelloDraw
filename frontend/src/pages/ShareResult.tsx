@@ -1,5 +1,5 @@
 import ResultSketchbook from '@components/ResultSketchbook';
-import SmallLogo from '@assets/logo-s.png';
+import SmallLogo from '@assets/zellodraw-logo.png';
 import styled from 'styled-components';
 import { ScaledDiv, ScaledSection } from '@styles/styled';
 import { useEffect } from 'react';
@@ -41,7 +41,7 @@ export function ShareResult() {
                 </SketchbookSection>
             </Container>
             <LogoWrapper>
-                <img src={SmallLogo} alt={'Logo'} />
+                <img src={SmallLogo} alt={'Logo'} width={363} height={75} />
             </LogoWrapper>
         </>
     );

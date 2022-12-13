@@ -95,7 +95,11 @@ function ResultSketchbook(props: { isForShareResult: boolean }) {
                             <RoundNumberWrapper>
                                 {isWatched && (
                                     <UpArrowWrapper disable={currentPageIdx === maxPageNum}>
-                                        <UpArrowIcon onClick={addSketchbookPage} />
+                                        <UpArrowIcon
+                                            onClick={addSketchbookPage}
+                                            role={'button'}
+                                            aria-label={'다음 스케치북 페이지 보기'}
+                                        />
                                     </UpArrowWrapper>
                                 )}
                                 <CurAndMaxNumber
@@ -106,7 +110,11 @@ function ResultSketchbook(props: { isForShareResult: boolean }) {
                                 />
                                 {isWatched && (
                                     <DownArrowWrapper disable={currentPageIdx === 0}>
-                                        <DownArrowIcon onClick={subtractSketchbookPage} />
+                                        <DownArrowIcon
+                                            onClick={subtractSketchbookPage}
+                                            role={'button'}
+                                            aria-label={'이전 스케치북 페이지 보기'}
+                                        />
                                     </DownArrowWrapper>
                                 )}
                             </RoundNumberWrapper>
@@ -118,7 +126,11 @@ function ResultSketchbook(props: { isForShareResult: boolean }) {
                 {!isStarted && (
                     <>
                         {isHost && currentBookIdx !== 0 && (
-                            <LeftArrowIcon onClick={() => changeSketchbook(-1)} />
+                            <LeftArrowIcon
+                                onClick={() => changeSketchbook(-1)}
+                                role={'button'}
+                                aria-label={'이전 유저 스케치북 보기'}
+                            />
                         )}
                         {isHost && currentBookIdx === 0 && <EmptySpan />}
                         <Brace>{'{'}</Brace>
@@ -129,15 +141,27 @@ function ResultSketchbook(props: { isForShareResult: boolean }) {
                         <span>의 스케치북</span>
                         {isHost && currentBookIdx === maxBookNum && <EmptySpan />}
                         {isHost && currentBookIdx !== maxBookNum && (
-                            <RightArrowIcon onClick={() => changeSketchbook(1)} />
+                            <RightArrowIcon
+                                onClick={() => changeSketchbook(1)}
+                                role={'button'}
+                                aria-label={'다음 유저 스케치북 보기'}
+                            />
                         )}
 
                         <ButtonWrapper>
                             {(props.isForShareResult || canOneMoreGame) && (
-                                <ExportIcon onClick={copyGameResultIdOnClipboard} />
+                                <ExportIcon
+                                    onClick={copyGameResultIdOnClipboard}
+                                    role={'button'}
+                                    aria-label={'게임 결과 페이지 링크 복사'}
+                                />
                             )}
                             {!props.isForShareResult && canOneMoreGame && isHost && (
-                                <div onClick={emitOneMoreGame}>
+                                <div
+                                    onClick={emitOneMoreGame}
+                                    role={'button'}
+                                    aria-label={'게임 한판 더 하기'}
+                                >
                                     <PrimaryButton topText='ONE MORE' bottomText='한판 더 하기' />
                                 </div>
                             )}

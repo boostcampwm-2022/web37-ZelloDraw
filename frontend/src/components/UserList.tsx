@@ -83,7 +83,7 @@ const PlayerCountText = styled.h3`
 `;
 
 const PlayerCountSlash = styled(PlayerCountText)`
-    font-family: 'Sniglet';
+    font-family: 'Sniglet', cursive;
     font-weight: 800;
     padding: 3px 2px 0;
 `;

@@ -5,7 +5,7 @@ function PrimaryButton({ topText, bottomText }: { topText: string; bottomText: s
     return (
         <PrimaryBtn isSubmitBtn={topText === 'SUBMIT'} isEditBtn={topText === 'EDIT'}>
             {topText}
-            <h5>{bottomText}</h5>
+            <div>{bottomText}</div>
         </PrimaryBtn>
     );
 }
@@ -40,7 +40,7 @@ const PrimaryBtn = styled.button<{ isSubmitBtn: boolean; isEditBtn: boolean }>`
     letter-spacing: -0.05em;
     color: ${(props) => (props.isEditBtn ? props.theme.color.gray1 : props.theme.color.white)};
 
-    h5 {
+    > div:last-of-type {
         font-weight: 400;
         letter-spacing: -0.045em;
         margin-top: -5px;

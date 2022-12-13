@@ -37,6 +37,8 @@ function DrawingTools({ restProps }: DrawingToolsType) {
                         key={index}
                         onClick={() => onChangeTool(tool.type)}
                         isSelected={selectedTool === tool.type}
+                        role={'button'}
+                        aria-label={`${tool.type}`}
                     >
                         <img src={tool.element} onClick={tool.onclick} alt={`${tool.type}`} />
                     </Tool>
@@ -49,6 +51,8 @@ function DrawingTools({ restProps }: DrawingToolsType) {
                         size={`${value}px`}
                         onClick={() => onClickLineWidth(index)}
                         isSelected={selectedLineWidth === index}
+                        role={'button'}
+                        aria-label={`펜 굵기 ${value}로 변경`}
                     ></LineWidth>
                 ))}
             </LineWidthPicker>

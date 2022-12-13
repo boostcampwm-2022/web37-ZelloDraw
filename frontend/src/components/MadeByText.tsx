@@ -20,7 +20,7 @@ const TextBox = styled.div`
 `;
 
 const Title = styled.span`
-    font-family: Sniglet;
+    font-family: 'Sniglet', cursive;
     font-weight: 800;
     line-height: 30px;
     letter-spacing: 0.01em;
