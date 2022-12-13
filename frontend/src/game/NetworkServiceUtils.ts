@@ -1,7 +1,6 @@
 import { networkServiceInstance as NetworkService } from '@services/socketService';
 import {
     CompleteGameEmitRequest,
-    StartRoundEmitRequest,
     SubmitQuizReplyEmitRequest,
     SubmitQuizReplyRequest,
     WatchResultSketchbookEmitRequest,
@@ -10,23 +9,6 @@ import { SetterOrUpdater } from 'recoil';
 import { QuizReply } from '@backend/core/quizReply.model';
 import { PartialWithoutMethods } from '@backend/utils/types';
 import axios from 'axios';
-
-export const emitStartGame = (lobbyId: string) => {
-    NetworkService.emit('start-game', lobbyId);
-};
-
-export const onStartGame = (
-    setPage: (url: string) => void,
-    setRoundInfo: SetterOrUpdater<StartRoundEmitRequest>,
-) => {
-    NetworkService.on('start-game', () => {
-        setPage('/game');
-    });
-
-    NetworkService.on('start-round', (roundInfo: StartRoundEmitRequest) => {
-        setRoundInfo(roundInfo);
-    });
-};
 
 export const emitSubmitQuizReply = (submitReply: SubmitQuizReplyRequest) => {
     NetworkService.emit('submit-quiz-reply', submitReply);

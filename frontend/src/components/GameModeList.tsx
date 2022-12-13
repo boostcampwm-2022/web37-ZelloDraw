@@ -7,7 +7,7 @@ import Card from '@components/Card';
 import GameModeItem from '@components/GameModeItem';
 import GameStartButton from '@components/GameStartButton';
 
-function GameModeList({ lobbyId }: { lobbyId: string }) {
+function GameModeList({ emitStartGame }: { emitStartGame: () => void }) {
     const user = useRecoilValue<userStateType>(userState);
 
     const modes = [
@@ -25,7 +25,7 @@ function GameModeList({ lobbyId }: { lobbyId: string }) {
                     <GameModeItem mode={mode} key={mode.title} isSelected={idx === 0} />
                 ))}
                 {user.isHost ? (
-                    <GameStartButton lobbyId={lobbyId} />
+                    <GameStartButton emitStartGame={emitStartGame} />
                 ) : (
                     <TextWrapper>
                         <span>*</span> 게임 시작을 기다리고 있어요... <span>*</span>
