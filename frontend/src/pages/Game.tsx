@@ -18,7 +18,9 @@ import useBeforeReload from '@hooks/useBeforeReload';
 import CountDown from '@components/CountDown';
 import { AnimatePresence } from 'framer-motion';
 import ResetModal from '@components/ResetModal';
-import { playCountdownSound } from '@utils/audio';
+import SoundControlButton from '@components/SoundControlButton';
+import countdownSound from '@assets/sounds/countdown.mp3';
+import useSoundEffect from '@hooks/useSoundEffect';
 
 function Game() {
     const [user, setUser] = useRecoilState(userState);
@@ -29,10 +31,11 @@ function Game() {
     const [isCompleteGame, setIsCompleteGame] = useState(false);
     const [isStarted, setIsStarted] = useState(false);
     const resetModalOpen = useRecoilValue(resetModalOpenState);
+    const { playSoundEffect } = useSoundEffect();
     useBeforeReload();
 
     useEffect(() => {
-        playCountdownSound();
+        playSoundEffect(countdownSound);
         setTimeout(() => setIsStarted(true), 2500);
     }, []);
 
@@ -91,6 +94,9 @@ function Game() {
             <LogoWrapper>
                 <img src={SmallLogo} alt={'Logo'} />
             </LogoWrapper>
+            <SoundControlButtonWrapper>
+                <SoundControlButton />
+            </SoundControlButtonWrapper>
         </>
     );
 }
@@ -122,4 +128,10 @@ const LogoWrapper = styled(ScaledDiv)`
     position: absolute;
     bottom: 40px;
     cursor: pointer;
+`;
+
+const SoundControlButtonWrapper = styled(ScaledDiv)`
+    position: absolute;
+    bottom: 24px;
+    right: 26px;
 `;

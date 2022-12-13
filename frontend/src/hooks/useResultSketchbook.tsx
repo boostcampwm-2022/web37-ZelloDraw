@@ -14,7 +14,10 @@ import { userState } from '@atoms/user';
 import useTimer from '@hooks/useTimer';
 import { GUIDE_PAGE_IDX } from '@utils/constants';
 import { emitWatchResultSketchBook, onWatchResultSketchBook } from '@game/NetworkServiceUtils';
-import { playBookMovedSound, playPageDownSound, playPageUpSound } from '@utils/audio';
+import useSoundEffect from '@hooks/useSoundEffect';
+import pageUpSound from '@assets/sounds/page-up.wav';
+import pageDownSound from '@assets/sounds/page-down.wav';
+import bookMovedSound from '@assets/sounds/book-moved.wav';
 
 function useResultSketchbook(controlOnLocal: boolean) {
     const { isHost } = useRecoilValue(userState);
@@ -34,6 +37,8 @@ function useResultSketchbook(controlOnLocal: boolean) {
         interval,
         clearTimerDeps: currentBookIdx,
     });
+
+    const { playSoundEffect } = useSoundEffect();
 
     useEffect(() => {
         // 결과 공유 페이지일 경우 설명페이지 없이 바로 결과만 볼 수 있도록 한다.
@@ -75,7 +80,7 @@ function useResultSketchbook(controlOnLocal: boolean) {
         setPageDirection(1);
         goToNextPage(1);
 
-        playPageUpSound();
+        playSoundEffect(pageUpSound);
     }
 
     function subtractSketchbookPage() {
@@ -84,7 +89,7 @@ function useResultSketchbook(controlOnLocal: boolean) {
         setPageDirection(-1);
         goToNextPage(-1);
 
-        playPageDownSound();
+        playSoundEffect(pageDownSound);
     }
 
     function goToNextPage(nextNum: number) {
@@ -96,7 +101,7 @@ function useResultSketchbook(controlOnLocal: boolean) {
         setBookDirection(nextNum);
         const nextBookIdx = currentBookIdx + nextNum;
 
-        playBookMovedSound();
+        playSoundEffect(bookMovedSound);
 
         if (controlOnLocal) {
             setCurrentBookIdx(nextBookIdx);

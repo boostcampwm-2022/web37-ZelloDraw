@@ -10,7 +10,8 @@ import actEraser from '@assets/icons/eraser-icon-activated.svg';
 import actReset from '@assets/icons/reset-icon-activated.svg';
 import { useRecoilState } from 'recoil';
 import { canvasSelectedColorState } from '@atoms/game';
-import { playSelectedSound } from '@utils/audio';
+import useSoundEffect from '@hooks/useSoundEffect';
+import selectedSound from '@assets/sounds/select-tools.wav';
 
 interface ToolType {
     element: any;
@@ -38,6 +39,8 @@ function usePalette({
     const [selectedColor, setSelectedColor] = useRecoilState(canvasSelectedColorState);
     const [selectedTool, setSelectedTool] = useState<ToolsType>(ToolsType.PEN);
     const [selectedLineWidth, setSelectedLineWidth] = useState<number>(1);
+
+    const { playSoundEffect } = useSoundEffect();
 
     useEffect(() => {
         // 도구 초기화
@@ -91,7 +94,7 @@ function usePalette({
             }, 200);
         }
 
-        playSelectedSound();
+        playSoundEffect(selectedSound);
     };
 
     return {
