@@ -5,6 +5,8 @@ import { CoreModule } from './core/core.module';
 import { RedisModule } from './redis/redis.module';
 import { MongooseModule } from '@nestjs/mongoose';
 import { ConfigModule } from '@nestjs/config';
+import { ScheduleModule } from '@nestjs/schedule';
+import { TasksService } from './admin/cron.service';
 
 @Module({
     imports: [
@@ -12,8 +14,9 @@ import { ConfigModule } from '@nestjs/config';
         RedisModule,
         MongooseModule.forRoot('mongodb://localhost/zellodraw'),
         ConfigModule.forRoot(),
+        ScheduleModule.forRoot(),
     ],
     controllers: [AppController],
-    providers: [AppService],
+    providers: [AppService, TasksService],
 })
 export class AppModule {}
