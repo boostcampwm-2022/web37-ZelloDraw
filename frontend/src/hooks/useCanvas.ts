@@ -34,7 +34,7 @@ function useCanvas() {
     const drawState = useRef<CanvasState>(CanvasState.NONE);
     const selectedColor = useRecoilValue(canvasSelectedColorState);
 
-    const [pos, setPos] = useState<Coordinate | undefined>({ x: 0, y: 0 });
+    const posRef = useRef<Coordinate | undefined>({ x: 0, y: 0 });
     const [isDrawing, setIsDrawing] = useState<boolean>(false);
     const [canClearCanvas, setCanClearCanvas] = useRecoilState(canClearCanvasState);
     const quizSubmitted = useRecoilValue(quizSubmitState);
@@ -148,13 +148,13 @@ function useCanvas() {
 
             if (drawState.current === CanvasState.DRAW && isDrawing) {
                 const newPos = getCoordinates(event);
-                if (pos && newPos) {
-                    drawLine(pos, newPos);
-                    setPos(newPos);
+                if (posRef.current && newPos) {
+                    drawLine(posRef.current, newPos);
+                    posRef.current = newPos;
                 }
             }
         },
-        [drawState, pos],
+        [drawState, posRef.current],
     );
 
     const startPainting = useCallback((event: MouseEvent) => {
@@ -163,7 +163,7 @@ function useCanvas() {
         if (newPos) {
             drawState.current = CanvasState.DRAW;
             setIsDrawing(true);
-            setPos(newPos);
+            posRef.current = newPos;
         }
     }, []);
 
