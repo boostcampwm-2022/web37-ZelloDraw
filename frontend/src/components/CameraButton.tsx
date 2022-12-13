@@ -1,9 +1,9 @@
 import cameraOffImg from '@assets/buttons/camera-off-btn.svg';
 import cameraOnImg from '@assets/buttons/camera-on-btn.svg';
-import styled from 'styled-components';
 import { useRecoilState, useRecoilValue } from 'recoil';
 import { userMicState, userCamState, userStreamRefState, localDeviceState } from '@atoms/user';
 import { networkServiceInstance as NetworkService } from '../services/socketService';
+import ControlButton from '@components/ControlButton';
 
 function CameraButton() {
     const selfStreamRef = useRecoilValue(userStreamRefState);
@@ -20,42 +20,19 @@ function CameraButton() {
     };
 
     return (
-        <CameraBtnSet>
-            <CameraBtn onClick={onBtnClick} disabled={!localCamState}>
-                <img src={userCam ? cameraOnImg : cameraOffImg} />
-            </CameraBtn>
-            <Label>CAMERA {userCam ? 'ON' : 'OFF'}</Label>
-        </CameraBtnSet>
+        <ControlButton
+            onClick={onBtnClick}
+            disabled={!localCamState}
+            labelText={`CAMERA ${userCam ? 'ON' : 'OFF'}`}
+            aria-label={`카메라 ${userCam ? '켜짐' : '꺼짐'}`}
+        >
+            {userCam ? (
+                <img src={cameraOnImg} alt={'카메라 켜짐'} />
+            ) : (
+                <img src={cameraOffImg} alt={'카메라 꺼짐'} />
+            )}
+        </ControlButton>
     );
 }
 
 export default CameraButton;
-
-const CameraBtnSet = styled.div`
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    width: 85px;
-`;
-
-const CameraBtn = styled.button`
-    all: unset;
-    cursor: pointer;
-    width: 64px;
-
-    img {
-        width: 64px;
-        height: 64px;
-    }
-`;
-
-const Label = styled.div`
-    font-style: normal;
-    font-weight: 700;
-    font-size: 14px;
-    line-height: 18px;
-    text-align: center;
-    letter-spacing: -0.04em;
-    color: ${({ theme }) => theme.color.whiteT2};
-`;

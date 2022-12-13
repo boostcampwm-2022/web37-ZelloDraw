@@ -1,9 +1,9 @@
-import micOffImg from '@assets/buttons/mic-off-btn.svg';
-import micOnImg from '@assets/buttons/mic-on-btn.svg';
-import styled from 'styled-components';
 import { useRecoilState, useRecoilValue } from 'recoil';
 import { userMicState, userCamState, userStreamRefState, localDeviceState } from '@atoms/user';
 import { networkServiceInstance as NetworkService } from '../services/socketService';
+import micOffImg from '@assets/buttons/mic-off-btn.svg';
+import micOnImg from '@assets/buttons/mic-on-btn.svg';
+import ControlButton from '@components/ControlButton';
 
 function MicButton() {
     const selfStreamRef = useRecoilValue(userStreamRefState);
@@ -20,42 +20,19 @@ function MicButton() {
     };
 
     return (
-        <MicBtnSet>
-            <MicBtn onClick={onBtnClick} disabled={!localMicState}>
-                <img src={userMic ? micOnImg : micOffImg} />
-            </MicBtn>
-            <Label>MIC {userMic ? 'ON' : 'OFF'}</Label>
-        </MicBtnSet>
+        <ControlButton
+            onClick={onBtnClick}
+            disabled={!localMicState}
+            labelText={`MIC ${userMic ? 'ON' : 'OFF'}`}
+            aria-label={`마이크 ${userMic ? '켜짐' : '꺼짐'}`}
+        >
+            {userMic ? (
+                <img src={micOnImg} alt={'마이크 켜짐'} />
+            ) : (
+                <img src={micOffImg} alt={'마이크 꺼짐'} />
+            )}
+        </ControlButton>
     );
 }
 
 export default MicButton;
-
-const MicBtnSet = styled.div`
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    width: 85px;
-`;
-
-const MicBtn = styled.button`
-    all: unset;
-    cursor: pointer;
-    width: 64px;
-
-    img {
-        width: 64px;
-        height: 64px;
-    }
-`;
-
-const Label = styled.div`
-    font-style: normal;
-    font-weight: 700;
-    font-size: 14px;
-    line-height: 18px;
-    text-align: center;
-    letter-spacing: -0.04em;
-    color: ${({ theme }) => theme.color.whiteT2};
-`;

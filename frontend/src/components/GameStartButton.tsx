@@ -10,7 +10,7 @@ export default function GameStartButton({ lobbyId }: { lobbyId: string }) {
     };
 
     return (
-        <ButtonWrapper onClick={onClickStartBtn}>
+        <ButtonWrapper onClick={onClickStartBtn} role={'button'} aria-label={'게임 시작하기'}>
             <PrimaryButton topText='START GAME' bottomText='시작하기' />
         </ButtonWrapper>
     );

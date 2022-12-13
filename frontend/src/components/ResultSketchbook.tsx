@@ -1,3 +1,5 @@
+import { useEffect } from 'react';
+import toast, { Toaster } from 'react-hot-toast';
 import styled from 'styled-components';
 import { Center } from '@styles/styled';
 import { useRecoilValue } from 'recoil';
@@ -13,25 +15,25 @@ import {
     sketchbookAuthorState,
 } from '@atoms/result';
 import { userState } from '@atoms/user';
-import SketchbookCard from '@components/SketchbookCard';
-import CurAndMaxNumber from '@components/CurAndMaxNumber';
-import ResultGuide from '@components/ResultGuide';
-import QuizResultContent from '@components/QuizResultContent';
-import useCheckGuidePage from '@hooks/useCheckGuidePage';
-import useResultSketchbook from '@hooks/useResultSketchbook';
-import PrimaryButton from '@components/PrimaryButton';
+import { lobbyIdState } from '@atoms/game';
 import { ReactComponent as LeftArrowIcon } from '@assets/icons/chevron-left-gradient.svg';
 import { ReactComponent as RightArrowIcon } from '@assets/icons/chevron-right-gradient.svg';
 import { ReactComponent as DownArrowIcon } from '@assets/icons/chevron-down.svg';
 import { ReactComponent as UpArrowIcon } from '@assets/icons/chevron-up.svg';
 import { ReactComponent as ExportIcon } from '@assets/icons/export-icon.svg';
-import { emitOneMoreGame } from '@game/NetworkServiceUtils';
-import { useEffect } from 'react';
+import resultInSound from '@assets/sounds/result-in.wav';
 import { networkServiceInstance as NetworkService } from '@services/socketService';
+import { emitOneMoreGame } from '@game/NetworkServiceUtils';
 import useMovePage from '@hooks/useMovePage';
-import { lobbyIdState } from '@atoms/game';
-import toast, { Toaster } from 'react-hot-toast';
+import useCheckGuidePage from '@hooks/useCheckGuidePage';
+import useResultSketchbook from '@hooks/useResultSketchbook';
 import useCopyClipBoard from '@hooks/useCopyClipboard';
+import useSoundEffect from '@hooks/useSoundEffect';
+import SketchbookCard from '@components/SketchbookCard';
+import CurAndMaxNumber from '@components/CurAndMaxNumber';
+import ResultGuide from '@components/ResultGuide';
+import QuizResultContent from '@components/QuizResultContent';
+import PrimaryButton from '@components/PrimaryButton';
 
 function ResultSketchbook(props: { isForShareResult: boolean }) {
     const [setPage] = useMovePage();
@@ -52,10 +54,12 @@ function ResultSketchbook(props: { isForShareResult: boolean }) {
     const { addSketchbookPage, subtractSketchbookPage, changeSketchbook } = useResultSketchbook(
         props.isForShareResult,
     );
-
     const [_, onCopy] = useCopyClipBoard();
+    const { playSoundEffect } = useSoundEffect();
 
     useEffect(() => {
+        if (!props.isForShareResult) playSoundEffect(resultInSound);
+
         NetworkService.on('back-to-lobby', () => {
             setPage(`/lobby?id=${lobbyId}&new=false`);
         });
@@ -91,7 +95,11 @@ function ResultSketchbook(props: { isForShareResult: boolean }) {
                             <RoundNumberWrapper>
                                 {isWatched && (
                                     <UpArrowWrapper disable={currentPageIdx === maxPageNum}>
-                                        <UpArrowIcon onClick={addSketchbookPage} />
+                                        <UpArrowIcon
+                                            onClick={addSketchbookPage}
+                                            role={'button'}
+                                            aria-label={'다음 스케치북 페이지 보기'}
+                                        />
                                     </UpArrowWrapper>
                                 )}
                                 <CurAndMaxNumber
@@ -102,7 +110,11 @@ function ResultSketchbook(props: { isForShareResult: boolean }) {
                                 />
                                 {isWatched && (
                                     <DownArrowWrapper disable={currentPageIdx === 0}>
-                                        <DownArrowIcon onClick={subtractSketchbookPage} />
+                                        <DownArrowIcon
+                                            onClick={subtractSketchbookPage}
+                                            role={'button'}
+                                            aria-label={'이전 스케치북 페이지 보기'}
+                                        />
                                     </DownArrowWrapper>
                                 )}
                             </RoundNumberWrapper>
@@ -114,7 +126,11 @@ function ResultSketchbook(props: { isForShareResult: boolean }) {
                 {!isStarted && (
                     <>
                         {isHost && currentBookIdx !== 0 && (
-                            <LeftArrowIcon onClick={() => changeSketchbook(-1)} />
+                            <LeftArrowIcon
+                                onClick={() => changeSketchbook(-1)}
+                                role={'button'}
+                                aria-label={'이전 유저 스케치북 보기'}
+                            />
                         )}
                         {isHost && currentBookIdx === 0 && <EmptySpan />}
                         <Brace>{'{'}</Brace>
@@ -125,15 +141,27 @@ function ResultSketchbook(props: { isForShareResult: boolean }) {
                         <span>의 스케치북</span>
                         {isHost && currentBookIdx === maxBookNum && <EmptySpan />}
                         {isHost && currentBookIdx !== maxBookNum && (
-                            <RightArrowIcon onClick={() => changeSketchbook(1)} />
+                            <RightArrowIcon
+                                onClick={() => changeSketchbook(1)}
+                                role={'button'}
+                                aria-label={'다음 유저 스케치북 보기'}
+                            />
                         )}
 
                         <ButtonWrapper>
                             {(props.isForShareResult || canOneMoreGame) && (
-                                <ExportIcon onClick={copyGameResultIdOnClipboard} />
+                                <ExportIcon
+                                    onClick={copyGameResultIdOnClipboard}
+                                    role={'button'}
+                                    aria-label={'게임 결과 페이지 링크 복사'}
+                                />
                             )}
                             {!props.isForShareResult && canOneMoreGame && isHost && (
-                                <div onClick={emitOneMoreGame}>
+                                <div
+                                    onClick={emitOneMoreGame}
+                                    role={'button'}
+                                    aria-label={'게임 한판 더 하기'}
+                                >
                                     <PrimaryButton topText='ONE MORE' bottomText='한판 더 하기' />
                                 </div>
                             )}

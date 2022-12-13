@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import { ReactComponent as GirlWithPencilChar } from '@assets/girl-with-pencil 1.svg';
+import girlWithPencil from '@assets/girl-with-pencil.png';
 import { useRecoilValue } from 'recoil';
 import { userState, userStateType } from '@atoms/user';
 import Card from '@components/Card';
@@ -14,7 +14,7 @@ function GameModeList({ lobbyId }: { lobbyId: string }) {
         {
             title: 'CUSTOM WORD',
             description: '나만의 단어로 시작해보세요!',
-            illustration: <GirlWithPencilChar />,
+            illustration: girlWithPencil,
         },
     ];
 

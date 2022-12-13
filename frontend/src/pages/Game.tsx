@@ -8,7 +8,7 @@ import { resetModalOpenState, submittedQuizReplyCountState, userListState } from
 import GameUsers from '@components/GameUsers';
 import MicButton from '@components/MicButton';
 import CameraButton from '@components/CameraButton';
-import SmallLogo from '@assets/logo-s.png';
+import SmallLogo from '@assets/zellodraw-logo.png';
 import GameSketchbook from '@components/GameSketchbook';
 import ResultSketchbook from '@components/ResultSketchbook';
 import { networkServiceInstance as NetworkService } from '../services/socketService';
@@ -18,6 +18,9 @@ import useBeforeReload from '@hooks/useBeforeReload';
 import CountDown from '@components/CountDown';
 import { AnimatePresence } from 'framer-motion';
 import ResetModal from '@components/ResetModal';
+import SoundControlButton from '@components/SoundControlButton';
+import countdownSound from '@assets/sounds/countdown.mp3';
+import useSoundEffect from '@hooks/useSoundEffect';
 
 function Game() {
     const [user, setUser] = useRecoilState(userState);
@@ -28,9 +31,11 @@ function Game() {
     const [isCompleteGame, setIsCompleteGame] = useState(false);
     const [isStarted, setIsStarted] = useState(false);
     const resetModalOpen = useRecoilValue(resetModalOpenState);
+    const { playSoundEffect } = useSoundEffect();
     useBeforeReload();
 
     useEffect(() => {
+        playSoundEffect(countdownSound);
         setTimeout(() => setIsStarted(true), 2500);
     }, []);
 
@@ -87,8 +92,11 @@ function Game() {
                 <MicButton />
             </CamAndMicWrapper>
             <LogoWrapper>
-                <img src={SmallLogo} alt={'Logo'} />
+                <img src={SmallLogo} alt={'Logo'} width={363} height={75} />
             </LogoWrapper>
+            <SoundControlButtonWrapper>
+                <SoundControlButton />
+            </SoundControlButtonWrapper>
         </>
     );
 }
@@ -120,4 +128,10 @@ const LogoWrapper = styled(ScaledDiv)`
     position: absolute;
     bottom: 40px;
     cursor: pointer;
+`;
+
+const SoundControlButtonWrapper = styled(ScaledDiv)`
+    position: absolute;
+    bottom: 24px;
+    right: 26px;
 `;

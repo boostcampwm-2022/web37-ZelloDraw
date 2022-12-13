@@ -26,6 +26,8 @@ export class GameResultService {
                     }),
                 };
             }),
+            gameStartDate: gameLobby.getGameStartDate(),
+            gameEndDate: new Date(),
         };
         const gameResult = new this.gameResultModel(gameResultDto);
         return await new Promise((resolve) => {

@@ -47,7 +47,11 @@ function InfoCard({ onHandleEnterLobby }: { onHandleEnterLobby: () => void }) {
                 <InfoDiv>
                     <InfoCarousel current={current} setCurrent={setCurrent} />
                 </InfoDiv>
-                <ButtonWrapper onClick={onHandleEnterLobby}>
+                <ButtonWrapper
+                    onClick={onHandleEnterLobby}
+                    role={'button'}
+                    aria-label={user.isHost ? '방 만들기' : '입장하기'}
+                >
                     {user.isHost ? (
                         <PrimaryButton topText='NEW ROOM' bottomText='방만들기' />
                     ) : (

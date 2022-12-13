@@ -28,6 +28,7 @@ function HexColorPicker({ onClickPickerColor, selected }: HexColorPickerProps) {
                 colorName={'rainbow'}
                 isSelected={selected === pickerColor}
                 onClick={() => setModal(!modal)}
+                aria-label={'원하는 모든 색을 선택할 수 있는 기능'}
             />
             <ColorPickerWrapper>
                 {modal && (
