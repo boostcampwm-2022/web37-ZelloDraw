@@ -1,10 +1,10 @@
 import { useEffect, useState } from 'react';
-import { emitSubmitQuizReply } from '@game/NetworkServiceUtils';
 import { useRecoilValue } from 'recoil';
 import { quizReplyState, roundNumberState } from '@atoms/game';
 import { Guide } from '@styles/styled';
+import { SubmitQuizReplyRequest } from '@backend/core/game.dto';
 
-function useZeroRound() {
+function useZeroRound(emitSubmitQuizReply: (quizReply: SubmitQuizReplyRequest) => void) {
     const placeholderDefault = '그림을 보고 답을 맞춰보세요!';
     const quizReplyContent = useRecoilValue(quizReplyState);
     const { curRound } = useRecoilValue(roundNumberState);

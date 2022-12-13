@@ -1,22 +1,22 @@
 import cameraOffImg from '@assets/buttons/camera-off-btn.svg';
 import cameraOnImg from '@assets/buttons/camera-on-btn.svg';
 import { useRecoilState, useRecoilValue } from 'recoil';
-import { userMicState, userCamState, userStreamRefState, localDeviceState } from '@atoms/user';
-import { networkServiceInstance as NetworkService } from '../services/socketService';
+import { userCamState, userStreamRefState, localDeviceState } from '@atoms/user';
 import ControlButton from '@components/ControlButton';
+import useUserSocket from '@hooks/socket/useUserSocket';
 
 function CameraButton() {
     const selfStreamRef = useRecoilValue(userStreamRefState);
-    const userMic = useRecoilValue(userMicState);
     const [userCam, setUserCam] = useRecoilState(userCamState);
     const localCamState = useRecoilValue(localDeviceState).video;
+    const { emitUpdateUserStream } = useUserSocket();
     const onBtnClick = () => {
         if (!selfStreamRef?.current) return;
         selfStreamRef.current.getVideoTracks().forEach((track) => (track.enabled = !track.enabled));
 
         const changed = !userCam;
         setUserCam(changed);
-        NetworkService.emit('update-user-stream', { audio: userMic, video: changed });
+        emitUpdateUserStream();
     };
 
     return (

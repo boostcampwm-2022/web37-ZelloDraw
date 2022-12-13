@@ -2,12 +2,13 @@ import { useRecoilValue } from 'recoil';
 import { isQuizTypeDrawState, quizReplyState, roundNumberState } from '@atoms/game';
 import useZeroRound from '@hooks/useZeroRound';
 import styled from 'styled-components';
+import { SubmitQuizReplyRequest } from '@backend/core/game.dto';
 
-function usePrevQuizReply() {
+function usePrevQuizReply(emitSubmitQuizReply: (quizReply: SubmitQuizReplyRequest) => void) {
     const isDraw = useRecoilValue(isQuizTypeDrawState);
     const quizReply = useRecoilValue(quizReplyState);
     const { curRound } = useRecoilValue(roundNumberState);
-    const { renderZeroRoundGuide } = useZeroRound();
+    const { renderZeroRoundGuide } = useZeroRound(emitSubmitQuizReply);
 
     const renderPrevUserQuizReply = () => {
         if (isDraw) {
