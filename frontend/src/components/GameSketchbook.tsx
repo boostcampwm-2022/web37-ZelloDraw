@@ -15,10 +15,15 @@ import styled from 'styled-components';
 import CurAndMaxNumber from '@components/CurAndMaxNumber';
 import Timer from '@components/Timer';
 import { useEffect } from 'react';
+import { SubmitQuizReplyRequest } from '@backend/core/game.dto';
 
-function GameSketchbook() {
+function GameSketchbook({
+    emitSubmitQuizReply,
+}: {
+    emitSubmitQuizReply: (quizReply: SubmitQuizReplyRequest) => void;
+}) {
     const { canvasRef, ...restProps } = useCanvas();
-    const { renderPrevUserQuizReply } = usePrevQuizReply();
+    const { renderPrevUserQuizReply } = usePrevQuizReply(emitSubmitQuizReply);
     const isDraw = useRecoilValue(isQuizTypeDrawState);
     const { curRound, maxRound } = useRecoilValue(roundNumberState);
     const [submittedCount, setSubmittedCount] = useRecoilState(submittedQuizReplyCountState);
@@ -66,7 +71,7 @@ function GameSketchbook() {
                 }
                 right={isDraw && !quizSubmitted && <DrawingTools restProps={restProps} />}
             />
-            <QuizReplySection />
+            <QuizReplySection emitSubmitQuizReply={emitSubmitQuizReply} />
         </>
     );
 }

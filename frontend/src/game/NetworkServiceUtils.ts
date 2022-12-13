@@ -1,46 +1,9 @@
 import { networkServiceInstance as NetworkService } from '@services/socketService';
-import {
-    CompleteGameEmitRequest,
-    SubmitQuizReplyEmitRequest,
-    SubmitQuizReplyRequest,
-    WatchResultSketchbookEmitRequest,
-} from '@backend/core/game.dto';
+import { WatchResultSketchbookEmitRequest } from '@backend/core/game.dto';
 import { SetterOrUpdater } from 'recoil';
 import { QuizReply } from '@backend/core/quizReply.model';
 import { PartialWithoutMethods } from '@backend/utils/types';
 import axios from 'axios';
-
-export const emitSubmitQuizReply = (submitReply: SubmitQuizReplyRequest) => {
-    NetworkService.emit('submit-quiz-reply', submitReply);
-};
-
-/**
- * 몇명이나 제출했는지 알려주는 이벤트, 클라이언트에서 'submit-quiz-reply' 발생시 서버에서 보내준다.
- */
-export const onCountSubmittedQuiz = (setSubmittedQuizReplyCount: SetterOrUpdater<number>) => {
-    NetworkService.on(
-        'submit-quiz-reply',
-        ({ submittedQuizReplyCount }: SubmitQuizReplyEmitRequest) => {
-            setSubmittedQuizReplyCount(submittedQuizReplyCount);
-        },
-    );
-};
-
-export const onRoundTimeout = (setIsRoundTimeout: SetterOrUpdater<boolean>) => {
-    NetworkService.on('round-timeout', () => setIsRoundTimeout(true));
-};
-
-export const onCompleteGame = (
-    setGameResultId: SetterOrUpdater<string>,
-    setGameResult: SetterOrUpdater<Array<Array<PartialWithoutMethods<QuizReply>>>>,
-    setIsCompleteGame: SetterOrUpdater<boolean>,
-) => {
-    NetworkService.on('complete-game', (gameResult: CompleteGameEmitRequest) => {
-        setGameResultId(gameResult.gameResultId);
-        setGameResult(gameResult.quizReplyLists);
-        setIsCompleteGame(true);
-    });
-};
 
 export const queryAndSaveGameResult = async (
     setGameResult: SetterOrUpdater<Array<Array<PartialWithoutMethods<QuizReply>>>>,

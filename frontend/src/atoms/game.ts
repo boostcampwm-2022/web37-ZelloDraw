@@ -130,3 +130,8 @@ export const canvasSelectedColorState = atom<string>({
     key: 'canvasSelectedColorState',
     default: PEN_DEFAULT_COLOR,
 });
+
+export const isRoundTimeoutState = atom<boolean>({
+    key: 'isRoundTimeoutState',
+    default: false,
+});

@@ -13,6 +13,7 @@ import { getParam } from '@utils/common';
 import useMovePage from '@hooks/useMovePage';
 import useWebRTC from '@hooks/useWebRTC';
 import useSoundEffect from '@hooks/useSoundEffect';
+import useUserSocket from '@hooks/socket/useUserSocket';
 import lobbyInSound from '@assets/sounds/lobby-in.mp3';
 
 function useLobbySocket() {
@@ -20,12 +21,14 @@ function useLobbySocket() {
     const lobbyId = useRecoilValue(lobbyIdState);
     const userCam = useRecoilValue(userCamState);
     const userMic = useRecoilValue(userMicState);
-    const [user, setUser] = useRecoilState(userState);
+    const user = useRecoilValue(userState);
     const [userList, setUserList] = useRecoilState<WebRTCUser[]>(userListState);
     const [setPage] = useMovePage();
     const setRoundInfo = useSetRecoilState<StartRoundEmitRequest>(roundInfoState);
     const { createOffers } = useWebRTC();
     const { playSoundEffect } = useSoundEffect();
+
+    const { onSucceedHost, onUpdateUserStream } = useUserSocket();
 
     useEffect(() => {
         if (isNewLobby) {
@@ -79,11 +82,11 @@ function useLobbySocket() {
         );
     }
 
-    function onSucceedHost() {
+    /*    function onSucceedHost() {
         NetworkService.on('succeed-host', () => {
             setUser({ ...user, isHost: true });
         });
-    }
+    } */
 
     function onStartGame() {
         NetworkService.on('start-game', () => {
@@ -110,7 +113,7 @@ function useLobbySocket() {
         });
     }
 
-    function onUpdateUserStream() {
+    /*    function onUpdateUserStream() {
         NetworkService.on('update-user-stream', (payload) => {
             setUserList((prev) =>
                 prev.map((user) => {
@@ -123,7 +126,7 @@ function useLobbySocket() {
                 }),
             );
         });
-    }
+    } */
 
     function emitStartGame() {
         NetworkService.emit('start-game', lobbyId);
