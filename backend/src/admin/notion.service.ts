@@ -4,6 +4,7 @@ import { GameResultService } from '../gameResult/gameResult.service';
 import { createAccumulatedStatContext, createCurrentStatContext } from './notion-context-factory';
 import { LobbyService } from '../core/lobby.service';
 import { UserService } from '../core/user.service';
+import { HourlySnapShotRequest } from 'src/gameResult/gameResult.dto';
 
 @Injectable()
 export class NotionService {
@@ -13,6 +14,9 @@ export class NotionService {
         private readonly lobbyService: LobbyService,
         private readonly userService: UserService,
     ) {}
+
+    hourlyMaxUserCnt = 0;
+    hourlyMaxGameCnt = 0;
 
     async updateAccumulatedStat() {
         const stat = await this.gameResultService.getStatBetween(new Date('2000-01-01'));
@@ -25,9 +29,10 @@ export class NotionService {
         const userCnt = (await this.userService.getAllUser()).length;
         const gameCnt = (await this.lobbyService.getAllGameLobby()).length;
         await this.notion.blocks.update(createCurrentStatContext(userCnt, gameCnt));
+        this.updateHourlyMaxCnt(userCnt, gameCnt);
     }
 
-    async updateHourlyStat(userCnt: number, gameCnt: number) {
+    async setHourlyStat() {
         await this.notion.pages.create({
             parent: { database_id: '789ac60c6f814d3dbef705f9ea310297' },
             properties: {
@@ -37,7 +42,7 @@ export class NotionService {
                         {
                             type: 'text',
                             text: {
-                                content: userCnt.toString(),
+                                content: this.hourlyMaxUserCnt.toString(),
                             },
                         },
                     ],
@@ -48,7 +53,7 @@ export class NotionService {
                         {
                             type: 'text',
                             text: {
-                                content: gameCnt.toString(),
+                                content: this.hourlyMaxGameCnt.toString(),
                             },
                         },
                     ],
@@ -61,5 +66,23 @@ export class NotionService {
                 },
             },
         });
+
+        const newHourlySnapshot = new HourlySnapShotRequest(
+            this.hourlyMaxUserCnt,
+            this.hourlyMaxGameCnt,
+            new Date(),
+        );
+        await this.gameResultService.setHourlySnapShot(newHourlySnapshot);
+        this.hourlyMaxUserCnt = 0;
+        this.hourlyMaxGameCnt = 0;
+    }
+
+    updateHourlyMaxCnt(userCnt: number, gameCnt: number) {
+        if (this.hourlyMaxUserCnt < userCnt) {
+            this.hourlyMaxUserCnt = userCnt;
+        }
+        if (this.hourlyMaxGameCnt < gameCnt) {
+            this.hourlyMaxGameCnt = gameCnt;
+        }
     }
 }
