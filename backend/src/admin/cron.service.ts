@@ -1,12 +1,12 @@
 import { Injectable } from '@nestjs/common';
-import { Cron } from '@nestjs/schedule';
+import { Cron, CronExpression } from '@nestjs/schedule';
 import { NotionService } from './notion.service';
 
 @Injectable()
 export class CronService {
     constructor(private readonly notionService: NotionService) {}
 
-    @Cron('* * * * *')
+    @Cron(CronExpression.EVERY_MINUTE)
     async actionPerMin() {
         await this.notionService.updateAccumulatedStat();
         await this.notionService.updateCurrentStat();
