@@ -21,11 +21,13 @@ import useBeforeReload from '@hooks/useBeforeReload';
 import useRemoveParams from '@hooks/useRemoveParams';
 import { useResetGameState } from '@hooks/useResetGameState';
 import useMovePage from '@hooks/useMovePage';
+import useSoundEffect from '@hooks/useSoundEffect';
 import GameModeList from '@components/GameModeList';
 import UserList from '@components/UserList';
 import CameraButton from '@components/CameraButton';
 import MicButton from '@components/MicButton';
 import SmallLogo from '@assets/logo-s.png';
+import lobbyInSound from '@assets/sounds/lobby-in.mp3';
 
 function Lobby() {
     const userCam = useRecoilValue(userCamState);
@@ -38,6 +40,7 @@ function Lobby() {
     const setRoundInfo = useSetRecoilState<StartRoundEmitRequest>(roundInfoState);
     const { createOffers } = useWebRTC();
     const resetGameState = useResetGameState();
+    const { playSoundEffect } = useSoundEffect();
 
     useRemoveParams();
     useBeforeReload();
@@ -81,6 +84,7 @@ function Lobby() {
     useEffect(() => {
         NetworkService.on('join-lobby', (user: JoinLobbyReEmitRequest) => {
             setUserList([...userList, user]);
+            playSoundEffect(lobbyInSound);
         });
         NetworkService.on('update-user-stream', (payload) => {
             setUserList((prev) =>
