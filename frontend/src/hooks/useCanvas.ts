@@ -12,7 +12,6 @@ import { convertHexToRgba, getPixelColor, isSameColor, setPixel } from '@utils/c
 import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
 import {
     canClearCanvasState,
-    canvasSelectedColorState,
     isQuizTypeDrawState,
     quizSubmitState,
     resetModalOpenState,
@@ -32,7 +31,6 @@ function useCanvas() {
     const ctxRef = useRef<any>(null);
     const curColor = useRef<Uint8ClampedArray>(convertHexToRgba(PEN_DEFAULT_COLOR));
     const drawState = useRef<CanvasState>(CanvasState.NONE);
-    const selectedColor = useRecoilValue(canvasSelectedColorState);
 
     const posRef = useRef<Coordinate | undefined>({ x: 0, y: 0 });
     const [isDrawing, setIsDrawing] = useState<boolean>(false);
@@ -57,7 +55,7 @@ function useCanvas() {
         ctxRef.current.stroke();
     };
 
-    const onClickPen = () => {
+    const onClickPen = (selectedColor: string) => {
         drawState.current = CanvasState.NONE;
         ctxRef.current.strokeStyle = selectedColor;
     };
