@@ -3,6 +3,7 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { GameResult, GameResultDocument } from './gameResult.schema';
 import { GameLobby } from '../core/gameLobby.model';
+import { PlayedUserAndGameCnt } from './gameResult.dto';
 
 @Injectable()
 export class GameResultService {
@@ -35,6 +36,25 @@ export class GameResultService {
                 resolve(res.id);
             });
         });
+    }
+
+    async getStatBetween(startDate: Date, endDate?: Date): Promise<PlayedUserAndGameCnt> {
+        if (endDate === undefined) {
+            endDate = new Date('9999-01-01');
+        }
+
+        const gameResultsBetweenDate = await this.gameResultModel.find({
+            gameStartDate: { $gte: startDate },
+            gameEndDate: { $lte: endDate },
+        });
+        return gameResultsBetweenDate.reduce(
+            (acc, gameResult) => {
+                acc.playedGameCnt += 1;
+                acc.playedUserCnt += gameResult.user.length;
+                return acc;
+            },
+            { playedUserCnt: 0, playedGameCnt: 0 },
+        );
     }
 
     async findById(id: string): Promise<GameResult> {
