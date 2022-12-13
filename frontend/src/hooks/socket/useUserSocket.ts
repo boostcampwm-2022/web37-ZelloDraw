@@ -1,9 +1,11 @@
 import { networkServiceInstance as NetworkService } from '@services/socketService';
-import { useRecoilState, useSetRecoilState } from 'recoil';
-import { userState } from '@atoms/user';
+import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
+import { userCamState, userMicState, userState } from '@atoms/user';
 import { userListState, WebRTCUser } from '@atoms/game';
 
 function useUserSocket() {
+    const userCam = useRecoilValue(userCamState);
+    const userMic = useRecoilValue(userMicState);
     const [user, setUser] = useRecoilState(userState);
     const setUserList = useSetRecoilState<WebRTCUser[]>(userListState);
 
@@ -28,7 +30,13 @@ function useUserSocket() {
         });
     }
 
-    return { onSucceedHost, onUpdateUserStream };
+    function emitUpdateUserStream() {
+        if (userCam !== undefined && userMic !== undefined) {
+            NetworkService.emit('update-user-stream', { video: userCam, audio: userMic });
+        }
+    }
+
+    return { onSucceedHost, onUpdateUserStream, emitUpdateUserStream };
 }
 
 export default useUserSocket;

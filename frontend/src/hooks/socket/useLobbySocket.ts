@@ -7,7 +7,7 @@ import {
 } from '@backend/core/user.dto';
 import { StartRoundEmitRequest } from '@backend/core/game.dto';
 import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
-import { userCamState, userMicState, userState } from '@atoms/user';
+import { userState } from '@atoms/user';
 import { lobbyIdState, roundInfoState, userListState, WebRTCUser } from '@atoms/game';
 import { getParam } from '@utils/common';
 import useMovePage from '@hooks/useMovePage';
@@ -19,8 +19,6 @@ import lobbyInSound from '@assets/sounds/lobby-in.mp3';
 function useLobbySocket() {
     const isNewLobby = getParam('new') === 'true' || getParam('new') === '';
     const lobbyId = useRecoilValue(lobbyIdState);
-    const userCam = useRecoilValue(userCamState);
-    const userMic = useRecoilValue(userMicState);
     const user = useRecoilValue(userState);
     const [userList, setUserList] = useRecoilState<WebRTCUser[]>(userListState);
     const [setPage] = useMovePage();
@@ -28,7 +26,7 @@ function useLobbySocket() {
     const { createOffers } = useWebRTC();
     const { playSoundEffect } = useSoundEffect();
 
-    const { onSucceedHost, onUpdateUserStream } = useUserSocket();
+    const { onSucceedHost, onUpdateUserStream, emitUpdateUserStream } = useUserSocket();
 
     useEffect(() => {
         if (isNewLobby) {
@@ -57,10 +55,6 @@ function useLobbySocket() {
         };
     }, [userList]);
 
-    function emitUpdateUserStream() {
-        NetworkService.emit('update-user-stream', { video: userCam, audio: userMic });
-    }
-
     function emitJoinLobby() {
         const payload: JoinLobbyRequest = { lobbyId };
 
@@ -81,12 +75,6 @@ function useLobbySocket() {
             },
         );
     }
-
-    /*    function onSucceedHost() {
-        NetworkService.on('succeed-host', () => {
-            setUser({ ...user, isHost: true });
-        });
-    } */
 
     function onStartGame() {
         NetworkService.on('start-game', () => {
@@ -112,21 +100,6 @@ function useLobbySocket() {
             );
         });
     }
-
-    /*    function onUpdateUserStream() {
-        NetworkService.on('update-user-stream', (payload) => {
-            setUserList((prev) =>
-                prev.map((user) => {
-                    const prevUserValue = { ...user };
-                    if (payload.socketId === user.sid) {
-                        prevUserValue.audio = payload.audio;
-                        prevUserValue.video = payload.video;
-                    }
-                    return prevUserValue;
-                }),
-            );
-        });
-    } */
 
     function emitStartGame() {
         NetworkService.emit('start-game', lobbyId);
