@@ -24,10 +24,10 @@ import useCheckGuidePage from '@hooks/useCheckGuidePage';
 import useResultSketchbook from '@hooks/useResultSketchbook';
 import useCopyClipBoard from '@hooks/useCopyClipboard';
 import useSoundEffect from '@hooks/useSoundEffect';
-import SketchbookCard from '@components/SketchbookCard';
-import ResultGuide from '@components/ResultGuide';
-import QuizResultContent from '@components/resultSketchbook/QuizResultContent';
 import PrimaryButton from '@components/PrimaryButton';
+import SketchbookCard from '@components/SketchbookCard';
+import ResultGuide from '@components/resultSketchbook/ResultGuide';
+import QuizResultContent from '@components/resultSketchbook/QuizResultContent';
 import QuizAuthor from '@components/resultSketchbook/QuizAuthor';
 import CurSketchbookPage from '@components/resultSketchbook/CurSketchbookPage';
 
