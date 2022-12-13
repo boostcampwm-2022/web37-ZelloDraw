@@ -11,4 +11,9 @@ export class CronService {
         await this.notionService.updateAccumulatedStat();
         await this.notionService.updateCurrentStat();
     }
+
+    @Cron(CronExpression.EVERY_HOUR)
+    async actionPerHour() {
+        await this.notionService.updateGameResultStat();
+    }
 }

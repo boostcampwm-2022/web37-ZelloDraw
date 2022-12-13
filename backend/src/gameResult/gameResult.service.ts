@@ -39,14 +39,7 @@ export class GameResultService {
     }
 
     async getStatBetween(startDate: Date, endDate?: Date): Promise<PlayedUserAndGameCnt> {
-        if (endDate === undefined) {
-            endDate = new Date('9999-01-01');
-        }
-
-        const gameResultsBetweenDate = await this.gameResultModel.find({
-            gameStartDate: { $gte: startDate },
-            gameEndDate: { $lte: endDate },
-        });
+        const gameResultsBetweenDate = await this.getGameResultBetween(startDate, endDate);
         return gameResultsBetweenDate.reduce(
             (acc, gameResult) => {
                 acc.playedGameCnt += 1;
@@ -55,6 +48,17 @@ export class GameResultService {
             },
             { playedUserCnt: 0, playedGameCnt: 0 },
         );
+    }
+
+    async getGameResultBetween(startDate: Date, endDate?: Date): Promise<GameResult[]> {
+        if (endDate === undefined) {
+            endDate = new Date('9999-01-01');
+        }
+
+        const gameResultsBetweenDate = await this.gameResultModel.find({
+            gameStartDate: { $gte: startDate, $lte: endDate },
+        });
+        return gameResultsBetweenDate;
     }
 
     async findById(id: string): Promise<GameResult> {
