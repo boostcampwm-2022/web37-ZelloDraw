@@ -17,6 +17,6 @@ import { UserRepository } from './user.repository';
         GameLobbyRepository,
         UserRepository,
     ],
-    exports: [UserService],
+    exports: [UserService, LobbyService],
 })
 export class CoreModule {}
