@@ -1,7 +1,7 @@
-import SoundOffIcon from '@assets/buttons/sound-off-btn.svg';
-import SoundOnIcon from '@assets/buttons/sound-on-btn.svg';
 import { isSoundOnState } from '@atoms/user';
 import { useRecoilState } from 'recoil';
+import SoundOffIcon from '@assets/buttons/sound-off-btn.svg';
+import SoundOnIcon from '@assets/buttons/sound-on-btn.svg';
 import ControlButton from '@components/ControlButton';
 
 function SoundControlButton() {

@@ -1,4 +1,6 @@
 import { useEffect, useState } from 'react';
+import { useRecoilState } from 'recoil';
+import { canvasSelectedColorState } from '@atoms/game';
 import { PEN_DEFAULT_COLOR, ToolsType } from '@utils/constants';
 import pen from '@assets/icons/pen-icon.svg';
 import paint from '@assets/icons/paint-icon.svg';
@@ -8,10 +10,8 @@ import actPen from '@assets/icons/pen-icon-activated.svg';
 import actPaint from '@assets/icons/paint-icon-activated.svg';
 import actEraser from '@assets/icons/eraser-icon-activated.svg';
 import actReset from '@assets/icons/reset-icon-activated.svg';
-import { useRecoilState } from 'recoil';
-import { canvasSelectedColorState } from '@atoms/game';
-import useSoundEffect from '@hooks/useSoundEffect';
 import selectedSound from '@assets/sounds/select-tools.wav';
+import useSoundEffect from '@hooks/useSoundEffect';
 
 interface ToolType {
     element: any;

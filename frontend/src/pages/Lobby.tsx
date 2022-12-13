@@ -1,18 +1,9 @@
 import { useEffect } from 'react';
 import styled from 'styled-components';
 import { ScaledDiv, ScaledSection } from '@styles/styled';
-import GameModeList from '@components/GameModeList';
-import UserList from '@components/UserList';
-import CameraButton from '@components/CameraButton';
-import MicButton from '@components/MicButton';
-import SmallLogo from '@assets/logo-s.png';
-import useMovePage from '@hooks/useMovePage';
-import {
-    networkServiceInstance as NetworkService,
-    SocketException,
-} from '../services/socketService';
 import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
 import { roundInfoState, userListState, WebRTCUser, lobbyIdState } from '@atoms/game';
+import { userCamState, userMicState, userState } from '@atoms/user';
 import { getParam } from '@utils/common';
 import {
     JoinLobbyResponse,
@@ -20,12 +11,21 @@ import {
     JoinLobbyReEmitRequest,
 } from '@backend/core/user.dto';
 import { StartRoundEmitRequest } from '@backend/core/game.dto';
+import {
+    networkServiceInstance as NetworkService,
+    SocketException,
+} from '../services/socketService';
 import { onStartGame } from '@game/NetworkServiceUtils';
 import useWebRTC from '@hooks/useWebRTC';
 import useBeforeReload from '@hooks/useBeforeReload';
 import useRemoveParams from '@hooks/useRemoveParams';
-import { userCamState, userMicState, userState } from '@atoms/user';
 import { useResetGameState } from '@hooks/useResetGameState';
+import useMovePage from '@hooks/useMovePage';
+import GameModeList from '@components/GameModeList';
+import UserList from '@components/UserList';
+import CameraButton from '@components/CameraButton';
+import MicButton from '@components/MicButton';
+import SmallLogo from '@assets/logo-s.png';
 
 function Lobby() {
     const userCam = useRecoilValue(userCamState);

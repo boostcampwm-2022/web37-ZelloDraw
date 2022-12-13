@@ -1,8 +1,8 @@
-import micOffImg from '@assets/buttons/mic-off-btn.svg';
-import micOnImg from '@assets/buttons/mic-on-btn.svg';
 import { useRecoilState, useRecoilValue } from 'recoil';
 import { userMicState, userCamState, userStreamRefState, localDeviceState } from '@atoms/user';
 import { networkServiceInstance as NetworkService } from '../services/socketService';
+import micOffImg from '@assets/buttons/mic-off-btn.svg';
+import micOnImg from '@assets/buttons/mic-on-btn.svg';
 import ControlButton from '@components/ControlButton';
 
 function MicButton() {

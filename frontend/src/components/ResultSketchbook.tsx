@@ -1,3 +1,5 @@
+import { useEffect } from 'react';
+import toast, { Toaster } from 'react-hot-toast';
 import styled from 'styled-components';
 import { Center } from '@styles/styled';
 import { useRecoilValue } from 'recoil';
@@ -13,27 +15,25 @@ import {
     sketchbookAuthorState,
 } from '@atoms/result';
 import { userState } from '@atoms/user';
-import SketchbookCard from '@components/SketchbookCard';
-import CurAndMaxNumber from '@components/CurAndMaxNumber';
-import ResultGuide from '@components/ResultGuide';
-import QuizResultContent from '@components/QuizResultContent';
-import useCheckGuidePage from '@hooks/useCheckGuidePage';
-import useResultSketchbook from '@hooks/useResultSketchbook';
-import PrimaryButton from '@components/PrimaryButton';
+import { lobbyIdState } from '@atoms/game';
 import { ReactComponent as LeftArrowIcon } from '@assets/icons/chevron-left-gradient.svg';
 import { ReactComponent as RightArrowIcon } from '@assets/icons/chevron-right-gradient.svg';
 import { ReactComponent as DownArrowIcon } from '@assets/icons/chevron-down.svg';
 import { ReactComponent as UpArrowIcon } from '@assets/icons/chevron-up.svg';
 import { ReactComponent as ExportIcon } from '@assets/icons/export-icon.svg';
-import { emitOneMoreGame } from '@game/NetworkServiceUtils';
-import { useEffect } from 'react';
+import resultInSound from '@assets/sounds/result-in.wav';
 import { networkServiceInstance as NetworkService } from '@services/socketService';
+import { emitOneMoreGame } from '@game/NetworkServiceUtils';
 import useMovePage from '@hooks/useMovePage';
-import { lobbyIdState } from '@atoms/game';
-import toast, { Toaster } from 'react-hot-toast';
+import useCheckGuidePage from '@hooks/useCheckGuidePage';
+import useResultSketchbook from '@hooks/useResultSketchbook';
 import useCopyClipBoard from '@hooks/useCopyClipboard';
 import useSoundEffect from '@hooks/useSoundEffect';
-import resultInSound from '@assets/sounds/result-in.wav';
+import SketchbookCard from '@components/SketchbookCard';
+import CurAndMaxNumber from '@components/CurAndMaxNumber';
+import ResultGuide from '@components/ResultGuide';
+import QuizResultContent from '@components/QuizResultContent';
+import PrimaryButton from '@components/PrimaryButton';
 
 function ResultSketchbook(props: { isForShareResult: boolean }) {
     const [setPage] = useMovePage();
