@@ -1,18 +1,9 @@
 import { useEffect } from 'react';
 import styled from 'styled-components';
 import { ScaledDiv, ScaledSection } from '@styles/styled';
-import GameModeList from '@components/GameModeList';
-import UserList from '@components/UserList';
-import CameraButton from '@components/CameraButton';
-import MicButton from '@components/MicButton';
-import SmallLogo from '@assets/logo-s.png';
-import useMovePage from '@hooks/useMovePage';
-import {
-    networkServiceInstance as NetworkService,
-    SocketException,
-} from '../services/socketService';
 import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
 import { roundInfoState, userListState, WebRTCUser, lobbyIdState } from '@atoms/game';
+import { userCamState, userMicState, userState } from '@atoms/user';
 import { getParam } from '@utils/common';
 import {
     JoinLobbyResponse,
@@ -20,12 +11,24 @@ import {
     JoinLobbyReEmitRequest,
 } from '@backend/core/user.dto';
 import { StartRoundEmitRequest } from '@backend/core/game.dto';
+import {
+    networkServiceInstance as NetworkService,
+    SocketException,
+} from '../services/socketService';
 import { onStartGame } from '@game/NetworkServiceUtils';
 import useWebRTC from '@hooks/useWebRTC';
 import useBeforeReload from '@hooks/useBeforeReload';
 import useRemoveParams from '@hooks/useRemoveParams';
-import { userCamState, userMicState, userState } from '@atoms/user';
 import { useResetGameState } from '@hooks/useResetGameState';
+import useMovePage from '@hooks/useMovePage';
+import useSoundEffect from '@hooks/useSoundEffect';
+import GameModeList from '@components/GameModeList';
+import UserList from '@components/UserList';
+import CameraButton from '@components/CameraButton';
+import MicButton from '@components/MicButton';
+import SoundControlButton from '@components/SoundControlButton';
+import SmallLogo from '@assets/logo-s.png';
+import lobbyInSound from '@assets/sounds/lobby-in.mp3';
 
 function Lobby() {
     const userCam = useRecoilValue(userCamState);
@@ -38,6 +41,7 @@ function Lobby() {
     const setRoundInfo = useSetRecoilState<StartRoundEmitRequest>(roundInfoState);
     const { createOffers } = useWebRTC();
     const resetGameState = useResetGameState();
+    const { playSoundEffect } = useSoundEffect();
 
     useRemoveParams();
     useBeforeReload();
@@ -81,6 +85,7 @@ function Lobby() {
     useEffect(() => {
         NetworkService.on('join-lobby', (user: JoinLobbyReEmitRequest) => {
             setUserList([...userList, user]);
+            playSoundEffect(lobbyInSound);
         });
         NetworkService.on('update-user-stream', (payload) => {
             setUserList((prev) =>
@@ -114,7 +119,7 @@ function Lobby() {
     return (
         <>
             <LogoWrapper onClick={leaveLobbyBylickLogo}>
-                <img src={SmallLogo} />
+                <img src={SmallLogo} alt={'Logo'} />
             </LogoWrapper>
             <LobbyContainer>
                 <FlexBox>
@@ -126,6 +131,9 @@ function Lobby() {
                     <MicButton />
                 </ButtonWrapper>
             </LobbyContainer>
+            <SoundControlButtonWrapper>
+                <SoundControlButton />
+            </SoundControlButtonWrapper>
         </>
     );
 }
@@ -156,4 +164,10 @@ const ButtonWrapper = styled.div`
     gap: 20px;
     margin-top: 20px;
     margin-left: -590px;
+`;
+
+const SoundControlButtonWrapper = styled(ScaledDiv)`
+    position: absolute;
+    bottom: 24px;
+    right: 26px;
 `;

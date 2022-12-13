@@ -19,6 +19,8 @@ import {
     roundNumberState,
     userReplyState,
 } from '@atoms/game';
+import useSoundEffect from '@hooks/useSoundEffect';
+import selectedSound from '@assets/sounds/select-tools.wav';
 
 interface Coordinate {
     x: number;
@@ -40,6 +42,8 @@ function useCanvas() {
     const isTypeDraw = useRecoilValue(isQuizTypeDrawState);
     const setUserDrawingReply = useSetRecoilState(userReplyState);
     const setResetModalOpen = useSetRecoilState(resetModalOpenState);
+
+    const { playSoundEffect } = useSoundEffect();
 
     const getCoordinates = (event: MouseEvent): Coordinate | undefined => {
         return { x: event.offsetX, y: event.offsetY };
@@ -101,10 +105,12 @@ function useCanvas() {
     };
 
     const onLineWidthChange = (index: number) => {
+        playSoundEffect(selectedSound);
         ctxRef.current.lineWidth = canvasLineWidthValues[index];
     };
 
     const onColorChange = (color: string) => {
+        playSoundEffect(selectedSound);
         curColor.current = convertHexToRgba(color);
         ctxRef.current.strokeStyle = color;
     };
