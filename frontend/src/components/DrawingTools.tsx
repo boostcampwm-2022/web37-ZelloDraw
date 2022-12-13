@@ -32,9 +32,9 @@ function DrawingTools({ restProps }: DrawingToolsType) {
     return (
         <Container>
             <Tools>
-                {tools.map((tool, index) => (
+                {tools.map((tool) => (
                     <Tool
-                        key={index}
+                        key={tool.type}
                         onClick={() => onChangeTool(tool.type)}
                         isSelected={selectedTool === tool.type}
                         role={'button'}

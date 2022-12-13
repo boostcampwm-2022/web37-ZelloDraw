@@ -24,7 +24,7 @@ function GameUsers() {
             />
             {userList.map((user: WebRTCUser, idx: number) => (
                 <VideoCallUser
-                    key={idx}
+                    key={user.userName}
                     userName={user.userName}
                     stream={streamMap.get(user.sid)}
                     audio={user.audio}
