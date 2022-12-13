@@ -43,6 +43,7 @@ function usePalette({
         onClickColor(PEN_DEFAULT_COLOR);
         onClickLineWidth(1);
         onChangeTool(ToolsType.PEN);
+        onClickPen();
     }, []);
 
     const isSelectedTool = (type: ToolsType) => selectedTool === type;
