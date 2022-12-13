@@ -6,11 +6,8 @@ import { useRecoilValue } from 'recoil';
 import {
     canOneMoreGameState,
     currentBookIdxState,
-    currentPageIdxState,
-    currentSketchbookState,
     gameResultIdState,
     isStartedState,
-    isWatchedBookState,
     maxSketchbookState,
     sketchbookAuthorState,
 } from '@atoms/result';
@@ -18,8 +15,6 @@ import { userState } from '@atoms/user';
 import { lobbyIdState } from '@atoms/game';
 import { ReactComponent as LeftArrowIcon } from '@assets/icons/chevron-left-gradient.svg';
 import { ReactComponent as RightArrowIcon } from '@assets/icons/chevron-right-gradient.svg';
-import { ReactComponent as DownArrowIcon } from '@assets/icons/chevron-down.svg';
-import { ReactComponent as UpArrowIcon } from '@assets/icons/chevron-up.svg';
 import { ReactComponent as ExportIcon } from '@assets/icons/export-icon.svg';
 import resultInSound from '@assets/sounds/result-in.wav';
 import { networkServiceInstance as NetworkService } from '@services/socketService';
@@ -30,35 +25,31 @@ import useResultSketchbook from '@hooks/useResultSketchbook';
 import useCopyClipBoard from '@hooks/useCopyClipboard';
 import useSoundEffect from '@hooks/useSoundEffect';
 import SketchbookCard from '@components/SketchbookCard';
-import CurAndMaxNumber from '@components/CurAndMaxNumber';
 import ResultGuide from '@components/ResultGuide';
-import QuizResultContent from '@components/QuizResultContent';
+import QuizResultContent from '@components/resultSketchbook/QuizResultContent';
 import PrimaryButton from '@components/PrimaryButton';
+import QuizAuthor from '@components/resultSketchbook/QuizAuthor';
+import CurSketchbookPage from '@components/resultSketchbook/CurSketchbookPage';
 
-function ResultSketchbook(props: { isForShareResult: boolean }) {
+function ResultSketchbook({ isForShareResult }: { isForShareResult: boolean }) {
     const [setPage] = useMovePage();
     const lobbyId = useRecoilValue(lobbyIdState);
     const gameResultId = useRecoilValue(gameResultIdState);
-    const { maxPageNum, maxBookNum } = useRecoilValue(maxSketchbookState);
-    const currentSketchbook = useRecoilValue(currentSketchbookState);
+    const { maxBookNum } = useRecoilValue(maxSketchbookState);
     const sketchbookAuthor = useRecoilValue(sketchbookAuthorState);
     const currentBookIdx = useRecoilValue(currentBookIdxState);
-    const currentPageIdx = useRecoilValue(currentPageIdxState);
 
     const { isHost } = useRecoilValue(userState);
     const isStarted = useRecoilValue(isStartedState);
-    const isWatched = useRecoilValue(isWatchedBookState);
     const canOneMoreGame = useRecoilValue(canOneMoreGameState);
 
     const { checkIsNotGuidePage } = useCheckGuidePage();
-    const { addSketchbookPage, subtractSketchbookPage, changeSketchbook } = useResultSketchbook(
-        props.isForShareResult,
-    );
+    const { changeSketchbook } = useResultSketchbook(isForShareResult);
     const [_, onCopy] = useCopyClipBoard();
     const { playSoundEffect } = useSoundEffect();
 
     useEffect(() => {
-        if (!props.isForShareResult) playSoundEffect(resultInSound);
+        if (!isForShareResult) playSoundEffect(resultInSound);
 
         NetworkService.on('back-to-lobby', () => {
             setPage(`/lobby?id=${lobbyId}&new=false`);
@@ -81,43 +72,14 @@ function ResultSketchbook(props: { isForShareResult: boolean }) {
                 center={
                     <>
                         <QuizResultContent />
-                        {!props.isForShareResult && <ResultGuide />}
+                        {!isForShareResult && <ResultGuide />}
                     </>
                 }
                 right={
                     checkIsNotGuidePage() && (
                         <>
-                            <QuizAuthor>
-                                <SmallBrace>{'{'}</SmallBrace>
-                                <QuizAuthorName>{currentSketchbook.author!.name}</QuizAuthorName>
-                                <SmallBrace>{'}'}</SmallBrace>
-                            </QuizAuthor>
-                            <RoundNumberWrapper>
-                                {isWatched && (
-                                    <UpArrowWrapper disable={currentPageIdx === maxPageNum}>
-                                        <UpArrowIcon
-                                            onClick={addSketchbookPage}
-                                            role={'button'}
-                                            aria-label={'다음 스케치북 페이지 보기'}
-                                        />
-                                    </UpArrowWrapper>
-                                )}
-                                <CurAndMaxNumber
-                                    cur={currentPageIdx}
-                                    max={maxPageNum}
-                                    gradient={'whitePurple'}
-                                    strokeColor={'primaryLight'}
-                                />
-                                {isWatched && (
-                                    <DownArrowWrapper disable={currentPageIdx === 0}>
-                                        <DownArrowIcon
-                                            onClick={subtractSketchbookPage}
-                                            role={'button'}
-                                            aria-label={'이전 스케치북 페이지 보기'}
-                                        />
-                                    </DownArrowWrapper>
-                                )}
-                            </RoundNumberWrapper>
+                            <QuizAuthor />
+                            <CurSketchbookPage isForShareResult={isForShareResult} />
                         </>
                     )
                 }
@@ -149,14 +111,14 @@ function ResultSketchbook(props: { isForShareResult: boolean }) {
                         )}
 
                         <ButtonWrapper>
-                            {(props.isForShareResult || canOneMoreGame) && (
+                            {(isForShareResult || canOneMoreGame) && (
                                 <ExportIcon
                                     onClick={copyGameResultIdOnClipboard}
                                     role={'button'}
                                     aria-label={'게임 결과 페이지 링크 복사'}
                                 />
                             )}
-                            {!props.isForShareResult && canOneMoreGame && isHost && (
+                            {!isForShareResult && canOneMoreGame && isHost && (
                                 <div
                                     onClick={emitOneMoreGame}
                                     role={'button'}
@@ -174,20 +136,6 @@ function ResultSketchbook(props: { isForShareResult: boolean }) {
 }
 
 export default ResultSketchbook;
-
-const QuizAuthor = styled.div`
-    position: relative;
-    top: -56px;
-`;
-
-const QuizAuthorName = styled.span`
-    background: ${({ theme }) => theme.gradation.whitePurple2};
-    ${({ theme }) => theme.layout.gradientTypo}
-    -webkit-text-stroke:${({ theme }) => theme.color.primaryLight};
-    font-size: ${({ theme }) => theme.typo.h5};
-    font-weight: 600;
-    word-break: keep-all;
-`;
 
 const SketchbookAuthor = styled(Center)`
     width: 100%;
@@ -222,37 +170,10 @@ const Brace = styled.span`
     transform: translateY(4px);
 `;
 
-const SmallBrace = styled(Brace)`
-    font-size: ${({ theme }) => theme.typo.h4};
-    color: ${({ theme }) => theme.color.whiteT2};
-    position: relative;
-    top: 1px;
-`;
-
 const EmptySpan = styled.span`
     width: 30px;
     margin: 0 28px;
     transform: scale(1.3) translateY(2px);
-`;
-
-const RoundNumberWrapper = styled(Center)`
-    justify-content: end;
-    flex-direction: column;
-`;
-
-const UpArrowWrapper = styled.div<{ disable: boolean }>`
-    > svg {
-        cursor: ${(props) => (props.disable ? 'not-allowed' : 'pointer')};
-        opacity: ${(props) => (props.disable ? 0.4 : 1)};
-        margin-bottom: -8px;
-    }
-`;
-const DownArrowWrapper = styled.div<{ disable: boolean }>`
-    > svg {
-        cursor: ${(props) => (props.disable ? 'not-allowed' : 'pointer')};
-        opacity: ${(props) => (props.disable ? 0.4 : 1)};
-        margin-top: 8px;
-    }
 `;
 
 const ButtonWrapper = styled(Center)`

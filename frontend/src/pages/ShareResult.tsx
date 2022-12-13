@@ -1,4 +1,4 @@
-import ResultSketchbook from '@components/ResultSketchbook';
+import ResultSketchbook from '@components/resultSketchbook/ResultSketchbook';
 import SmallLogo from '@assets/zellodraw-logo.png';
 import styled from 'styled-components';
 import { ScaledDiv, ScaledSection } from '@styles/styled';

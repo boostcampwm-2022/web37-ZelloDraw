@@ -10,7 +10,7 @@ import MicButton from '@components/MicButton';
 import CameraButton from '@components/CameraButton';
 import SmallLogo from '@assets/zellodraw-logo.png';
 import GameSketchbook from '@components/GameSketchbook';
-import ResultSketchbook from '@components/ResultSketchbook';
+import ResultSketchbook from '@components/resultSketchbook/ResultSketchbook';
 import { networkServiceInstance as NetworkService } from '../services/socketService';
 import { JoinLobbyReEmitRequest } from '@backend/core/user.dto';
 import { userState } from '@atoms/user';
