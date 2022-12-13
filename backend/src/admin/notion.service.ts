@@ -7,7 +7,7 @@ import { UserService } from '../core/user.service';
 
 @Injectable()
 export class NotionService {
-    notion = new Client({ auth: process.env.NOTION_KEY });
+    notion = new Client({ auth: process.env.NOTION_API_KEY });
     constructor(
         private readonly gameResultService: GameResultService,
         private readonly lobbyService: LobbyService,
