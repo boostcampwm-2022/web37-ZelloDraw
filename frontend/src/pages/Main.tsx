@@ -43,8 +43,12 @@ function Main() {
     return (
         <>
             <MainContainer>
-                <LogoWrapper onClick={() => setPage('/')}>
-                    <img src={Logo} alt={'Logo, Move to main page'} />
+                <LogoWrapper
+                    onClick={() => setPage('/')}
+                    role={'button'}
+                    aria-label={'새로고침을 위해 메인화면으로 이동'}
+                >
+                    <img src={Logo} alt={'Logo'} />
                 </LogoWrapper>
                 <CardContainer>
                     <UserCard />

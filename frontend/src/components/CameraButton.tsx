@@ -24,11 +24,12 @@ function CameraButton() {
             onClick={onBtnClick}
             disabled={!localCamState}
             labelText={`CAMERA ${userCam ? 'ON' : 'OFF'}`}
+            aria-label={`카메라 ${userCam ? '켜짐' : '꺼짐'}`}
         >
             {userCam ? (
-                <img src={cameraOnImg} alt={'카메라가 켜져있어요. 끄고싶다면 눌러주세요.'} />
+                <img src={cameraOnImg} alt={'카메라 켜짐'} />
             ) : (
-                <img src={cameraOffImg} alt={'카메라가 꺼져있어요. 켜고싶다면 눌러주세요.'} />
+                <img src={cameraOffImg} alt={'카메라 꺼짐'} />
             )}
         </ControlButton>
     );

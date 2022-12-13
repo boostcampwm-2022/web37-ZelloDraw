@@ -58,7 +58,11 @@ function InfoCarousel({
     return (
         <CarouselContainer>
             <Slide>
-                <LeftArrowIcon onClick={() => moveSlide(-1)} />
+                <LeftArrowIcon
+                    onClick={() => moveSlide(-1)}
+                    role={'button'}
+                    aria-label={'이전 게임 설명 보기'}
+                />
                 <Window>
                     <AnimatePresence initial={false} custom={{ direction, xValue }}>
                         <SlideInner
@@ -74,7 +78,11 @@ function InfoCarousel({
                         </SlideInner>
                     </AnimatePresence>
                 </Window>
-                <RightArrowIcon onClick={() => moveSlide(1)} />
+                <RightArrowIcon
+                    onClick={() => moveSlide(1)}
+                    role={'button'}
+                    aria-label={'다음 게임 설명 보기'}
+                />
             </Slide>
             <DotButtonSet>
                 {contents.map((x, i) => (

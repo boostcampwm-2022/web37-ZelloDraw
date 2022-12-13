@@ -10,7 +10,7 @@ interface ControlButtonProps {
 
 function ControlButton({ children, onClick, disabled = false, labelText }: ControlButtonProps) {
     return (
-        <ControlBtnContainer onClick={onClick}>
+        <ControlBtnContainer onClick={onClick} role={'button'}>
             <ControlBtn disabled={disabled}>{children}</ControlBtn>
             <ControlBtnLabel>{labelText}</ControlBtnLabel>
         </ControlBtnContainer>

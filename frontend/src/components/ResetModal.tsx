@@ -22,8 +22,20 @@ function ResetModal() {
             >
                 <Question>그림을 전부 지울까요?</Question>
                 <AnswerWrapper>
-                    <div onClick={() => handleReset(false)}>아니요</div>
-                    <div onClick={() => handleReset(true)}>지울래요</div>
+                    <div
+                        onClick={() => handleReset(false)}
+                        role={'button'}
+                        aria-label={'그림 초기화 취소'}
+                    >
+                        아니요
+                    </div>
+                    <div
+                        onClick={() => handleReset(true)}
+                        role={'button'}
+                        aria-label={'그림 초기화 승인'}
+                    >
+                        지울래요
+                    </div>
                 </AnswerWrapper>
             </Modal>
         </Container>

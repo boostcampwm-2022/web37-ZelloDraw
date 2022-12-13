@@ -15,7 +15,7 @@ function GameModeItem({ mode, isSelected }: { mode: GameModeProps; isSelected: b
                     <GameTitle>{mode.title}</GameTitle>
                     <GameDescription>{mode.description}</GameDescription>
                 </div>
-                <img src={mode.illustration} alt={'illustration'} />
+                <img src={mode.illustration} alt={'커다란 연필을 들고 있는 소녀 일러스트레이션 '} />
             </FlexBox>
         </GameModeCard>
     );

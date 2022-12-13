@@ -11,11 +11,12 @@ function SoundControlButton() {
         <ControlButton
             onClick={() => setIsSoundOn((prev) => !prev)}
             labelText={`SOUND ${isSoundOn ? 'ON' : 'OFF'}`}
+            aria-label={`효과음 ${isSoundOn ? '켜짐' : '꺼짐'}`}
         >
             {isSoundOn ? (
-                <img src={SoundOnIcon} alt='효과음이 켜져있어요. 끄고싶다면 눌러주세요.' />
+                <img src={SoundOnIcon} alt='효과음 켜짐' />
             ) : (
-                <img src={SoundOffIcon} alt='효과음이 꺼져있어요. 켜고싶다면 눌러주세요.' />
+                <img src={SoundOffIcon} alt='효과음 꺼짐' />
             )}
         </ControlButton>
     );

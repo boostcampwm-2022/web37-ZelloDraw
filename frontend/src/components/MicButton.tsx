@@ -24,11 +24,12 @@ function MicButton() {
             onClick={onBtnClick}
             disabled={!localMicState}
             labelText={`MIC ${userMic ? 'ON' : 'OFF'}`}
+            aria-label={`마이크 ${userMic ? '켜짐' : '꺼짐'}`}
         >
             {userMic ? (
-                <img src={micOnImg} alt={'마이크가 켜져있어요. 끄고싶다면 눌러주세요.'} />
+                <img src={micOnImg} alt={'마이크 켜짐'} />
             ) : (
-                <img src={micOffImg} alt={'마이크가 꺼져있어요. 켜고싶다면 눌러주세요.'} />
+                <img src={micOffImg} alt={'마이크 꺼짐'} />
             )}
         </ControlButton>
     );

@@ -17,7 +17,7 @@ function InviteButton() {
 
     return (
         <>
-            <InviteBtn onClick={onClickInviteBtn}>
+            <InviteBtn onClick={onClickInviteBtn} role={'button'}>
                 INVITE<h3>초대하기</h3>
             </InviteBtn>
             <Toaster position='top-center' reverseOrder={false} toastOptions={{ duration: 1500 }} />

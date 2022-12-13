@@ -46,7 +46,7 @@ function Lobby() {
     useRemoveParams();
     useBeforeReload();
 
-    const leaveLobbyBylickLogo = () => {
+    const leaveLobbyByClickLogo = () => {
         location.reload();
     };
 
@@ -118,7 +118,11 @@ function Lobby() {
 
     return (
         <>
-            <LogoWrapper onClick={leaveLobbyBylickLogo}>
+            <LogoWrapper
+                onClick={leaveLobbyByClickLogo}
+                role={'button'}
+                aria-label={'게임 로비 나가기'}
+            >
                 <img src={SmallLogo} alt={'Logo'} />
             </LogoWrapper>
             <LobbyContainer>
