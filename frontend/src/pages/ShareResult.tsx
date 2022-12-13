@@ -10,7 +10,7 @@ import { userState } from '@atoms/user';
 import { useParams } from 'react-router-dom';
 import useMovePage from '@hooks/useMovePage';
 
-export function ShareResult() {
+export default function ShareResult() {
     const [setPage] = useMovePage();
     const [gameResult, setGameResult] = useRecoilState(gameResultState);
     const [user, setUser] = useRecoilState(userState);
