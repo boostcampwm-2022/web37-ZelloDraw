@@ -1,5 +1,5 @@
 import { createGlobalStyle } from 'styled-components';
-import BackgroundImage from '@assets/background.svg';
+import BackgroundImage from '@assets/background.png';
 
 export const GlobalStyle = createGlobalStyle`
   * {
@@ -19,13 +19,12 @@ export const GlobalStyle = createGlobalStyle`
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     letter-spacing: -0.05rem;
-    background: url(${BackgroundImage});
-    background-repeat : no-repeat;
-    background-size : cover;
-    -webkit-user-select:none;
-    -moz-user-select:none;
-    -ms-user-select:none;
-    user-select:none
+    background: url(${BackgroundImage}) no-repeat;
+    background-size: cover;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none
   }
 
   #root {

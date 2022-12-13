@@ -4,18 +4,18 @@ import styled from 'styled-components';
 interface GameModeProps {
     title: string;
     description: string;
-    illustration: React.ReactNode;
+    illustration: string;
 }
 
 function GameModeItem({ mode, isSelected }: { mode: GameModeProps; isSelected: boolean }) {
     return (
         <GameModeCard isSelected={isSelected}>
             <FlexBox>
-                <div style={{ paddingLeft: '31px' }}>
+                <div style={{ paddingLeft: '32px' }}>
                     <GameTitle>{mode.title}</GameTitle>
                     <GameDescription>{mode.description}</GameDescription>
                 </div>
-                {mode.illustration}
+                <img src={mode.illustration} alt={'illustration'} />
             </FlexBox>
         </GameModeCard>
     );
@@ -37,6 +37,11 @@ const GameModeCard = styled.div<{ isSelected: boolean }>`
 const FlexBox = styled.div`
     display: flex;
     justify-content: space-between;
+
+    > img {
+        width: 300px;
+        transform: translateX(-46px);
+    }
 `;
 
 const GameTitle = styled.h1`
