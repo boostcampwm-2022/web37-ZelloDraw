@@ -1,6 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { Cron } from '@nestjs/schedule';
-import { UserService } from 'src/core/user.service';
+import { Cron, CronExpression } from '@nestjs/schedule';
 import { NotionService } from './notion.service';
 import { LobbyService } from 'src/core/lobby.service';
 import { GameResultService } from 'src/gameResult/gameResult.service';
@@ -18,7 +17,7 @@ export class CronService {
     hourlyMaxUserCnt = 0;
     hourlyMaxGameCnt = 0;
 
-    @Cron('* * * * *')
+    @Cron(CronExpression.EVERY_MINUTE)
     async actionPerMin() {
         await this.notionService.updateAccumulatedStat();
         await this.updateCurrentStat();
