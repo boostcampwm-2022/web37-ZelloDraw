@@ -1,12 +1,13 @@
-import { Injectable, Logger } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { Cron } from '@nestjs/schedule';
+import { UserService } from 'src/core/user.service';
 
 @Injectable()
-export class TasksService {
-    private readonly logger = new Logger(TasksService.name);
+export class CronService {
+    constructor(private readonly userService: UserService) {}
 
-    @Cron('* * * * * *')
-    handleCron() {
-        console.log('cron job is running');
+    @Cron('0 * * * * *')
+    async handleUserCountCron() {
+        const users = await this.userService.getAllUser();
     }
 }

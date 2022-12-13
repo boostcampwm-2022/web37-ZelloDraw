@@ -6,7 +6,7 @@ import { RedisModule } from './redis/redis.module';
 import { MongooseModule } from '@nestjs/mongoose';
 import { ConfigModule } from '@nestjs/config';
 import { ScheduleModule } from '@nestjs/schedule';
-import { TasksService } from './admin/cron.service';
+import { AdminModule } from './admin/admin.module';
 
 @Module({
     imports: [
@@ -19,15 +19,9 @@ import { TasksService } from './admin/cron.service';
             : process.env.NODE_ENV === 'development'
             ? [ScheduleModule.forRoot()]
             : []),
+        AdminModule,
     ],
     controllers: [AppController],
-    providers: [
-        AppService,
-        process.env.NODE_APP_INSTANCE === '0'
-            ? TasksService
-            : process.env.NODE_ENV === 'development'
-            ? TasksService
-            : null,
-    ],
+    providers: [AppService],
 })
 export class AppModule {}

@@ -33,6 +33,10 @@ export class UserService {
         await this.userRepository.delete(socketId);
     }
 
+    async getAllUser(): Promise<User[]> {
+        return await this.userRepository.findAll();
+    }
+
     async updateUser(socketId: string, param: Partial<User>) {
         const user = await this.getUser(socketId);
         for (const key in param) {
