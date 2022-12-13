@@ -38,5 +38,11 @@ export class GameResult {
 
     @Prop({ type: [QuizReplyChainSchema], default: [] })
     quizReplyChains: QuizReplyChain[];
+
+    @Prop(Date)
+    gameStartDate: Date;
+
+    @Prop({ type: Date, default: Date.now })
+    gameEndDate: Date;
 }
 export const GameResultSchema = SchemaFactory.createForClass(GameResult);
