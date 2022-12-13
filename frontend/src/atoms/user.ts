@@ -61,3 +61,11 @@ export const userStreamRefState = atom<React.MutableRefObject<MediaStream | unde
     key: 'userStreamRefState',
     default: undefined,
 });
+
+/**
+ * 효과음 컨트롤
+ */
+export const isSoundOnState = atom<boolean>({
+    key: 'soundEffectState',
+    default: true,
+});
