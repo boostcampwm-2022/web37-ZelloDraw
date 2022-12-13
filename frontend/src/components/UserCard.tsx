@@ -12,8 +12,10 @@ import CameraButton from '@components/CameraButton';
 import MicButton from '@components/MicButton';
 import useLocalStream from '@hooks/useLocalStream';
 import MainVideoCall from '@components/MainVideoCall';
+import { getParam } from '@utils/common';
 
 function UserCard() {
+    const paramIdValue = getParam('id');
     const [user, setUserState] = useRecoilState(userState);
     const userCam = useRecoilValue(userCamState);
     const currentUser = useRecoilValue(userState);
@@ -31,7 +33,7 @@ function UserCard() {
 
     const debounceOnChange = useCallback(
         debounce((name: string) => {
-            setUserState({ ...user, name });
+            setUserState({ name, isHost: paramIdValue === '' });
             NetworkService.emit('update-user-name', name);
         }, 500),
         [],
