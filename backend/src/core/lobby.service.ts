@@ -59,4 +59,8 @@ export class LobbyService {
         const lobby = await this.getLobby(lobbyId);
         return lobby.getUsers().length;
     }
+
+    async getAllGameLobby(): Promise<GameLobby[]> {
+        return await this.gameLobbyRepository.findAll();
+    }
 }
