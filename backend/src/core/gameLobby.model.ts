@@ -11,6 +11,7 @@ export class GameLobby implements Lobby, Game {
     host: User;
     users: User[];
     usersAliveState: boolean[];
+    gameStartDate: Date;
     maxRound: number;
     curRound: number;
     roundType: 'DRAW' | 'ANSWER';
@@ -22,6 +23,7 @@ export class GameLobby implements Lobby, Game {
 
     constructor(user: User) {
         this.id = this.createId(user.socketId);
+        this.gameStartDate = new Date();
         this.host = user;
         this.users = [];
         this.maxRound = 0;
@@ -34,6 +36,7 @@ export class GameLobby implements Lobby, Game {
 
     static createByJson(json: PartialWithoutMethods<GameLobby>): GameLobby {
         const gameLobby = Object.assign(new GameLobby(json.host), json);
+        gameLobby.gameStartDate = new Date(json.gameStartDate);
         gameLobby.quizReplyChains = gameLobby.quizReplyChains.map((quizReplyChain: any) => {
             return QuizReplyChain.createByJson(quizReplyChain);
         });
@@ -77,6 +80,10 @@ export class GameLobby implements Lobby, Game {
 
     getRoundLimitTime(): number {
         return this.roundLimitTime;
+    }
+
+    getGameStartDate() {
+        return this.gameStartDate;
     }
 
     createId(hostId: string): string {
