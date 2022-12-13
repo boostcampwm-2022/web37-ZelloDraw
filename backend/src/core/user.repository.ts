@@ -23,6 +23,16 @@ export class UserRepository {
         return this.jsonToUser(user);
     }
 
+    async findAll(): Promise<User[]> {
+        const allUsersKey = await this.redis.store.keys('user:*');
+        const users: User[] = [];
+        for (const key of allUsersKey) {
+            const user: string = await this.redis.get(key);
+            users.push(this.jsonToUser(user));
+        }
+        return users;
+    }
+
     async save(user: User) {
         const key = this.toKey(user.getId());
         await this.redis.set(key, this.userToJson(user));
