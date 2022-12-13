@@ -26,6 +26,7 @@ import GameModeList from '@components/GameModeList';
 import UserList from '@components/UserList';
 import CameraButton from '@components/CameraButton';
 import MicButton from '@components/MicButton';
+import SoundControlButton from '@components/SoundControlButton';
 import SmallLogo from '@assets/logo-s.png';
 import lobbyInSound from '@assets/sounds/lobby-in.mp3';
 
@@ -118,7 +119,7 @@ function Lobby() {
     return (
         <>
             <LogoWrapper onClick={leaveLobbyBylickLogo}>
-                <img src={SmallLogo} />
+                <img src={SmallLogo} alt={'Logo'} />
             </LogoWrapper>
             <LobbyContainer>
                 <FlexBox>
@@ -130,6 +131,9 @@ function Lobby() {
                     <MicButton />
                 </ButtonWrapper>
             </LobbyContainer>
+            <SoundControlButtonWrapper>
+                <SoundControlButton />
+            </SoundControlButtonWrapper>
         </>
     );
 }
@@ -160,4 +164,10 @@ const ButtonWrapper = styled.div`
     gap: 20px;
     margin-top: 20px;
     margin-left: -590px;
+`;
+
+const SoundControlButtonWrapper = styled(ScaledDiv)`
+    position: absolute;
+    bottom: 24px;
+    right: 26px;
 `;
