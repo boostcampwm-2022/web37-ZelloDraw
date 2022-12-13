@@ -46,3 +46,17 @@ export class GameResult {
     gameEndDate: Date;
 }
 export const GameResultSchema = SchemaFactory.createForClass(GameResult);
+
+export type HourlySnapShotDocument = HydratedDocument<HourlySnapShot>;
+@Schema()
+export class HourlySnapShot {
+    @Prop()
+    userCnt: number;
+
+    @Prop()
+    gameCnt: number;
+
+    @Prop({ type: Date, default: Date.now })
+    date: Date;
+}
+export const HourlySnapShotSchema = SchemaFactory.createForClass(HourlySnapShot);

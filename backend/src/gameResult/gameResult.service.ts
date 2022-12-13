@@ -1,14 +1,16 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { GameResult, GameResultDocument } from './gameResult.schema';
+import { GameResult, GameResultDocument, HourlySnapShotDocument } from './gameResult.schema';
 import { GameLobby } from '../core/gameLobby.model';
-import { PlayedUserAndGameCnt } from './gameResult.dto';
+import { HourlySnapShotRequest, PlayedUserAndGameCnt } from './gameResult.dto';
 
 @Injectable()
 export class GameResultService {
     constructor(
         @InjectModel(GameResult.name) private readonly gameResultModel: Model<GameResultDocument>,
+        @InjectModel('HourlySnapShot')
+        private readonly hourlySnapShotModel: Model<HourlySnapShotDocument>,
     ) {}
 
     async create(gameLobby: GameLobby): Promise<string> {
@@ -55,6 +57,11 @@ export class GameResultService {
             },
             { playedUserCnt: 0, playedGameCnt: 0 },
         );
+    }
+
+    async setHourlySnapShot(hourlySnapShotDto: HourlySnapShotRequest): Promise<void> {
+        const hourlySnapShotModel = new this.hourlySnapShotModel(hourlySnapShotDto);
+        await hourlySnapShotModel.save();
     }
 
     async findById(id: string): Promise<GameResult> {
