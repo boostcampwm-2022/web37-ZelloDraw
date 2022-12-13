@@ -58,6 +58,7 @@ const QuizResult = styled(motion(Center))`
         align-items: center;
         width: 100%;
         height: 100%;
+        margin-top: -10px;
         color: ${({ theme }) => theme.color.black};
         font-size: ${({ theme }) => theme.typo.h1};
         letter-spacing: 0.13rem;

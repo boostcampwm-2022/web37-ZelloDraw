@@ -44,6 +44,7 @@ export const Guide = styled(Center)`
     flex-direction: column;
     height: 420px;
     > div {
+        margin-top: 40px;
         color: ${({ theme }) => theme.color.primaryLight};
         font-size: ${({ theme }) => theme.typo.h3};
         font-weight: 600;

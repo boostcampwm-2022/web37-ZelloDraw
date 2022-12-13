@@ -1,5 +1,4 @@
 import { Guide } from '@styles/styled';
-import styled from 'styled-components';
 import { useRecoilValue } from 'recoil';
 import {
     currentBookIdxState,
