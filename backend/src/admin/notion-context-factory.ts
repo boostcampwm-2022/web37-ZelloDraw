@@ -47,3 +47,39 @@ export const createCurrentStatContext = (userCnt: number, gameCnt: number) => {
         },
     };
 };
+
+export const setHourlyStatContext = (userCnt: number, gameCnt: number) => {
+    return {
+        parent: { database_id: '789ac60c6f814d3dbef705f9ea310297' },
+        properties: {
+            '접속자 수(최대)': {
+                type: 'title',
+                title: [
+                    {
+                        type: 'text',
+                        text: {
+                            content: userCnt.toString(),
+                        },
+                    },
+                ],
+            },
+            '게임 진행 수': {
+                type: 'rich_text',
+                rich_text: [
+                    {
+                        type: 'text',
+                        text: {
+                            content: gameCnt.toString(),
+                        },
+                    },
+                ],
+            },
+            일시: {
+                type: 'date',
+                date: {
+                    start: new Date().toISOString(),
+                },
+            },
+        },
+    };
+};
