@@ -3,7 +3,7 @@ import SmallLogo from '@assets/zellodraw-logo.png';
 import styled from 'styled-components';
 import { ScaledDiv, ScaledSection } from '@styles/styled';
 import { useEffect } from 'react';
-import { queryAndSaveGameResult } from '@game/NetworkServiceUtils';
+import { queryAndSaveGameResult } from '@axios/sharedResult';
 import { useRecoilState, useSetRecoilState } from 'recoil';
 import { gameResultIdState, gameResultState, isWatchedBookState } from '@atoms/result';
 import { userState } from '@atoms/user';
