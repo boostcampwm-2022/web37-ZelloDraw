@@ -17,5 +17,6 @@ export class CronService {
         await this.notionService.updateAccumulatedStat();
         const users = await this.userService.getAllUser();
         const gameLobbies = await this.lobbyService.getAllGameLobby();
+        await this.notionService.updateCurrentStat(users.length, gameLobbies.length);
     }
 }

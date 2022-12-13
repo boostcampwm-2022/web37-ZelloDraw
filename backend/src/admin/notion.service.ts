@@ -32,4 +32,29 @@ export class NotionService {
             },
         });
     }
+
+    async updateCurrentStat(userCnt: number, gameCnt: number) {
+        await this.notion.blocks.update({
+            block_id: '60f1d7f83b3d4dd9957c3e4b07d1efbd',
+            callout: {
+                icon: {
+                    emoji: '💡',
+                },
+                rich_text: [
+                    {
+                        type: 'text',
+                        text: {
+                            content: `사용중인 유저 수: ${userCnt}명\n`,
+                        },
+                    },
+                    {
+                        type: 'text',
+                        text: {
+                            content: `진행중인 게임 수: ${gameCnt}개`,
+                        },
+                    },
+                ],
+            },
+        });
+    }
 }
