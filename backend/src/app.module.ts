@@ -14,9 +14,9 @@ import { TasksService } from './admin/cron.service';
         RedisModule,
         MongooseModule.forRoot('mongodb://localhost/zellodraw'),
         ConfigModule.forRoot(),
-        ScheduleModule.forRoot(),
+        ...(process.env.NODE_APP_INSTANCE === '0' ? [ScheduleModule.forRoot()] : []),
     ],
     controllers: [AppController],
-    providers: [AppService, TasksService],
+    providers: [AppService, process.env.NODE_APP_INSTANCE === '0' ? TasksService : null],
 })
 export class AppModule {}
