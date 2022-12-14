@@ -1,18 +1,25 @@
 import { networkServiceInstance as NetworkService } from '@services/socketService';
 import { useEffect } from 'react';
-import { useRecoilState } from 'recoil';
-import { userStateType } from '@atoms/user';
+import { useRecoilState, useRecoilValue } from 'recoil';
+import { userCamState, userMicState, userStateType } from '@atoms/user';
 import { lobbyIdState } from '@atoms/game';
 import useUserSocket from '@hooks/socket/useUserSocket';
 
 function useMainSocket({ user, setPage }: { user: userStateType; setPage: (url: string) => void }) {
+    const userCam = useRecoilValue(userCamState);
+    const userMic = useRecoilValue(userMicState);
     const [lobbyId, setLobbyId] = useRecoilState(lobbyIdState);
     const { emitUpdateUserStream } = useUserSocket();
 
     useEffect(() => {
         NetworkService.emit('update-user-name', user.name);
-        emitUpdateUserStream();
     }, []);
+
+    useEffect(() => {
+        if (userCam !== undefined && userMic !== undefined) {
+            emitUpdateUserStream();
+        }
+    }, [userCam, userMic]);
 
     function enterLobby() {
         if (user.isHost) {

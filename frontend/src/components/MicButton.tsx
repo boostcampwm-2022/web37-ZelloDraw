@@ -16,7 +16,7 @@ function MicButton() {
 
         const changed = !userMic;
         setUserMic(changed);
-        emitUpdateUserStream();
+        emitUpdateUserStream({ audio: changed });
     };
 
     return (

@@ -16,7 +16,7 @@ function CameraButton() {
 
         const changed = !userCam;
         setUserCam(changed);
-        emitUpdateUserStream();
+        emitUpdateUserStream({ video: changed });
     };
 
     return (
