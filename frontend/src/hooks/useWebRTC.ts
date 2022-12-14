@@ -1,14 +1,15 @@
 import { useEffect, useRef, useCallback } from 'react';
 import { networkServiceInstance as NetworkService } from '../services/socketService';
 import { localDeviceState, userStreamRefState } from '@atoms/user';
-import { useRecoilValue, useRecoilState } from 'recoil';
-import { WebRTCUser, streamMapState } from '@atoms/game';
+import { useRecoilValue, useRecoilState, useSetRecoilState } from 'recoil';
+import { WebRTCUser, streamMapState, pcMapState } from '@atoms/game';
 
 function useWebRTC() {
     const localDevices = useRecoilValue(localDeviceState);
     const pcsRef = useRef<{ [socketId: string]: RTCPeerConnection }>({});
     const selfStreamRef = useRecoilValue(userStreamRefState);
     const [streamMap, setStreamMap] = useRecoilState<Map<string, MediaStream>>(streamMapState);
+    const setPCMap = useSetRecoilState<Map<string, RTCPeerConnection>>(pcMapState);
 
     const createPeerConnection = useCallback(async (peerSocketId: string): Promise<any> => {
         const res = await new Promise((resolve) => {
@@ -38,6 +39,7 @@ function useWebRTC() {
 
                 pc.ontrack = (e) => {
                     setStreamMap((prev) => new Map(prev).set(peerSocketId, e.streams[0]));
+                    setPCMap((prev) => new Map(prev).set(peerSocketId, pc));
                 };
 
                 if (!selfStreamRef?.current) return;

@@ -5,6 +5,7 @@ import { ReactComponent as MicOnIcon } from '@assets/icons/mic-on-video-icon.svg
 import { ReactComponent as HostIconS } from '@assets/icons/host-icon-s.svg';
 import { ReactComponent as HostIconL } from '@assets/icons/host-icon-l.svg';
 import { Center, VideoProperty } from '@styles/styled';
+import { MINIMUM_AUDIO_LEVEL, VOLUME_DETECT_INTERVAL } from '@utils/constants';
 
 interface VideoCallProps {
     userName: string;
@@ -12,9 +13,10 @@ interface VideoCallProps {
     audio?: boolean;
     video?: boolean;
     isCurUser?: boolean;
+    pc?: RTCPeerConnection;
 }
 
-function VideoCallUser({ userName, stream, audio, video, isCurUser = false }: VideoCallProps) {
+function VideoCallUser({ userName, stream, audio, video, pc, isCurUser = false }: VideoCallProps) {
     const [hostState, setHostState] = useState<boolean>(false);
     const videoRef: React.RefObject<HTMLVideoElement> | null = useRef(null);
 
@@ -42,6 +44,24 @@ function VideoCallUser({ userName, stream, audio, video, isCurUser = false }: Vi
         if (!videoRef.current || !stream) return;
         videoRef.current.srcObject = stream;
     }, [stream, video, audio]);
+
+    useEffect(() => {
+        if (!pc) return;
+        const interval = setInterval(() => {
+            const receiver = pc.getReceivers().find((r: { track: { kind: string } }) => {
+                return r.track.kind === 'audio';
+            });
+            const source = receiver?.getSynchronizationSources()[0];
+            if (source?.audioLevel && source?.audioLevel > MINIMUM_AUDIO_LEVEL) {
+                videoRef.current?.classList.add('speaking');
+            } else {
+                videoRef.current?.classList.remove('speaking');
+            }
+        }, VOLUME_DETECT_INTERVAL);
+        return () => {
+            clearInterval(interval);
+        };
+    }, [pc]);
 
     return (
         <Container>
@@ -78,6 +98,10 @@ const Container = styled(Center)`
     background: ${({ theme }) => theme.gradation.purplePrimary};
     border: 2px solid ${({ theme }) => theme.color.whiteT2};
     border-radius: 24px;
+
+    .speaking {
+        border: 3px solid ${({ theme }) => theme.color.yellow};
+    }
 `;
 
 const CameraOffUserName = styled(Center)`

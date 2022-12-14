@@ -59,3 +59,6 @@ export const MediaErrorType: MediaError = {
     InvalidStateError: 'An InvalidStateError has occured.',
     UnknownError: 'An UnknownError has occured.',
 };
+
+export const MINIMUM_AUDIO_LEVEL = 0.001;
+export const VOLUME_DETECT_INTERVAL = 1000;

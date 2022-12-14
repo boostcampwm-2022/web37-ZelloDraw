@@ -31,6 +31,11 @@ export const streamMapState = atom({
     default: new Map(),
 });
 
+export const pcMapState = atom({
+    key: 'pcMapState',
+    default: new Map(),
+});
+
 export const userListLengthState = selector({
     key: 'userListLengthState',
     get: ({ get }) => {
