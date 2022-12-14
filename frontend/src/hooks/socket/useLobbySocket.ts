@@ -6,7 +6,7 @@ import {
     JoinLobbyResponse,
 } from '@backend/core/user.dto';
 import { StartRoundEmitRequest } from '@backend/core/game.dto';
-import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
+import { useRecoilValue, useSetRecoilState } from 'recoil';
 import { userState } from '@atoms/user';
 import { lobbyIdState, roundInfoState, userListState, WebRTCUser } from '@atoms/game';
 import { getParam } from '@utils/common';
@@ -20,7 +20,7 @@ function useLobbySocket() {
     const isNewLobby = getParam('new') === 'true' || getParam('new') === '';
     const lobbyId = useRecoilValue(lobbyIdState);
     const user = useRecoilValue(userState);
-    const [userList, setUserList] = useRecoilState<WebRTCUser[]>(userListState);
+    const setUserList = useSetRecoilState<WebRTCUser[]>(userListState);
     const [setPage] = useMovePage();
     const setRoundInfo = useSetRecoilState<StartRoundEmitRequest>(roundInfoState);
     const { createOffers } = useWebRTC();
@@ -36,24 +36,18 @@ function useLobbySocket() {
 
         onSucceedHost();
         onStartGame();
-
-        return () => {
-            NetworkService.off('succeed-host');
-            NetworkService.off('start-game');
-        };
-    }, []);
-
-    useEffect(() => {
         onJoinLobby();
         onLeaveLobby();
         onUpdateUserStream();
 
         return () => {
+            NetworkService.off('succeed-host');
+            NetworkService.off('start-game');
             NetworkService.off('join-lobby');
             NetworkService.off('leave-lobby');
             NetworkService.off('update-user-stream');
         };
-    }, [userList]);
+    }, []);
 
     function emitJoinLobby() {
         const payload: JoinLobbyRequest = { lobbyId };
@@ -88,7 +82,7 @@ function useLobbySocket() {
 
     function onJoinLobby() {
         NetworkService.on('join-lobby', (user: JoinLobbyReEmitRequest) => {
-            setUserList([...userList, user]);
+            setUserList((userList) => [...userList, user]);
             playSoundEffect(lobbyInSound);
         });
     }
