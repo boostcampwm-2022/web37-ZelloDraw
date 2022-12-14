@@ -73,7 +73,7 @@ function QuizReplySection({
             <ButtonWrapper
                 onClick={submitBtnHandler}
                 role={'button'}
-                aria-lebel={quizSubmitted ? '답 변경하기' : '답 제출하기'}
+                aria-label={quizSubmitted ? '답 변경하기' : '답 제출하기'}
             >
                 {quizSubmitted ? (
                     <PrimaryButton topText={'EDIT'} bottomText={'변경하기'} />
