@@ -29,6 +29,16 @@ export class GameLobbyRepository {
         return this.jsonToGameLobby(gameLobby);
     }
 
+    async findAll(): Promise<GameLobby[]> {
+        const allGameLobbiesKey = await this.redis.store.keys('game-lobby:*');
+        const gameLobbies: GameLobby[] = [];
+        for (const key of allGameLobbiesKey) {
+            const gameLobby: string = await this.redis.get(key);
+            gameLobbies.push(this.jsonToGameLobby(gameLobby));
+        }
+        return gameLobbies;
+    }
+
     async save(gameLobby: GameLobby) {
         const key = this.toKey(gameLobby.getId());
         await this.redis.set(key, this.gameLobbyToJson(gameLobby));

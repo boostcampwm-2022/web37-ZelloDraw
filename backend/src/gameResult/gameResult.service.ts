@@ -1,13 +1,16 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { GameResult, GameResultDocument } from './gameResult.schema';
+import { GameResult, GameResultDocument, HourlySnapShotDocument } from './gameResult.schema';
 import { GameLobby } from '../core/gameLobby.model';
+import { HourlySnapShotRequest, PlayedUserAndGameCnt } from './gameResult.dto';
 
 @Injectable()
 export class GameResultService {
     constructor(
         @InjectModel(GameResult.name) private readonly gameResultModel: Model<GameResultDocument>,
+        @InjectModel('HourlySnapShot')
+        private readonly hourlySnapShotModel: Model<HourlySnapShotDocument>,
     ) {}
 
     async create(gameLobby: GameLobby): Promise<string> {
@@ -35,6 +38,33 @@ export class GameResultService {
                 resolve(res.id);
             });
         });
+    }
+
+    async getStatBetween(startDate: Date, endDate?: Date): Promise<PlayedUserAndGameCnt> {
+        const gameResultsBetweenDate = await this.getGameResultBetween(startDate, endDate);
+        return gameResultsBetweenDate.reduce(
+            (acc, gameResult) => {
+                acc.playedGameCnt += 1;
+                acc.playedUserCnt += gameResult.user.length;
+                return acc;
+            },
+            { playedUserCnt: 0, playedGameCnt: 0 },
+        );
+    }
+
+    async getGameResultBetween(
+        startDate: Date,
+        endDate: Date = new Date('9999-01-01'),
+    ): Promise<GameResult[]> {
+        const gameResultsBetweenDate = await this.gameResultModel.find({
+            gameStartDate: { $gte: startDate, $lte: endDate },
+        });
+        return gameResultsBetweenDate;
+    }
+
+    async setHourlySnapShot(hourlySnapShotDto: HourlySnapShotRequest): Promise<void> {
+        const hourlySnapShotModel = new this.hourlySnapShotModel(hourlySnapShotDto);
+        await hourlySnapShotModel.save();
     }
 
     async findById(id: string): Promise<GameResult> {
