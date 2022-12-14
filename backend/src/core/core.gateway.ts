@@ -11,7 +11,12 @@ import {
 import { Socket } from 'socket.io';
 import { LobbyService } from './lobby.service';
 import { UseFilters, UsePipes, ValidationPipe } from '@nestjs/common';
-import { JoinLobbyRequest, JoinLobbyResponse, JoinLobbyReEmitRequest } from './user.dto';
+import {
+    JoinLobbyRequest,
+    JoinLobbyResponse,
+    JoinLobbyReEmitRequest,
+    EmitLeaveGameRequest,
+} from './user.dto';
 import { UserService } from './user.service';
 import { SocketException } from './socket.exception';
 import { SocketExceptionFilter } from './socket.filter';
@@ -318,7 +323,7 @@ export class CoreGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
     }
 
     private emitLeaveGame(client: Socket, user: User) {
-        const payload = new JoinLobbyReEmitRequest(user.name, client.id);
+        const payload = new EmitLeaveGameRequest(user.name, client.id);
         client.nsp.to(user.lobbyId).emit('leave-game', payload);
     }
 

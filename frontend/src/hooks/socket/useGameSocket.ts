@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 import { networkServiceInstance as NetworkService } from '@services/socketService';
-import { JoinLobbyReEmitRequest } from '@backend/core/user.dto';
+import { EmitLeaveGameRequest, JoinLobbyReEmitRequest } from '@backend/core/user.dto';
 import { SetterOrUpdater, useSetRecoilState } from 'recoil';
 import { gameResultIdState, gameResultState } from '@atoms/result';
 import { isRoundTimeoutState, submittedQuizReplyCountState, userListState } from '@atoms/game';
@@ -55,7 +55,7 @@ function useGameSocket(setIsCompleteGame: SetterOrUpdater<boolean>) {
     }
 
     function onLeaveGame() {
-        NetworkService.on('leave-game', (user: JoinLobbyReEmitRequest) => {
+        NetworkService.on('leave-game', (user: EmitLeaveGameRequest) => {
             setUserList((prev) =>
                 prev.filter((participant) => participant.userName !== user.userName),
             );
