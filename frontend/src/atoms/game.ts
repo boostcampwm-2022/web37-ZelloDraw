@@ -1,6 +1,5 @@
 import { atom, selector } from 'recoil';
 import { StartRoundEmitRequest } from '@backend/core/game.dto';
-import { PEN_DEFAULT_COLOR } from '@utils/constants';
 
 /**
  * 로비(게임) id 정보
@@ -124,11 +123,6 @@ export const canClearCanvasState = atom<boolean>({
 export const resetModalOpenState = atom<boolean>({
     key: 'resetModalState',
     default: false,
-});
-
-export const canvasSelectedColorState = atom<string>({
-    key: 'canvasSelectedColorState',
-    default: PEN_DEFAULT_COLOR,
 });
 
 export const isRoundTimeoutState = atom<boolean>({

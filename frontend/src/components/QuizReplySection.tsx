@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import { useEffect, useCallback } from 'react';
 import styled from 'styled-components';
 import { Center } from '@styles/styled';
 import { useRecoilState, useRecoilValue } from 'recoil';
@@ -11,6 +11,7 @@ import {
 } from '@atoms/game';
 import PrimaryButton from '@components/PrimaryButton';
 import useZeroRound from '@hooks/useZeroRound';
+import { debounce } from 'lodash';
 import { SubmitQuizReplyRequest } from '@backend/core/game.dto';
 
 function QuizReplySection({
@@ -58,12 +59,19 @@ function QuizReplySection({
         });
     }
 
+    const debounceOnChange = useCallback(
+        debounce((value: string) => {
+            setUserReply(value);
+        }, 500),
+        [],
+    );
+
     return (
         <Container>
             {!isDraw ? (
                 <AnswerInput
                     placeholder={placeholder}
-                    onChange={(e) => setUserReply(e.target.value)}
+                    onChange={(e) => debounceOnChange(e.target.value)}
                     readOnly={quizSubmitted}
                     quizSubmitted={quizSubmitted}
                 />

@@ -12,7 +12,6 @@ import { convertHexToRgba, getPixelColor, isSameColor, setPixel } from '@utils/c
 import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
 import {
     canClearCanvasState,
-    canvasSelectedColorState,
     isQuizTypeDrawState,
     quizSubmitState,
     resetModalOpenState,
@@ -32,9 +31,8 @@ function useCanvas() {
     const ctxRef = useRef<any>(null);
     const curColor = useRef<Uint8ClampedArray>(convertHexToRgba(PEN_DEFAULT_COLOR));
     const drawState = useRef<CanvasState>(CanvasState.NONE);
-    const selectedColor = useRecoilValue(canvasSelectedColorState);
 
-    const [pos, setPos] = useState<Coordinate | undefined>({ x: 0, y: 0 });
+    const posRef = useRef<Coordinate | undefined>({ x: 0, y: 0 });
     const [isDrawing, setIsDrawing] = useState<boolean>(false);
     const [canClearCanvas, setCanClearCanvas] = useRecoilState(canClearCanvasState);
     const quizSubmitted = useRecoilValue(quizSubmitState);
@@ -57,7 +55,7 @@ function useCanvas() {
         ctxRef.current.stroke();
     };
 
-    const onClickPen = () => {
+    const onClickPen = (selectedColor: string) => {
         drawState.current = CanvasState.NONE;
         ctxRef.current.strokeStyle = selectedColor;
     };
@@ -148,13 +146,13 @@ function useCanvas() {
 
             if (drawState.current === CanvasState.DRAW && isDrawing) {
                 const newPos = getCoordinates(event);
-                if (pos && newPos) {
-                    drawLine(pos, newPos);
-                    setPos(newPos);
+                if (posRef.current && newPos) {
+                    drawLine(posRef.current, newPos);
+                    posRef.current = newPos;
                 }
             }
         },
-        [drawState, pos],
+        [drawState, posRef.current],
     );
 
     const startPainting = useCallback((event: MouseEvent) => {
@@ -163,7 +161,7 @@ function useCanvas() {
         if (newPos) {
             drawState.current = CanvasState.DRAW;
             setIsDrawing(true);
-            setPos(newPos);
+            posRef.current = newPos;
         }
     }, []);
 

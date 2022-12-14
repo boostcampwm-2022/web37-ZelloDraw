@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react';
 import { useRecoilState } from 'recoil';
-import { canvasSelectedColorState } from '@atoms/game';
 import { PEN_DEFAULT_COLOR, ToolsType } from '@utils/constants';
 import pen from '@assets/icons/pen-icon.svg';
 import paint from '@assets/icons/paint-icon.svg';
@@ -12,6 +11,7 @@ import actEraser from '@assets/icons/eraser-icon-activated.svg';
 import actReset from '@assets/icons/reset-icon-activated.svg';
 import selectedSound from '@assets/sounds/select-tools.wav';
 import useSoundEffect from '@hooks/useSoundEffect';
+import { colors } from '@styles/ZelloTheme';
 
 interface ToolType {
     element: any;
@@ -20,7 +20,7 @@ interface ToolType {
 }
 
 interface PaletteType {
-    onClickPen: () => void;
+    onClickPen: (coloc: string) => void;
     onClickPaint: () => void;
     onColorChange: (color: string) => void;
     onClickEraser: () => void;
@@ -36,7 +36,7 @@ function usePalette({
     onClickReset,
     onLineWidthChange,
 }: PaletteType) {
-    const [selectedColor, setSelectedColor] = useRecoilState(canvasSelectedColorState);
+    const [selectedColor, setSelectedColor] = useState<string>(colors.black);
     const [selectedTool, setSelectedTool] = useState<ToolsType>(ToolsType.PEN);
     const [selectedLineWidth, setSelectedLineWidth] = useState<number>(1);
 
@@ -44,10 +44,10 @@ function usePalette({
 
     useEffect(() => {
         // 도구 초기화
+        onChangeTool(ToolsType.PEN);
         onClickColor(PEN_DEFAULT_COLOR);
         onClickLineWidth(1);
-        onChangeTool(ToolsType.PEN);
-        onClickPen();
+        onClickPen(PEN_DEFAULT_COLOR);
     }, []);
 
     const isSelectedTool = (type: ToolsType) => selectedTool === type;
@@ -91,7 +91,7 @@ function usePalette({
         if (tool === ToolsType.RESET) {
             setTimeout(() => {
                 setSelectedTool(ToolsType.PEN);
-                onClickPen();
+                onClickPen(selectedColor);
             }, 200);
         }
 

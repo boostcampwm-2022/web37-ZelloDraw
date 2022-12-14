@@ -6,7 +6,7 @@ import { colors } from '@styles/ZelloTheme';
 import usePalette from '@hooks/usePalette';
 
 interface PaletteType {
-    onClickPen: () => void;
+    onClickPen: (color: string) => void;
     onClickPaint: () => void;
     onColorChange: (color: string) => void;
     onClickEraser: () => void;
@@ -32,9 +32,9 @@ function DrawingTools({ restProps }: DrawingToolsType) {
     return (
         <Container>
             <Tools>
-                {tools.map((tool, index) => (
+                {tools.map((tool) => (
                     <Tool
-                        key={index}
+                        key={tool.type}
                         onClick={() => onChangeTool(tool.type)}
                         isSelected={selectedTool === tool.type}
                         role={'button'}

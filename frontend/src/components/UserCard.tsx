@@ -11,8 +11,11 @@ import CameraButton from '@components/CameraButton';
 import MicButton from '@components/MicButton';
 import useLocalStream from '@hooks/useLocalStream';
 import MainVideoCall from '@components/MainVideoCall';
+import { getParam } from '@utils/common';
 
 function UserCard({ emitUpdateUserName }: { emitUpdateUserName: (name: string) => void }) {
+    const paramIdValue = getParam('id');
+
     const [user, setUserState] = useRecoilState(userState);
     const userCam = useRecoilValue(userCamState);
     const currentUser = useRecoilValue(userState);
@@ -24,14 +27,13 @@ function UserCard({ emitUpdateUserName }: { emitUpdateUserName: (name: string) =
     const onChangeName = (e: React.ChangeEvent<HTMLInputElement>) => {
         // 유저 이름을 바꾼 적 있는지 확인
         isFirstUserNameChanging && setIsFirstUserNameChanging(false);
-
         const name = e.target.value;
-        setUserState({ ...user, name });
         debounceOnChange(name);
     };
 
     const debounceOnChange = useCallback(
         debounce((name: string) => {
+            setUserState({ name, isHost: paramIdValue === '' });
             emitUpdateUserName(name);
         }, 500),
         [],
