@@ -21,6 +21,7 @@ function GameUsers() {
                 audio={userMic}
                 video={userCam}
                 isCurUser={true}
+                isHost={currentUser.isHost}
             />
             {userList.map((user: WebRTCUser, idx: number) => (
                 <VideoCallUser
@@ -29,6 +30,7 @@ function GameUsers() {
                     stream={streamMap.get(user.sid)}
                     audio={user.audio}
                     video={user.video}
+                    isHost={user.isHost}
                 />
             ))}
         </Container>
