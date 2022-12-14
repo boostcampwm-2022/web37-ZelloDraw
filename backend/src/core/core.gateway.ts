@@ -16,6 +16,7 @@ import {
     JoinLobbyResponse,
     JoinLobbyReEmitRequest,
     EmitLeaveGameRequest,
+    SucceedHostEmitRequest,
 } from './user.dto';
 import { UserService } from './user.service';
 import { SocketException } from './socket.exception';
@@ -148,7 +149,11 @@ export class CoreGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 
         await this.gameService.succeedHost(user.lobbyId);
         const hostUser = await this.gameService.getGameHost(user.lobbyId);
-        client.to(hostUser.socketId).emit('succeed-host');
+        const payload: SucceedHostEmitRequest = {
+            userName: hostUser.name,
+            sid: hostUser.getId(),
+        };
+        client.to(user.lobbyId).emit('succeed-host', payload);
     }
 
     @SubscribeMessage('start-game')

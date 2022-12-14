@@ -35,7 +35,7 @@ export class GameLobby implements Lobby, Game {
     }
 
     static createByJson(json: PartialWithoutMethods<GameLobby>): GameLobby {
-        const host = new User(json.host.socketId, json.host.name);
+        const host = Object.assign(new User(json.host.socketId, json.host.name), json.host);
         const gameLobby = Object.assign(new GameLobby(host), json);
         gameLobby.host = host;
         gameLobby.users = json.users.map((user) => {
