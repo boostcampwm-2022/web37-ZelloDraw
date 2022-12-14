@@ -8,9 +8,10 @@
         온라인에서도 얼굴을 마주보며 재미있게 플레이할 수 있는 환경을 제공해요.
     </p>
     <a href="https://www.notion.so/team-ZELLO-9e414fde5019400f9ecf6371bfca3775">팀노션</a> &nbsp; &nbsp; |&nbsp; &nbsp; 
+    <a href="https://luxuriant-sound-22a.notion.site/48e2eaf2cd054365a2cdc27cb464469e">개발일지</a> &nbsp; &nbsp; |&nbsp; &nbsp;
     <a href="https://docs.google.com/spreadsheets/d/13bFH3gEKnQezKSj3cjWMU0imhFQplWtYSnT6uvhFYLE">백로그</a> &nbsp; &nbsp; |&nbsp; &nbsp; 
-    <a href="https://www.figma.com/file/6ojKrkqrtvTDpVVWucPvhB/ZELLO-DESIGN?node-id=2%3A906&t=bszpSdM9lf7nc0H2-0">UI</a>&nbsp; &nbsp; |&nbsp; &nbsp; 
-    <a href="https://luxuriant-sound-22a.notion.site/48e2eaf2cd054365a2cdc27cb464469e">개발일지</a> 
+    <a href="https://www.figma.com/file/6ojKrkqrtvTDpVVWucPvhB/ZELLO-DESIGN?node-id=2%3A906&t=bszpSdM9lf7nc0H2-0">UI</a>&nbsp; &nbsp; |&nbsp; &nbsp;
+    <a href="https://zellodraw.com">배포링크</a>
     <br /><br />
     <a href="https://hits.seeyoufarm.com"><img src="https://hits.seeyoufarm.com/api/count/incr/badge.svg?url=https%3A%2F%2Fgithub.com%2Fboostcampwm-2022%2Fweb37-ZelloDraw&count_bg=%238F84ED&title_bg=%23555555&icon=&icon_color=%23E7E7E7&title=hits&edge_flat=false"/></a>
     <img src="https://img.shields.io/badge/release-1.0.0-8F84ED"> 
