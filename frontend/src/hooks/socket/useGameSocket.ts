@@ -29,9 +29,7 @@ function useGameSocket(setIsCompleteGame: SetterOrUpdater<boolean>) {
         onLeaveGame();
 
         return () => {
-            NetworkService.off('update-user-stream');
             NetworkService.off('leave-game');
-            NetworkService.off('succeed-host');
         };
     }, []);
 

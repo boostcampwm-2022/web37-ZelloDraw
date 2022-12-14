@@ -26,7 +26,7 @@ function useLobbySocket() {
     const { createOffers } = useWebRTC();
     const { playSoundEffect } = useSoundEffect();
 
-    const { onSucceedHost, onUpdateUserStream, emitUpdateUserStream } = useUserSocket();
+    const { emitUpdateUserStream } = useUserSocket();
 
     useEffect(() => {
         if (isNewLobby) {
@@ -34,11 +34,9 @@ function useLobbySocket() {
             emitJoinLobby();
         }
 
-        onSucceedHost();
         onStartGame();
         onJoinLobby();
         onLeaveLobby();
-        onUpdateUserStream();
 
         return () => {
             NetworkService.off('succeed-host');
