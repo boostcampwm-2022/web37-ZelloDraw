@@ -25,8 +25,9 @@ function useLobbySocket() {
     const setRoundInfo = useSetRecoilState<StartRoundEmitRequest>(roundInfoState);
     const { createOffers } = useWebRTC();
     const { playSoundEffect } = useSoundEffect();
+    const userList = useRecoilValue(userListState);
 
-    const { emitUpdateUserStream } = useUserSocket();
+    const { onSucceedHost, emitUpdateUserStream, onUpdateUserStream } = useUserSocket();
 
     useEffect(() => {
         if (isNewLobby) {
@@ -34,18 +35,26 @@ function useLobbySocket() {
             emitJoinLobby();
         }
 
+        onSucceedHost();
         onStartGame();
-        onJoinLobby();
-        onLeaveLobby();
 
         return () => {
             NetworkService.off('succeed-host');
             NetworkService.off('start-game');
+        };
+    }, []);
+
+    useEffect(() => {
+        onJoinLobby();
+        onUpdateUserStream();
+        onLeaveLobby();
+
+        return () => {
             NetworkService.off('join-lobby');
             NetworkService.off('leave-lobby');
             NetworkService.off('update-user-stream');
         };
-    }, []);
+    }, [userList]);
 
     function emitJoinLobby() {
         const payload: JoinLobbyRequest = { lobbyId };
