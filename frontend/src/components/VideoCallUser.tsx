@@ -45,12 +45,12 @@ function VideoCallUser({ userName, stream, audio, video, isCurUser = false }: Vi
 
     return (
         <Container>
-            {video ? (
+            {video && stream ? (
                 <>
                     <Video ref={videoRef} autoPlay playsInline muted={!!isCurUser}></Video>
                     {getCameraOnComponent()}
                 </>
-            ) : audio ? (
+            ) : audio && stream ? (
                 <>
                     <EmptyVideo
                         ref={videoRef}
