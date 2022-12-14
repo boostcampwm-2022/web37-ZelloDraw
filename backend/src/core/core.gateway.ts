@@ -88,6 +88,7 @@ export class CoreGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
     ) {
         try {
             const lobby = await this.lobbyService.getLobby(body.lobbyId);
+            const host = await this.lobbyService.getHost(lobby.id);
             const user = await this.userService.getUser(client.id);
 
             const users: User[] = await this.lobbyService.joinLobby(user, lobby.id);
@@ -105,6 +106,7 @@ export class CoreGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
                     sid: user.socketId,
                     video: user.video,
                     audio: user.audio,
+                    isHost: user.getId() === host.getId(),
                 };
             }) as JoinLobbyResponse;
         } catch (e) {

@@ -10,6 +10,7 @@ export type JoinLobbyResponse = Array<{
     sid: string;
     video: boolean;
     audio: boolean;
+    isHost: boolean;
 }>;
 
 export class JoinLobbyReEmitRequest {
