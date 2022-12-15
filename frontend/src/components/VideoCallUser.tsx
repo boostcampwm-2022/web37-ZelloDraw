@@ -41,6 +41,7 @@ function VideoCallUser({ userName, stream, audio, video, pc, isCurUser = false }
     };
 
     useEffect(() => {
+        console.log(stream);
         if (!videoRef.current || !stream) return;
         videoRef.current.srcObject = stream;
     }, [stream, video, audio]);

@@ -1,3 +1,4 @@
+import { STUN_SERVER } from './../utils/constants';
 import { useEffect, useRef, useCallback } from 'react';
 import { networkServiceInstance as NetworkService } from '../services/socketService';
 import { localDeviceState, userStreamRefState } from '@atoms/user';
@@ -17,13 +18,7 @@ function useWebRTC() {
                 const pc = new RTCPeerConnection({
                     iceServers: [
                         {
-                            urls: [
-                                'stun:stun.l.google.com:19302',
-                                'stun:stun1.l.google.com:19302',
-                                'stun:stun2.l.google.com:19302',
-                                'stun:stun3.l.google.com:19302',
-                                'stun:stun4.l.google.com:19302',
-                            ],
+                            urls: [STUN_SERVER],
                         },
                     ],
                 });
@@ -38,6 +33,7 @@ function useWebRTC() {
                 };
 
                 pc.ontrack = (e) => {
+                    console.log('ontrack');
                     setStreamMap((prev) => new Map(prev).set(peerSocketId, e.streams[0]));
                     setPCMap((prev) => new Map(prev).set(peerSocketId, pc));
                 };

@@ -62,3 +62,5 @@ export const MediaErrorType: MediaError = {
 
 export const MINIMUM_AUDIO_LEVEL = 0.001;
 export const VOLUME_DETECT_INTERVAL = 1000;
+
+export const STUN_SERVER = 'stun:stun.l.google.com:19302';
