@@ -19,6 +19,7 @@ export interface WebRTCUser {
     stream?: MediaStream;
     audio?: boolean;
     video?: boolean;
+    isHost?: boolean;
 }
 
 export const userListState = atom<WebRTCUser[]>({

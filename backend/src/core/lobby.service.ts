@@ -50,6 +50,11 @@ export class LobbyService {
         return lobby.getHost().socketId === user.socketId;
     }
 
+    async getHost(lobbyId: string): Promise<User> {
+        const lobby = await this.getLobby(lobbyId);
+        return lobby.getHost();
+    }
+
     async getLobby(lobbyId: string): Promise<GameLobby | undefined> {
         await this.validateLobby(lobbyId);
         return await this.gameLobbyRepository.findById(lobbyId);

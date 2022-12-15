@@ -12,17 +12,24 @@ interface VideoCallProps {
     audio?: boolean;
     video?: boolean;
     isCurUser?: boolean;
+    isHost?: boolean;
 }
 
-function VideoCallUser({ userName, stream, audio, video, isCurUser = false }: VideoCallProps) {
-    const [hostState, setHostState] = useState<boolean>(false);
+function VideoCallUser({
+    userName,
+    stream,
+    audio,
+    video,
+    isHost,
+    isCurUser = false,
+}: VideoCallProps) {
     const videoRef: React.RefObject<HTMLVideoElement> | null = useRef(null);
 
     const getCameraOnComponent = () => {
         return (
             <CameraOnUserName>
                 <span>{userName}</span>
-                {hostState && <HostIconS />}
+                {isHost && <HostIconS />}
             </CameraOnUserName>
         );
     };
@@ -33,7 +40,7 @@ function VideoCallUser({ userName, stream, audio, video, isCurUser = false }: Vi
                 <span>&#123;</span>
                 <span>{userName}</span>
                 <span>&#125;</span>
-                {hostState && <HostIconL />}
+                {isHost && <HostIconL />}
             </CameraOffUserName>
         );
     };

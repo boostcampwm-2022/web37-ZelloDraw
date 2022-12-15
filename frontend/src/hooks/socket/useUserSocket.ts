@@ -2,6 +2,7 @@ import { networkServiceInstance as NetworkService } from '@services/socketServic
 import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
 import { userCamState, userMicState, userState } from '@atoms/user';
 import { userListState, WebRTCUser } from '@atoms/game';
+import { JoinLobbyReEmitRequest } from '@backend/core/user.dto';
 
 interface DeviceType {
     audio?: boolean;
@@ -15,8 +16,15 @@ function useUserSocket() {
     const setUserList = useSetRecoilState<WebRTCUser[]>(userListState);
 
     function onSucceedHost() {
-        NetworkService.on('succeed-host', () => {
-            setUser({ ...user, isHost: true });
+        NetworkService.on('succeed-host', (hostInfo: JoinLobbyReEmitRequest) => {
+            setUserList((prev) =>
+                prev.map((user: WebRTCUser) => {
+                    const prevUserValue = { ...user };
+                    prevUserValue.isHost = user.sid === hostInfo.sid;
+                    return prevUserValue;
+                }),
+            );
+            user.name === hostInfo.userName && setUser({ ...user, isHost: true });
         });
     }
 

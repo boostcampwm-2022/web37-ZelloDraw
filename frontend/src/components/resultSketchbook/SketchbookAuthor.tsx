@@ -72,7 +72,7 @@ function SketchbookAuthor({ isForShareResult, emitWatchResultSketchBook }: Sketc
 
 export default SketchbookAuthor;
 
-const SketchbookAuthorName = styled.span<{ isHost: boolean | null }>`
+const SketchbookAuthorName = styled.span<{ isHost: boolean | undefined }>`
     background: ${(props) =>
         props.isHost ? props.theme.gradation.yellowPurple : props.theme.color.whiteT2};
     ${({ theme }) => theme.layout.gradientTypo}

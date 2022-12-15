@@ -11,7 +11,13 @@ import {
 import { Socket } from 'socket.io';
 import { LobbyService } from './lobby.service';
 import { UseFilters, UsePipes, ValidationPipe } from '@nestjs/common';
-import { JoinLobbyRequest, JoinLobbyResponse, JoinLobbyReEmitRequest } from './user.dto';
+import {
+    JoinLobbyRequest,
+    JoinLobbyResponse,
+    JoinLobbyReEmitRequest,
+    EmitLeaveGameRequest,
+    SucceedHostEmitRequest,
+} from './user.dto';
 import { UserService } from './user.service';
 import { SocketException } from './socket.exception';
 import { SocketExceptionFilter } from './socket.filter';
@@ -83,6 +89,7 @@ export class CoreGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
     ) {
         try {
             const lobby = await this.lobbyService.getLobby(body.lobbyId);
+            const host = await this.lobbyService.getHost(lobby.id);
             const user = await this.userService.getUser(client.id);
 
             const users: User[] = await this.lobbyService.joinLobby(user, lobby.id);
@@ -100,6 +107,7 @@ export class CoreGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
                     sid: user.socketId,
                     video: user.video,
                     audio: user.audio,
+                    isHost: user.getId() === host.getId(),
                 };
             }) as JoinLobbyResponse;
         } catch (e) {
@@ -141,7 +149,11 @@ export class CoreGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 
         await this.gameService.succeedHost(user.lobbyId);
         const hostUser = await this.gameService.getGameHost(user.lobbyId);
-        client.to(hostUser.socketId).emit('succeed-host');
+        const payload: SucceedHostEmitRequest = {
+            userName: hostUser.name,
+            sid: hostUser.getId(),
+        };
+        client.to(user.lobbyId).emit('succeed-host', payload);
     }
 
     @SubscribeMessage('start-game')
@@ -318,7 +330,7 @@ export class CoreGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
     }
 
     private emitLeaveGame(client: Socket, user: User) {
-        const payload = new JoinLobbyReEmitRequest(user.name, client.id);
+        const payload = new EmitLeaveGameRequest(user.name, client.id);
         client.nsp.to(user.lobbyId).emit('leave-game', payload);
     }
 

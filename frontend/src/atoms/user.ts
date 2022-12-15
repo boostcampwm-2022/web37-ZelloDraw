@@ -2,7 +2,7 @@ import { atom } from 'recoil';
 
 export interface userStateType {
     name: string;
-    isHost: boolean | null;
+    isHost: boolean | undefined;
 }
 
 const getRandUserName = (): string => {
@@ -17,7 +17,7 @@ export const userState = atom<userStateType>({
     key: 'userState',
     default: {
         name: getRandUserName(),
-        isHost: null,
+        isHost: undefined,
     },
 });
 
