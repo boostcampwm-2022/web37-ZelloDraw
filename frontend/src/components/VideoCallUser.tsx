@@ -5,6 +5,7 @@ import { ReactComponent as MicOnIcon } from '@assets/icons/mic-on-video-icon.svg
 import { ReactComponent as HostIconS } from '@assets/icons/host-icon-s.svg';
 import { ReactComponent as HostIconL } from '@assets/icons/host-icon-l.svg';
 import { Center, VideoProperty } from '@styles/styled';
+import { MINIMUM_AUDIO_LEVEL, VOLUME_DETECT_INTERVAL } from '@utils/constants';
 
 interface VideoCallProps {
     userName: string;
@@ -13,6 +14,7 @@ interface VideoCallProps {
     video?: boolean;
     isCurUser?: boolean;
     isHost?: boolean;
+    pc?: RTCPeerConnection;
 }
 
 function VideoCallUser({
@@ -20,6 +22,7 @@ function VideoCallUser({
     stream,
     audio,
     video,
+    pc,
     isHost,
     isCurUser = false,
 }: VideoCallProps) {
@@ -46,9 +49,28 @@ function VideoCallUser({
     };
 
     useEffect(() => {
+        console.log(stream);
         if (!videoRef.current || !stream) return;
         videoRef.current.srcObject = stream;
     }, [stream, video, audio]);
+
+    useEffect(() => {
+        if (!pc) return;
+        const interval = setInterval(() => {
+            const receiver = pc.getReceivers().find((r: { track: { kind: string } }) => {
+                return r.track.kind === 'audio';
+            });
+            const source = receiver?.getSynchronizationSources()[0];
+            if (source?.audioLevel && source?.audioLevel > MINIMUM_AUDIO_LEVEL) {
+                videoRef.current?.classList.add('speaking');
+            } else {
+                videoRef.current?.classList.remove('speaking');
+            }
+        }, VOLUME_DETECT_INTERVAL);
+        return () => {
+            clearInterval(interval);
+        };
+    }, [pc]);
 
     return (
         <Container>
@@ -85,6 +107,10 @@ const Container = styled(Center)`
     background: ${({ theme }) => theme.gradation.purplePrimary};
     border: 2px solid ${({ theme }) => theme.color.whiteT2};
     border-radius: 24px;
+
+    .speaking {
+        border: 3px solid ${({ theme }) => theme.color.yellow};
+    }
 `;
 
 const CameraOffUserName = styled(Center)`

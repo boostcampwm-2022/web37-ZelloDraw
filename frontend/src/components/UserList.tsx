@@ -4,7 +4,7 @@ import InviteButton from '@components/InviteButton';
 import EmptyVideoCall from '@components/EmptyVideoCall';
 import VideoCallUser from '@components/VideoCallUser';
 import { useRecoilValue } from 'recoil';
-import { streamMapState, userListState, WebRTCUser } from '@atoms/game';
+import { pcMapState, streamMapState, userListState, WebRTCUser } from '@atoms/game';
 import { userCamState, userMicState, userState, userStreamState } from '@atoms/user';
 
 function UserList() {
@@ -14,6 +14,7 @@ function UserList() {
     const currentUser = useRecoilValue(userState);
     const selfStream = useRecoilValue(userStreamState);
     const streamMap = useRecoilValue(streamMapState);
+    const pcMap = useRecoilValue(pcMapState);
 
     return (
         <Card>
@@ -42,6 +43,7 @@ function UserList() {
                             stream={streamMap.get(user.sid)}
                             audio={user.audio}
                             video={user.video}
+                            pc={pcMap.get(user.sid)}
                             isHost={user.isHost}
                         />
                     ))}
