@@ -34,6 +34,7 @@ function UserList() {
                         audio={userMic}
                         video={userCam}
                         isCurUser={true}
+                        isHost={currentUser.isHost}
                     />
                     {userList.map((user: WebRTCUser, idx: number) => (
                         <VideoCallUser
@@ -43,6 +44,7 @@ function UserList() {
                             audio={user.audio}
                             video={user.video}
                             pc={pcMap.get(user.sid)}
+                            isHost={user.isHost}
                         />
                     ))}
                     {new Array(7 - userList.length)

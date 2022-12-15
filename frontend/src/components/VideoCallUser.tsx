@@ -13,18 +13,26 @@ interface VideoCallProps {
     audio?: boolean;
     video?: boolean;
     isCurUser?: boolean;
+    isHost?: boolean;
     pc?: RTCPeerConnection;
 }
 
-function VideoCallUser({ userName, stream, audio, video, pc, isCurUser = false }: VideoCallProps) {
-    const [hostState, setHostState] = useState<boolean>(false);
+function VideoCallUser({
+    userName,
+    stream,
+    audio,
+    video,
+    pc,
+    isHost,
+    isCurUser = false,
+}: VideoCallProps) {
     const videoRef: React.RefObject<HTMLVideoElement> | null = useRef(null);
 
     const getCameraOnComponent = () => {
         return (
             <CameraOnUserName>
                 <span>{userName}</span>
-                {hostState && <HostIconS />}
+                {isHost && <HostIconS />}
             </CameraOnUserName>
         );
     };
@@ -35,7 +43,7 @@ function VideoCallUser({ userName, stream, audio, video, pc, isCurUser = false }
                 <span>&#123;</span>
                 <span>{userName}</span>
                 <span>&#125;</span>
-                {hostState && <HostIconL />}
+                {isHost && <HostIconL />}
             </CameraOffUserName>
         );
     };

@@ -35,7 +35,12 @@ export class GameLobby implements Lobby, Game {
     }
 
     static createByJson(json: PartialWithoutMethods<GameLobby>): GameLobby {
-        const gameLobby = Object.assign(new GameLobby(json.host), json);
+        const host = Object.assign(new User(json.host.socketId, json.host.name), json.host);
+        const gameLobby = Object.assign(new GameLobby(host), json);
+        gameLobby.host = host;
+        gameLobby.users = json.users.map((user) => {
+            return Object.assign(new User(user.socketId, user.name), user);
+        });
         gameLobby.gameStartDate = new Date(json.gameStartDate);
         gameLobby.quizReplyChains = gameLobby.quizReplyChains.map((quizReplyChain: any) => {
             return QuizReplyChain.createByJson(quizReplyChain);
