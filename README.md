@@ -122,6 +122,7 @@
 <h2>⚙️ 인프라 구조</h2>
 
 <img src="https://i.imgur.com/BIi3czb.png" width="800" />
+<img src="https://user-images.githubusercontent.com/33686751/207778406-66108b03-ad69-41e8-ae9c-0c8b4aeaa2c5.png" width="800" />
 
 
 <h2>🧑‍💻 팀원 소개</h2>
