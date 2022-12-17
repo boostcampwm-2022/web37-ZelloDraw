@@ -57,6 +57,7 @@ function useCanvas() {
 
     const onClickPen = (selectedColor: string) => {
         drawState.current = CanvasState.NONE;
+        if (!ctxRef.current) return;
         ctxRef.current.strokeStyle = selectedColor;
     };
 
@@ -104,11 +105,13 @@ function useCanvas() {
 
     const onLineWidthChange = (index: number) => {
         playSoundEffect(selectedSound);
+        if (!ctxRef.current) return;
         ctxRef.current.lineWidth = canvasLineWidthValues[index];
     };
 
     const onColorChange = (color: string) => {
         playSoundEffect(selectedSound);
+        if (!ctxRef.current) return;
         curColor.current = convertHexToRgba(color);
         ctxRef.current.strokeStyle = color;
     };
