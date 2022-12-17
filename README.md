@@ -142,6 +142,19 @@
 <img src="https://user-images.githubusercontent.com/33686751/207779000-5deeaae6-4ac2-426b-86cf-223d4bfe7b2e.png" width="800" />
 <img src="https://user-images.githubusercontent.com/33686751/207778406-66108b03-ad69-41e8-ae9c-0c8b4aeaa2c5.png" width="800" />
 
+<br />
+
+<h2>📚 팀 젤로 개발 일지</h2>
+
+- [WebRTC P2P 구현 및 예외 처리](https://luxuriant-sound-22a.notion.site/FE-BE-WebRTC-P2P-db551fc2d591424ab98fa89c49357aed)  
+- [Custom Hooks로 비즈니스 로직 분리하기](https://luxuriant-sound-22a.notion.site/FE-Custom-Hooks-02623d94315642cc9a9986f871d42f2d)  
+- [NestJS 에서 Socket 관련 예외 처리하기](https://luxuriant-sound-22a.notion.site/BE-NestJS-Socket-6c320861d6e440209ac588f4981e4920)  
+- [Framer Motion으로 멋진 슬라이드 애니메이션 만들기](https://luxuriant-sound-22a.notion.site/FE-Framer-Motion-56f471b9f320472a92eff59ea5f4f808)  
+- [[Redis 활용하기 시리즈] NestJS 백엔드에서 환경에서 소켓 클러스터 서버 구현하기](https://luxuriant-sound-22a.notion.site/BE-Redis-3-NestJS-c09ad085aa55413a9c15c518ed70035d)  
+- [CI 속도 30% 향상 시킨 이야기 (feat. CD, Github Actions)](https://luxuriant-sound-22a.notion.site/BE-CI-30-feat-CD-Github-Actions-b47229d62c3f4212b7a6da26a1379e4a)  
+- [프론트엔드 성능 개선을 위해 무엇을 해야할까?](https://luxuriant-sound-22a.notion.site/FE-62748cee6fff42748681d179ae999e7f)  
+
+<br />
 
 <h2>🧑‍💻 팀원 소개</h2>
   <table>
