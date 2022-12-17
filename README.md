@@ -52,34 +52,34 @@
 > 4. **짜잔! 나만의 단어가 어떻게 변했을까요?**  
 내가 적은 단어가 여러 유저를 거쳐 어떻게 바뀌었는지 다같이 확인해봐요.
 
-
+<br />
 
 ## 🛠 주요 기능
 
  <table>
     <tr>
+      <td align="center">메인</td>
       <td align="center">게임 로비</td>
-      <td align="center">그림 보고 답하기</td>
     </tr>
     <tr>
+      <td align="center"><img src="https://user-images.githubusercontent.com/68578916/208236070-54e9dd7b-b759-431a-a45e-855603a3ad32.png" width="500" /></td>
       <td align="center"><img src="https://i.imgur.com/jmaE5tl.png" /></td>
-      <td align="center"><img src="https://i.imgur.com/SytOLd2.png" /></td>
     </tr>
     <tr>
+      <td align="center">그림 보고 답하기</td>
       <td align="center">단어 보고 그리기</td>
-      <td align="center">게임 결과 확인</td>
     </tr>
     <tr>
+      <td align="center"><img src="https://i.imgur.com/SytOLd2.png" /></td>
       <td align="center"><img src="https://i.imgur.com/nlhj1R5.pngg" /></td>
-      <td align="center"><img src="https://i.imgur.com/i9v2reE.png" /></td>
     </tr>
     <tr>
+      <td align="center">게임 결과 확인</td>
       <td align="center">어드민 페이지</td>
-      <td align="center"></td>
     </tr>
     <tr>
+      <td align="center"><img src="https://i.imgur.com/i9v2reE.png" /></td>
       <td align="center"><img src="https://user-images.githubusercontent.com/33686751/208235589-d43b71f0-e0d9-461b-bdea-6a39a56f2431.png" /></td>
-      <td align="center"></td>
     </tr>
  </table>
 
@@ -128,14 +128,15 @@
 - 방장이 보고싶은 스케치북을 선택하면 모든 유저가 **같은 스케치북**을 볼 수 있어요.
 - 처음 보는 스케치북은 그림과 단어가 하나씩 **순서대로** 나타나요.
 - 한번 봤던 스케치북을 다시 선택하면 각 유저는 스케치북 내에서 **자유롭게** 그림이나 단어를 볼 수 있어요.
-- 공유 버튼을 통해 게임 결과를 공유하고 다시 볼 수 있어요.
+- 공유 버튼을 통해 **게임 결과를 공유**하고 다시 볼 수 있어요.
 
 ### 어드민 페이지
-- 정해진 주기마다 데이터들이 노션  업데이트 되어요.
+- 정해진 주기마다 데이터들이 노션 업데이트 되어요.
 - 진행 / 누적 되는 유저와 게임 수를 확인할 수 있어요.
 - 시간별 최대 동시 접속자 수를 볼 수 있어요.
 - 진행된 게임들의 결과를 확인할 수 있어요.
 
+<br />
 <h2>⚙️ 인프라 구조</h2>
 
 <img src="https://user-images.githubusercontent.com/33686751/207779000-5deeaae6-4ac2-426b-86cf-223d4bfe7b2e.png" width="800" />
