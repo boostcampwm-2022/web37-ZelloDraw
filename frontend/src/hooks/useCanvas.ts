@@ -34,6 +34,7 @@ function useCanvas() {
 
     const posRef = useRef<Coordinate | undefined>({ x: 0, y: 0 });
     const [isDrawing, setIsDrawing] = useState<boolean>(false);
+    const [color, setColor] = useState<string>(PEN_DEFAULT_COLOR);
     const [canClearCanvas, setCanClearCanvas] = useRecoilState(canClearCanvasState);
     const quizSubmitted = useRecoilValue(quizSubmitState);
     const { curRound } = useRecoilValue(roundNumberState);
@@ -58,7 +59,8 @@ function useCanvas() {
     const onClickPen = (selectedColor: string) => {
         drawState.current = CanvasState.NONE;
         if (!ctxRef.current) return;
-        ctxRef.current.strokeStyle = selectedColor;
+        ctxRef.current.strokeStyle = typeof selectedColor === 'string' ? selectedColor : color;
+        setColor(selectedColor);
     };
 
     const floodFill = (x: number, y: number, fillColor: Uint8ClampedArray) => {
@@ -114,6 +116,7 @@ function useCanvas() {
         if (!ctxRef.current) return;
         curColor.current = convertHexToRgba(color);
         ctxRef.current.strokeStyle = color;
+        setColor(color);
     };
 
     const onClickEraser = () => {
@@ -218,6 +221,7 @@ function useCanvas() {
     useEffect(() => {
         // 라운드가 바뀌면 캔바스 초기화
         clearCanvas();
+        setColor(PEN_DEFAULT_COLOR);
     }, [curRound]);
 
     return {
