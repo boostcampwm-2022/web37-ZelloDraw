@@ -8,11 +8,11 @@
         온라인에서도 얼굴을 마주보며 재미있게 플레이할 수 있는 환경을 제공해요.
     </p>
     <p>
-        <a href="https://zellodraw.com">지금 바로 플레이 해보기</a>
+        <a href="https://zellodraw.com" target="_blank">지금 바로 플레이 해보기</a>
     </p>
-    <a href="https://www.notion.so/team-ZELLO-9e414fde5019400f9ecf6371bfca3775">팀노션</a> &nbsp; &nbsp; |&nbsp; &nbsp; 
-    <a href="https://luxuriant-sound-22a.notion.site/48e2eaf2cd054365a2cdc27cb464469e">개발일지</a> &nbsp; &nbsp; |&nbsp; &nbsp;
-    <a href="https://www.youtube.com/watch?v=eHD5_KmfH8E">시연영상</a>
+    <a href="https://www.notion.so/team-ZELLO-9e414fde5019400f9ecf6371bfca3775" target="_blank">팀노션</a> &nbsp; &nbsp; |&nbsp; &nbsp; 
+    <a href="https://luxuriant-sound-22a.notion.site/48e2eaf2cd054365a2cdc27cb464469e" target="_blank">개발일지</a> &nbsp; &nbsp; |&nbsp; &nbsp;
+    <a href="https://www.youtube.com/watch?v=eHD5_KmfH8E" target="_blank">시연영상</a>
     <br /><br />
     <a href="https://hits.seeyoufarm.com"><img src="https://hits.seeyoufarm.com/api/count/incr/badge.svg?url=https%3A%2F%2Fgithub.com%2Fboostcampwm-2022%2Fweb37-ZelloDraw&count_bg=%238F84ED&title_bg=%23555555&icon=&icon_color=%23E7E7E7&title=hits&edge_flat=false"/></a>
     <img src="https://img.shields.io/badge/release-1.0.0-8F84ED"> 
@@ -158,10 +158,10 @@
       <td align="center">J188_정주연</td>
     </tr>
     <tr>
-      <td align="center"><a href="https://github.com/HyewonKkang">@HyewonKkang</a></td>
-      <td align="center"><a href="https://github.com/yscriuf">@yscriuf</a></td>
-      <td align="center"><a href="https://github.com/LouiMinister">@LouiMinister</a></td>
-      <td align="center"><a href="https://github.com/jayjeong8">@jayjeong8</a></td>
+      <td align="center"><a href="https://github.com/HyewonKkang" target="_blank">@HyewonKkang</a></td>
+      <td align="center"><a href="https://github.com/yscriuf" target="_blank" width="160">@yscriuf</a></td>
+      <td align="center"><a href="https://github.com/LouiMinister" target="_blank">@LouiMinister</a></td>
+      <td align="center"><a href="https://github.com/jayjeong8" target="_blank">@jayjeong8</a></td>
     </tr>
   </table>
   
