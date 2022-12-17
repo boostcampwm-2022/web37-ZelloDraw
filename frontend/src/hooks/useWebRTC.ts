@@ -1,9 +1,9 @@
-import { STUN_SERVER } from './../utils/constants';
 import { useEffect, useRef, useCallback } from 'react';
 import { networkServiceInstance as NetworkService } from '../services/socketService';
 import { localDeviceState, userStreamRefState } from '@atoms/user';
 import { useRecoilValue, useRecoilState, useSetRecoilState } from 'recoil';
 import { WebRTCUser, streamMapState, pcMapState } from '@atoms/game';
+import { STUN, TURN } from '@utils/constants';
 
 function useWebRTC() {
     const localDevices = useRecoilValue(localDeviceState);
@@ -16,11 +16,7 @@ function useWebRTC() {
         const res = await new Promise((resolve) => {
             try {
                 const pc = new RTCPeerConnection({
-                    iceServers: [
-                        {
-                            urls: [STUN_SERVER],
-                        },
-                    ],
+                    iceServers: [STUN, TURN],
                 });
 
                 pc.onicecandidate = (e) => {

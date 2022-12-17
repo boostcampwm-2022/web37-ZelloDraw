@@ -63,4 +63,12 @@ export const MediaErrorType: MediaError = {
 export const MINIMUM_AUDIO_LEVEL = 0.001;
 export const VOLUME_DETECT_INTERVAL = 1000;
 
-export const STUN_SERVER = 'stun:stun.l.google.com:19302';
+export const STUN = {
+    urls: 'stun:stun.l.google.com:19302',
+};
+
+export const TURN = {
+    urls: 'turn:zellodraw.com',
+    username: 'zello',
+    credential: 'password',
+};
