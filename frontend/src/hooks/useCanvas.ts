@@ -152,7 +152,7 @@ function useCanvas() {
                 }
             }
         },
-        [drawState, posRef.current],
+        [drawState, isDrawing],
     );
 
     const startPainting = useCallback((event: MouseEvent) => {

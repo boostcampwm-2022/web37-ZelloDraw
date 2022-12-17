@@ -29,7 +29,6 @@ function useWebRTC() {
                 };
 
                 pc.ontrack = (e) => {
-                    console.log('ontrack');
                     setStreamMap((prev) => new Map(prev).set(peerSocketId, e.streams[0]));
                     setPCMap((prev) => new Map(prev).set(peerSocketId, pc));
                 };
