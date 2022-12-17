@@ -20,7 +20,7 @@ interface ToolType {
 }
 
 interface PaletteType {
-    onClickPen: (coloc: string) => void;
+    onClickPen: (color: string) => void;
     onClickPaint: () => void;
     onColorChange: (color: string) => void;
     onClickEraser: () => void;
