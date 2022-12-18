@@ -81,11 +81,12 @@ function ResultSketchbook({ isForShareResult }: { isForShareResult: boolean }) {
                         />
                         <ButtonWrapper>
                             {(isForShareResult || canOneMoreGame) && (
-                                <ExportIcon
+                                <button
                                     onClick={copyGameResultIdOnClipboard}
-                                    role={'button'}
                                     aria-label={'게임 결과 페이지 링크 복사'}
-                                />
+                                >
+                                    <ExportIcon />
+                                </button>
                             )}
                             <OneMoreGameButton
                                 isForShareResult={isForShareResult}

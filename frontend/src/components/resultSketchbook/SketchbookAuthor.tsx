@@ -47,11 +47,9 @@ function SketchbookAuthor({ isForShareResult, emitWatchResultSketchBook }: Sketc
     return (
         <>
             {isHost && currentBookIdx !== 0 && (
-                <LeftArrowIcon
-                    onClick={() => changeSketchbook(-1)}
-                    role={'button'}
-                    aria-label={'이전 유저 스케치북 보기'}
-                />
+                <button onClick={() => changeSketchbook(-1)} aria-label={'이전 유저 스케치북 보기'}>
+                    <LeftArrowIcon />
+                </button>
             )}
             {isHost && currentBookIdx === 0 && <EmptySpan />}
             <Brace>{'{'}</Brace>
@@ -60,11 +58,9 @@ function SketchbookAuthor({ isForShareResult, emitWatchResultSketchBook }: Sketc
             <span>의 스케치북</span>
             {isHost && currentBookIdx === maxBookNum && <EmptySpan />}
             {isHost && currentBookIdx !== maxBookNum && (
-                <RightArrowIcon
-                    onClick={() => changeSketchbook(1)}
-                    role={'button'}
-                    aria-label={'다음 유저 스케치북 보기'}
-                />
+                <button onClick={() => changeSketchbook(1)} aria-label={'다음 유저 스케치북 보기'}>
+                    <RightArrowIcon />
+                </button>
             )}
         </>
     );

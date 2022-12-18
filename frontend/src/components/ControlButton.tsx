@@ -1,5 +1,4 @@
 import styled from 'styled-components';
-import { Center } from '@styles/styled';
 
 interface ControlButtonProps {
     children: React.ReactNode;
@@ -10,8 +9,8 @@ interface ControlButtonProps {
 
 function ControlButton({ children, onClick, disabled = false, labelText }: ControlButtonProps) {
     return (
-        <ControlBtnContainer onClick={onClick} role={'button'}>
-            <ControlBtn disabled={disabled}>{children}</ControlBtn>
+        <ControlBtnContainer onClick={onClick} disabled={disabled}>
+            <ControlBtnImgWrapper>{children}</ControlBtnImgWrapper>
             <ControlBtnLabel>{labelText}</ControlBtnLabel>
         </ControlBtnContainer>
     );
@@ -19,14 +18,17 @@ function ControlButton({ children, onClick, disabled = false, labelText }: Contr
 
 export default ControlButton;
 
-export const ControlBtnContainer = styled(Center)`
+export const ControlBtnContainer = styled.button`
+    display: flex;
+    align-items: center;
+    justify-content: center;
     flex-direction: column;
     width: 84px;
 `;
 
-export const ControlBtn = styled.button`
+export const ControlBtnImgWrapper = styled.div`
     all: unset;
-    cursor: pointer;
+
     width: 64px;
 
     img {

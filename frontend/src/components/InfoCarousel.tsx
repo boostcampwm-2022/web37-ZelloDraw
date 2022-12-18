@@ -69,11 +69,10 @@ function InfoCarousel({
     return (
         <CarouselContainer>
             <Slide>
-                <LeftArrowIcon
-                    onClick={() => moveSlide(-1)}
-                    role={'button'}
-                    aria-label={'이전 게임 설명 보기'}
-                />
+                <button onClick={() => moveSlide(-1)} aria-label={'이전 게임 설명 보기'}>
+                    <LeftArrowIcon />
+                </button>
+
                 <Window>
                     <AnimatePresence initial={false} custom={{ direction, xValue }}>
                         <SlideInner
@@ -89,11 +88,9 @@ function InfoCarousel({
                         </SlideInner>
                     </AnimatePresence>
                 </Window>
-                <RightArrowIcon
-                    onClick={() => moveSlide(1)}
-                    role={'button'}
-                    aria-label={'다음 게임 설명 보기'}
-                />
+                <button onClick={() => moveSlide(1)} aria-label={'다음 게임 설명 보기'}>
+                    <RightArrowIcon />
+                </button>
             </Slide>
             <DotButtonSet>
                 {contents.map((x, i) => (
@@ -115,7 +112,9 @@ const CarouselContainer = styled.div`
 const Slide = styled(Center)`
     svg {
         margin: 0 20px;
-        cursor: pointer;
+    }
+
+    button {
         transform: translateY(-12px);
     }
 `;
