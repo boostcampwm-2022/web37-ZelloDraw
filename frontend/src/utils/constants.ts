@@ -12,6 +12,8 @@ export const colorName = [
     'white',
 ];
 
+export const ToolsTypeString = ['PEN', 'PAINT', 'ERASER', 'RESET'];
+
 export enum ToolsType {
     PEN,
     PAINT,
