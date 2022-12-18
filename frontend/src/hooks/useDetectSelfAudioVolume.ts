@@ -13,7 +13,7 @@ function useDetectSelfAudioVolume() {
             sourceNode.connect(analyzer);
 
             // Analyze the sound
-            setInterval(() => {
+            const interval = setInterval(() => {
                 const fftBins = new Float32Array(analyzer.frequencyBinCount);
                 analyzer.getFloatFrequencyData(fftBins);
 
@@ -28,6 +28,7 @@ function useDetectSelfAudioVolume() {
                     videoRef.current?.classList.remove('speaking');
                 }
             }, VOLUME_DETECT_INTERVAL);
+            return interval;
         } catch (err) {
             //
         }

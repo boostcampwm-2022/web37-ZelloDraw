@@ -5,8 +5,8 @@ import { ReactComponent as MicOnIcon } from '@assets/icons/mic-on-video-icon.svg
 import { ReactComponent as HostIconS } from '@assets/icons/host-icon-s.svg';
 import { ReactComponent as HostIconL } from '@assets/icons/host-icon-l.svg';
 import { Center, VideoProperty } from '@styles/styled';
-import { MINIMUM_AUDIO_LEVEL, VOLUME_DETECT_INTERVAL } from '@utils/constants';
 import useDetectSelfAudioVolume from '@hooks/useDetectSelfAudioVolume';
+import useDetectPeerAudioVolume from '@hooks/useDetectPeerAudioVolume';
 
 interface VideoCallProps {
     userName: string;
@@ -29,6 +29,7 @@ function VideoCallUser({
 }: VideoCallProps) {
     const videoRef: React.RefObject<HTMLVideoElement> | null = useRef(null);
     const { highlightUserVideo } = useDetectSelfAudioVolume();
+    const { highlightPeerVideo } = useDetectPeerAudioVolume();
 
     const getCameraOnComponent = () => {
         return (
@@ -56,24 +57,18 @@ function VideoCallUser({
     }, [stream, video, audio]);
 
     useEffect(() => {
-        isCurUser && stream && highlightUserVideo(stream, videoRef);
+        if (!isCurUser || !stream) return;
+        const interval = highlightUserVideo(stream, videoRef);
+        return () => {
+            clearInterval(interval);
+        };
     }, [isCurUser, stream]);
 
     useEffect(() => {
         if (!pc) return;
-        const interval = setInterval(() => {
-            const receiver = pc.getReceivers().find((r: { track: { kind: string } }) => {
-                return r.track.kind === 'audio';
-            });
-            const source = receiver?.getSynchronizationSources()[0];
-            if (source?.audioLevel && source?.audioLevel > MINIMUM_AUDIO_LEVEL) {
-                videoRef.current?.classList.add('speaking');
-            } else {
-                videoRef.current?.classList.remove('speaking');
-            }
-        }, VOLUME_DETECT_INTERVAL);
+        const interval = highlightPeerVideo(pc, videoRef);
         return () => {
-            clearInterval(interval);
+            interval && clearInterval(interval);
         };
     }, [pc]);
 
