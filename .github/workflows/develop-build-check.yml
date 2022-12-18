@@ -38,7 +38,7 @@ jobs:
               uses: actions/cache@v3
               with:
                   path: frontend/node_modules
-                  key: npm-packages-frontend-${{hashFiles('**/package-lock.json')}}
+                  key: npm-packages-frontend-${{hashFiles('frontend/package-lock.json')}}
                   restore-keys: |
                       npm-packages-frontend-
 
@@ -47,7 +47,7 @@ jobs:
               uses: actions/cache@v3
               with:
                   path: backend/node_modules
-                  key: npm-packages-backend-${{hashFiles('**/package-lock.json')}}
+                  key: npm-packages-backend-${{hashFiles('backend/package-lock.json')}}
                   restore-keys: |
                       npm-packages-backend-
 
@@ -81,7 +81,7 @@ jobs:
               uses: actions/cache@v3
               with:
                   path: backend/node_modules
-                  key: npm-packages-backend-${{hashFiles('**/package-lock.json')}}
+                  key: npm-packages-backend-${{hashFiles('backend/package-lock.json')}}
                   restore-keys: |
                       npm-packages-backend-
 
