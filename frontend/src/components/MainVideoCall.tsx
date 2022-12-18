@@ -1,6 +1,7 @@
 import { useRef, useEffect } from 'react';
 import styled from 'styled-components';
 import { Center, VideoProperty } from '@styles/styled';
+import useDetectSelfAudioVolume from '@hooks/useDetectSelfAudioVolume';
 
 interface VideoCallProps {
     userName: string;
@@ -10,11 +11,16 @@ interface VideoCallProps {
 
 function MainVideoCall({ userName, stream, video }: VideoCallProps) {
     const videoRef: React.RefObject<HTMLVideoElement> | null = useRef(null);
+    const { highlightUserVideo } = useDetectSelfAudioVolume();
 
     useEffect(() => {
         if (!videoRef.current || !stream || !video) return;
         videoRef.current.srcObject = stream;
     }, [stream, video]);
+
+    useEffect(() => {
+        stream && highlightUserVideo(stream, videoRef);
+    }, [stream]);
 
     return (
         <Container>
@@ -42,6 +48,10 @@ const Container = styled.div`
     border-radius: 32px;
     background: ${({ theme }) => theme.gradation.purplePrimary};
     margin-bottom: 7.31px;
+
+    .speaking {
+        border: 3px solid ${({ theme }) => theme.color.yellow};
+    }
 `;
 
 const Video = styled(VideoProperty)`
