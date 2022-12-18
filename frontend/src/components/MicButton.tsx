@@ -11,7 +11,7 @@ function MicButton() {
     const localMicState = useRecoilValue(localDeviceState).audio;
     const { emitUpdateUserStream } = useUserSocket();
     const onBtnClick = () => {
-        if (!selfStreamRef?.current) return;
+        if (!localMicState || !selfStreamRef?.current) return;
         selfStreamRef.current.getAudioTracks().forEach((track) => (track.enabled = !track.enabled));
 
         const changed = !userMic;
@@ -22,7 +22,6 @@ function MicButton() {
     return (
         <ControlButton
             onClick={onBtnClick}
-            disabled={!localMicState}
             labelText={`MIC ${userMic ? 'ON' : 'OFF'}`}
             aria-label={`마이크 ${userMic ? '켜짐' : '꺼짐'}`}
         >

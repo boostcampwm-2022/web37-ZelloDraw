@@ -11,7 +11,7 @@ function CameraButton() {
     const localCamState = useRecoilValue(localDeviceState).video;
     const { emitUpdateUserStream } = useUserSocket();
     const onBtnClick = () => {
-        if (!selfStreamRef?.current) return;
+        if (!localCamState || !selfStreamRef?.current) return;
         selfStreamRef.current.getVideoTracks().forEach((track) => (track.enabled = !track.enabled));
 
         const changed = !userCam;
@@ -22,7 +22,6 @@ function CameraButton() {
     return (
         <ControlButton
             onClick={onBtnClick}
-            disabled={!localCamState}
             labelText={`CAMERA ${userCam ? 'ON' : 'OFF'}`}
             aria-label={`카메라 ${userCam ? '켜짐' : '꺼짐'}`}
         >

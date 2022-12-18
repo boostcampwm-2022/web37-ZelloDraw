@@ -1,5 +1,5 @@
 import { useEffect, useRef, useCallback } from 'react';
-import { MediaErrorType, NOT_SUPPORT_USER_MESSAGE, NOT_SUPPORTED_MESSAGE } from '@utils/constants';
+// import { MediaErrorType, NOT_SUPPORT_USER_MESSAGE, NOT_SUPPORTED_MESSAGE } from '@utils/constants';
 import {
     userStreamState,
     userStreamRefState,
@@ -43,7 +43,6 @@ function useLocalStream() {
         });
 
         if (!hasCam && !hasMic) {
-            // alert(MediaErrorType.NotFoundError);
             setCamDeviceInfo(hasCam);
             setMicDeviceInfo(hasMic);
             getFakeStream();
@@ -94,14 +93,11 @@ function useLocalStream() {
         } catch (err: any) {
             // 나머지 예외 상황에 대해 사용자에게 alert창을 띄운다.
             // catch error는 permission이 하나 이상 denied 상태일 때도 실행된다.
-            if (err.message.includes(NOT_SUPPORTED_MESSAGE)) {
-                alert(NOT_SUPPORT_USER_MESSAGE);
-            }
-            if (err.name in MediaErrorType) alert(MediaErrorType[err.name]);
-            else alert(err.message);
+            // if (err.message.includes(NOT_SUPPORTED_MESSAGE)) {
+            //     alert(NOT_SUPPORT_USER_MESSAGE);
+            // }
+            // if (err.name in MediaErrorType) alert(MediaErrorType[err.name]);
 
-            setCamDeviceInfo(userCamPermission.current);
-            setMicDeviceInfo(userMicPermission.current);
             if (userCamPermission.current || userMicPermission.current) {
                 void getSelfMedia({
                     video: userCamPermission.current,

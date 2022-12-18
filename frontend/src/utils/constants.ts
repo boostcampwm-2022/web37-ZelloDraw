@@ -50,14 +50,10 @@ interface MediaError {
 }
 
 export const MediaErrorType: MediaError = {
-    AbortError: 'An AbortError has occured.',
-    NotAllowedError: 'A NotAllowedError has occured. User might have denied permission.',
-    NotFoundError: 'A NotFoundError has occured.',
-    NotReadableError: 'A NotReadableError has occured.',
-    SecurityError: 'A SecurityError has occured.',
-    TypeError: 'A TypeError has occured.',
-    InvalidStateError: 'An InvalidStateError has occured.',
-    UnknownError: 'An UnknownError has occured.',
+    NotAllowedError: '사이트의 카메라 및 마이크 권한 변경이 필요해요!',
+    NotFoundError: '연결된 디바이스가 없어요. 화상 통화를 위해서 마이크와 카메라 연결이 필요해요!',
+    NotReadableError: '마이크 카메라가 이미 다른 앱에서 사용되고 있어요!',
+    UnknownError: '다시 시도해주세요.',
 };
 
 export const MINIMUM_AUDIO_LEVEL = 0.001;
