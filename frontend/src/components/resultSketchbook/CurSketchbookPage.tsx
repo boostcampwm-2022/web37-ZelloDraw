@@ -76,12 +76,13 @@ function CurSketchbookPage({ isForShareResult }: { isForShareResult: boolean }) 
     return (
         <CurPageWrapper>
             {isWatchedSketchbook && (
-                <UpArrowWrapper disable={currentPageIdx === maxPageNum}>
-                    <UpArrowIcon
-                        onClick={addSketchbookPage}
-                        role={'button'}
-                        aria-label={'다음 스케치북 페이지 보기'}
-                    />
+                <UpArrowWrapper
+                    disable={currentPageIdx === maxPageNum}
+                    disabled={currentPageIdx === maxPageNum}
+                    onClick={addSketchbookPage}
+                    aria-label={'다음 스케치북 페이지 보기'}
+                >
+                    <UpArrowIcon />
                 </UpArrowWrapper>
             )}
             <CurAndMaxNumber
@@ -91,12 +92,13 @@ function CurSketchbookPage({ isForShareResult }: { isForShareResult: boolean }) 
                 strokeColor={'primaryLight'}
             />
             {isWatchedSketchbook && (
-                <DownArrowWrapper disable={currentPageIdx === 0}>
-                    <DownArrowIcon
-                        onClick={subtractSketchbookPage}
-                        role={'button'}
-                        aria-label={'이전 스케치북 페이지 보기'}
-                    />
+                <DownArrowWrapper
+                    disable={currentPageIdx === 0}
+                    disabled={currentPageIdx === 0}
+                    onClick={subtractSketchbookPage}
+                    aria-label={'이전 스케치북 페이지 보기'}
+                >
+                    <DownArrowIcon />
                 </DownArrowWrapper>
             )}
         </CurPageWrapper>
@@ -110,17 +112,19 @@ const CurPageWrapper = styled(Center)`
     flex-direction: column;
 `;
 
-const UpArrowWrapper = styled.div<{ disable: boolean }>`
+const ArrowWrapper = styled.button<{ disable: boolean }>`
+    cursor: ${(props) => (props.disable ? 'not-allowed' : 'pointer')};
+    opacity: ${(props) => (props.disable ? 0.4 : 1)};
+`;
+
+const UpArrowWrapper = styled(ArrowWrapper)`
     > svg {
-        cursor: ${(props) => (props.disable ? 'not-allowed' : 'pointer')};
-        opacity: ${(props) => (props.disable ? 0.4 : 1)};
         margin-bottom: -8px;
     }
 `;
-const DownArrowWrapper = styled.div<{ disable: boolean }>`
+
+const DownArrowWrapper = styled(ArrowWrapper)`
     > svg {
-        cursor: ${(props) => (props.disable ? 'not-allowed' : 'pointer')};
-        opacity: ${(props) => (props.disable ? 0.4 : 1)};
         margin-top: 8px;
     }
 `;

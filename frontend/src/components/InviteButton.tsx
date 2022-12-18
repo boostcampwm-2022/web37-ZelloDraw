@@ -17,8 +17,8 @@ function InviteButton() {
 
     return (
         <>
-            <InviteBtn onClick={onClickInviteBtn} role={'button'}>
-                INVITE<h3>초대하기</h3>
+            <InviteBtn onClick={onClickInviteBtn}>
+                INVITE<div>초대하기</div>
             </InviteBtn>
             <Toaster position='top-center' reverseOrder={false} toastOptions={{ duration: 1500 }} />
         </>
@@ -44,7 +44,7 @@ const InviteBtn = styled.button`
     letter-spacing: -0.05em;
     color: ${({ theme }) => theme.color.yellow};
 
-    h3 {
+    div {
         margin-top: -2px;
         font-weight: 400;
     }

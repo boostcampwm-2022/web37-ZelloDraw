@@ -142,7 +142,7 @@ const LineWidthPicker = styled.div`
     margin: 16px 0;
 `;
 
-const LineWidth = styled.div<{ size: string; isSelected: boolean }>`
+const LineWidth = styled.button<{ size: string; isSelected: boolean }>`
     width: ${(props) => props.size};
     height: ${(props) => props.size};
     background: ${(props) =>
