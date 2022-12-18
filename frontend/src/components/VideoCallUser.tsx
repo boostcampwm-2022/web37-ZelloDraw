@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from 'react';
+import { useRef, useEffect } from 'react';
 import styled from 'styled-components';
 import { ReactComponent as MicOffIcon } from '@assets/icons/mic-off-video-icon.svg';
 import { ReactComponent as MicOnIcon } from '@assets/icons/mic-on-video-icon.svg';
@@ -6,6 +6,7 @@ import { ReactComponent as HostIconS } from '@assets/icons/host-icon-s.svg';
 import { ReactComponent as HostIconL } from '@assets/icons/host-icon-l.svg';
 import { Center, VideoProperty } from '@styles/styled';
 import { MINIMUM_AUDIO_LEVEL, VOLUME_DETECT_INTERVAL } from '@utils/constants';
+import useDetectSelfAudioVolume from '@hooks/useDetectSelfAudioVolume';
 
 interface VideoCallProps {
     userName: string;
@@ -27,6 +28,7 @@ function VideoCallUser({
     isCurUser = false,
 }: VideoCallProps) {
     const videoRef: React.RefObject<HTMLVideoElement> | null = useRef(null);
+    const { highlightUserVideo } = useDetectSelfAudioVolume();
 
     const getCameraOnComponent = () => {
         return (
@@ -52,6 +54,10 @@ function VideoCallUser({
         if (!videoRef.current || !stream) return;
         videoRef.current.srcObject = stream;
     }, [stream, video, audio]);
+
+    useEffect(() => {
+        isCurUser && stream && highlightUserVideo(stream, videoRef);
+    }, [isCurUser, stream]);
 
     useEffect(() => {
         if (!pc) return;
