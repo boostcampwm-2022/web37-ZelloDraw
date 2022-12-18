@@ -43,8 +43,6 @@ function useLocalStream() {
         });
 
         if (!hasCam && !hasMic) {
-            setCamDeviceInfo(hasCam);
-            setMicDeviceInfo(hasMic);
             getFakeStream();
         } else void getUserPermission({ video: hasCam, audio: hasMic });
     };
@@ -52,9 +50,8 @@ function useLocalStream() {
     const getCamPermissionStatus = async () => {
         const camPermissionName = 'camera' as PermissionName;
         const camPermission = await navigator.permissions.query({ name: camPermissionName });
-        const isCamGranted = camPermission && camPermission.state === 'granted'; // Access has been granted
-        setCamDeviceInfo(isCamGranted);
-        userCamPermission.current = isCamGranted;
+        const isCamAccessible = camPermission && camPermission.state !== 'denied';
+        userCamPermission.current = isCamAccessible;
         camPermission.onchange = (e: any) => {
             if (e.target.state === 'granted') location.reload();
         };
@@ -63,9 +60,8 @@ function useLocalStream() {
     const getMicPermissionStatus = async () => {
         const micPermissionName = 'microphone' as PermissionName;
         const micPermission = await navigator.permissions.query({ name: micPermissionName });
-        const isMicGranted = micPermission && micPermission.state === 'granted'; // Access has been granted
-        setMicDeviceInfo(isMicGranted);
-        userMicPermission.current = isMicGranted;
+        const isMicAccessible = micPermission && micPermission.state !== 'denied';
+        userMicPermission.current = isMicAccessible;
         micPermission.onchange = (e: any) => {
             if (e.target.state === 'granted') location.reload();
         };
@@ -90,6 +86,8 @@ function useLocalStream() {
             streamRef.current = stream;
             setStream(stream);
             setSelfStreamRef(streamRef);
+            setCamDeviceInfo(userCamPermission.current);
+            setMicDeviceInfo(userMicPermission.current);
         } catch (err: any) {
             // 나머지 예외 상황에 대해 사용자에게 alert창을 띄운다.
             // catch error는 permission이 하나 이상 denied 상태일 때도 실행된다.
@@ -97,7 +95,6 @@ function useLocalStream() {
             //     alert(NOT_SUPPORT_USER_MESSAGE);
             // }
             // if (err.name in MediaErrorType) alert(MediaErrorType[err.name]);
-
             if (userCamPermission.current || userMicPermission.current) {
                 void getSelfMedia({
                     video: userCamPermission.current,
@@ -114,6 +111,8 @@ function useLocalStream() {
         streamRef.current = fakeStream;
         setStream(fakeStream);
         setSelfStreamRef(streamRef);
+        setCamDeviceInfo(false);
+        setMicDeviceInfo(false);
     };
 
     useEffect(() => {
