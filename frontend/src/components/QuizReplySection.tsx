@@ -69,12 +69,16 @@ function QuizReplySection({
     return (
         <Container>
             {!isDraw ? (
-                <AnswerInput
-                    placeholder={placeholder}
-                    onChange={(e) => debounceOnChange(e.target.value)}
-                    readOnly={quizSubmitted}
-                    quizSubmitted={quizSubmitted}
-                />
+                <>
+                    <label htmlFor='answer'>답변 입력</label>
+                    <AnswerInput
+                        id={'answer'}
+                        placeholder={placeholder}
+                        onChange={(e) => debounceOnChange(e.target.value)}
+                        readOnly={quizSubmitted}
+                        quizSubmitted={quizSubmitted}
+                    />
+                </>
             ) : (
                 <div />
             )}
@@ -101,6 +105,10 @@ const Container = styled(Center)`
 
     > div:first-child {
         width: 100%;
+    }
+    label {
+        position: absolute;
+        opacity: 0;
     }
 `;
 

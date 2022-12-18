@@ -45,7 +45,9 @@ function UserCard({ emitUpdateUserName }: { emitUpdateUserName: (name: string) =
                 <MainVideoCall userName={currentUser.name} stream={selfStream} video={userCam} />
                 <UserName>
                     <span>{'{'}</span>
+                    <label htmlFor='nickname'>nickname</label>
                     <NameInput
+                        id='nickname'
                         type='text'
                         placeholder={user.name}
                         onChange={onChangeName}
@@ -89,6 +91,11 @@ const UserName = styled.div`
         font-weight: 800;
         font-size: 2.5rem;
         padding: 4px;
+    }
+
+    label {
+        position: absolute;
+        opacity: 0;
     }
 `;
 

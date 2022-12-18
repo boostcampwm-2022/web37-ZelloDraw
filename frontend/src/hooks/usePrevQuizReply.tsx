@@ -13,7 +13,7 @@ function usePrevQuizReply(emitSubmitQuizReply: (quizReply: SubmitQuizReplyReques
     const renderPrevUserQuizReply = () => {
         if (isDraw) {
             return (
-                <Keyword>
+                <Keyword aria-label={'제시어'}>
                     <span>{quizReply}</span>
                 </Keyword>
             );

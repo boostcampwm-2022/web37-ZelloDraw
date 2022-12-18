@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 import { Center, Color } from '@styles/styled';
-import { colorName } from '@utils/constants';
+import { colorName, ToolsTypeString } from '@utils/constants';
 import HexColorPicker from './HexColorPicker';
 import { colors } from '@styles/ZelloTheme';
 import usePalette from '@hooks/usePalette';
@@ -38,9 +38,13 @@ function DrawingTools({ restProps }: DrawingToolsType) {
                         onClick={() => onChangeTool(tool.type)}
                         isSelected={selectedTool === tool.type}
                         role={'button'}
-                        aria-label={`${tool.type}`}
+                        aria-label={`${ToolsTypeString[tool.type]}으로 도구 변경`}
                     >
-                        <img src={tool.element} onClick={tool.onclick} alt={`${tool.type}`} />
+                        <img
+                            src={tool.element}
+                            onClick={tool.onclick}
+                            alt={ToolsTypeString[tool.type]}
+                        />
                     </Tool>
                 ))}
             </Tools>
@@ -62,6 +66,7 @@ function DrawingTools({ restProps }: DrawingToolsType) {
                         type={'button'}
                         key={`${colorName} ${index}`}
                         colorName={colorName}
+                        aria-label={`${colorName} 색상으로 변경`}
                         isSelected={colors[colorName] === selectedColor}
                         onClick={() => onClickColor(colors[colorName])}
                     />
