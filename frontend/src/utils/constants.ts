@@ -70,3 +70,5 @@ export const TURN = {
     username: 'zello',
     credential: 'password',
 };
+
+export const zelloGitHubURL = 'https://github.com/boostcampwm-2022/web37-ZelloDraw';

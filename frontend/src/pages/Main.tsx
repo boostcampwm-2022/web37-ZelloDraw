@@ -10,6 +10,7 @@ import GuestEntranceMessage from '@components/GuestMessageBox';
 import MadeByText from '@components/MadeByText';
 import useMovePage from '@hooks/useMovePage';
 import useMainSocket from '@hooks/socket/useMainSocket';
+import GitHubIconButton from '@components/GitHubIconButton';
 
 function Main() {
     const [setPage] = useMovePage();
@@ -33,6 +34,7 @@ function Main() {
                 {!user.isHost && <GuestEntranceMessage />}
             </MainContainer>
             <BottomWrapper>
+                <GitHubIconButton />
                 <MadeByText />
             </BottomWrapper>
         </>
@@ -57,6 +59,10 @@ const LogoWrapper = styled.div`
 
 const BottomWrapper = styled(ScaledDiv)`
     position: absolute;
-    bottom: 20px;
-    right: 16px;
+    bottom: 18px;
+    left: 24px;
+    right: 23px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 `;

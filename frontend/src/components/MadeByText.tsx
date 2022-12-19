@@ -16,7 +16,9 @@ const TextBox = styled.div`
     line-height: 31px;
     letter-spacing: -0.05em;
     color: ${({ theme }) => theme.color.white};
-    margin: 0 28px 24px auto;
+    margin: auto 0px 0px auto;
+    display: flex;
+    justify-content: center;
 `;
 
 const Title = styled.span`
