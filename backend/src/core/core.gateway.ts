@@ -4,7 +4,6 @@ import {
     MessageBody,
     OnGatewayConnection,
     OnGatewayDisconnect,
-    OnGatewayInit,
     SubscribeMessage,
     WebSocketGateway,
 } from '@nestjs/websockets';
@@ -38,7 +37,7 @@ import { User } from './user.model';
 // @UsePipes(new ValidationPipe())
 @UseFilters(new SocketExceptionFilter())
 @WebSocketGateway(8180, { namespace: 'core' })
-export class CoreGateway implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect {
+export class CoreGateway implements OnGatewayConnection, OnGatewayDisconnect {
     constructor(
         private readonly lobbyService: LobbyService,
         private readonly gameService: GameService,
@@ -74,7 +73,6 @@ export class CoreGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
     async handleCreateLobby(@ConnectedSocket() client: Socket) {
         // TODO: socket connection 라이프 사이클에 user 생성, 삭제 로직 할당
         const user = await this.userService.getUser(client.id);
-        console.log('user: ', user);
         const lobbyId = await this.lobbyService.createLobby(user);
         await client.join(lobbyId);
         return lobbyId;
