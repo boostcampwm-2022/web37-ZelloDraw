@@ -104,7 +104,6 @@ export class GameService {
         } else {
             await this.gameLobbyRepository.save(game);
         }
-        await this.gameLobbyRepository.save(game);
     }
 
     async quitGame(lobbyId: string) {
