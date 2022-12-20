@@ -53,12 +53,13 @@ export class CoreGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
     async handleDisconnect(@ConnectedSocket() client: Socket) {
         const user = await this.userService.getUser(client.id);
 
-        if (user.lobbyId === undefined) return;
-        const gameLobby = await this.gameService.getGame(user.lobbyId);
-        if (gameLobby.getIsPlaying()) {
-            await this.handleLeaveGame(client);
-        } else {
-            await this.handleLeaveLobby(client);
+        if (user.lobbyId) {
+            const gameLobby = await this.gameService.getGame(user.lobbyId);
+            if (gameLobby.getIsPlaying()) {
+                await this.handleLeaveGame(client);
+            } else {
+                await this.handleLeaveLobby(client);
+            }
         }
         await this.userService.deleteUser(client.id);
     }
