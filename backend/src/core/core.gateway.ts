@@ -4,7 +4,6 @@ import {
     MessageBody,
     OnGatewayConnection,
     OnGatewayDisconnect,
-    OnGatewayInit,
     SubscribeMessage,
     WebSocketGateway,
 } from '@nestjs/websockets';
@@ -38,7 +37,7 @@ import { User } from './user.model';
 // @UsePipes(new ValidationPipe())
 @UseFilters(new SocketExceptionFilter())
 @WebSocketGateway(8180, { namespace: 'core' })
-export class CoreGateway implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect {
+export class CoreGateway implements OnGatewayConnection, OnGatewayDisconnect {
     constructor(
         private readonly lobbyService: LobbyService,
         private readonly gameService: GameService,
@@ -53,18 +52,15 @@ export class CoreGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
     async handleDisconnect(@ConnectedSocket() client: Socket) {
         const user = await this.userService.getUser(client.id);
 
-        if (user.lobbyId === undefined) return;
-        const gameLobby = await this.gameService.getGame(user.lobbyId);
-        if (gameLobby.getIsPlaying()) {
-            await this.handleLeaveGame(client);
-        } else {
-            await this.handleLeaveLobby(client);
+        if (user.lobbyId) {
+            const gameLobby = await this.gameService.getGame(user.lobbyId);
+            if (gameLobby.getIsPlaying()) {
+                await this.handleLeaveGame(client);
+            } else {
+                await this.handleLeaveLobby(client);
+            }
         }
         await this.userService.deleteUser(client.id);
-    }
-
-    afterInit(server: any) {
-        console.log('afterInit');
     }
 
     @SubscribeMessage('update-user-name')
