@@ -64,10 +64,6 @@ export class CoreGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
         await this.userService.deleteUser(client.id);
     }
 
-    afterInit(server: any) {
-        console.log('afterInit');
-    }
-
     @SubscribeMessage('update-user-name')
     async handleCreateUser(@ConnectedSocket() client: Socket, @MessageBody() userName: string) {
         return await this.userService.updateUser(client.id, { name: userName });
@@ -78,6 +74,7 @@ export class CoreGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
     async handleCreateLobby(@ConnectedSocket() client: Socket) {
         // TODO: socket connection 라이프 사이클에 user 생성, 삭제 로직 할당
         const user = await this.userService.getUser(client.id);
+        console.log('user: ', user);
         const lobbyId = await this.lobbyService.createLobby(user);
         await client.join(lobbyId);
         return lobbyId;
