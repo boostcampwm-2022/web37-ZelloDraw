@@ -88,6 +88,9 @@ export class CoreGateway implements OnGatewayConnection, OnGatewayDisconnect {
             const host = await this.lobbyService.getHost(lobby.id);
             const user = await this.userService.getUser(client.id);
 
+            if (await this.gameService.isPlaying(body.lobbyId))
+                throw new Error('이미 진행중인 게임입니다.');
+
             const users: User[] = await this.lobbyService.joinLobby(user, lobby.id);
             await client.join(body.lobbyId);
             this.emitJoinLobby(client, lobby.id, {
