@@ -63,6 +63,11 @@ export class GameService {
         return game.isHost(user);
     }
 
+    async isPlaying(lobbyId: string): Promise<boolean> {
+        const game = await this.getGame(lobbyId);
+        return game.getIsPlaying();
+    }
+
     async getGameHost(lobbyId: string): Promise<User> {
         const game = await this.getGame(lobbyId);
         return game.getHost();
