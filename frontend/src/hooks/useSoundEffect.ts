@@ -5,10 +5,11 @@ function useSoundEffect() {
     const isSoundOn = useRecoilValue(isSoundOnState);
     const audio = new Audio();
 
-    function playSoundEffect(src: string) {
+    function playSoundEffect(src: string, volume = 1) {
         if (!isSoundOn) return;
 
         audio.src = src;
+        audio.volume = volume;
         const playPromise = audio.play();
         if (playPromise !== undefined) {
             playPromise
