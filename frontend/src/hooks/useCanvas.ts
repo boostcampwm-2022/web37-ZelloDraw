@@ -112,7 +112,6 @@ function useCanvas() {
     };
 
     const onColorChange = (color: string) => {
-        playSoundEffect(selectedSound);
         if (!ctxRef.current) return;
         curColor.current = convertHexToRgba(color);
         ctxRef.current.strokeStyle = color;
