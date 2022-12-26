@@ -9,7 +9,16 @@ function useSoundEffect() {
         if (!isSoundOn) return;
 
         audio.src = src;
-        void audio.play();
+        const playPromise = audio.play();
+        if (playPromise !== undefined) {
+            playPromise
+                .then((_) => {
+                    /* Autoplay started! */
+                })
+                .catch((_) => {
+                    // Auto-play was prevented
+                });
+        }
     }
 
     return { playSoundEffect };
