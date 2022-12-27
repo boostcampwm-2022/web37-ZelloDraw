@@ -125,6 +125,21 @@ const SlideInner = styled(motion.div)`
     position: absolute;
     top: 0;
     left: 0;
+    overflow-y: auto;
+
+    &::-webkit-scrollbar {
+        width: 4px;
+    }
+    &::-webkit-scrollbar-thumb {
+        height: 40%;
+        background: ${({ theme }) => theme.color.white};
+        border-radius: 16px;
+    }
+    &::-webkit-scrollbar-track {
+        background: ${({ theme }) => theme.color.blackT1};
+        border-radius: 16px;
+    }
+
     > p {
         font-weight: 400;
     }
