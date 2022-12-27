@@ -62,9 +62,15 @@ function QuizReplySection({
     const debounceOnChange = useCallback(
         debounce((value: string) => {
             setUserReply(value);
-        }, 500),
+        }, 100),
         [],
     );
+
+    function checkEnterKeyAndSubmit(e: React.KeyboardEvent<HTMLInputElement>) {
+        if (e.key === 'Enter') {
+            submitBtnHandler();
+        }
+    }
 
     return (
         <Container>
@@ -75,6 +81,7 @@ function QuizReplySection({
                         id={'answer'}
                         placeholder={placeholder}
                         onChange={(e) => debounceOnChange(e.target.value)}
+                        onKeyUp={(e) => checkEnterKeyAndSubmit(e)}
                         readOnly={quizSubmitted}
                         quizSubmitted={quizSubmitted}
                     />
