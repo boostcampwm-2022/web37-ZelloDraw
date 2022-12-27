@@ -90,7 +90,7 @@ function useLobbySocket() {
     function onJoinLobby() {
         NetworkService.on('join-lobby', (user: JoinLobbyReEmitRequest) => {
             setUserList((userList) => [...userList, user]);
-            playSoundEffect(lobbyInSound);
+            playSoundEffect(lobbyInSound, 0.4);
         });
     }
 

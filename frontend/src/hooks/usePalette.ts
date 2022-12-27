@@ -1,5 +1,4 @@
 import { useEffect, useState } from 'react';
-import { useRecoilState } from 'recoil';
 import { PEN_DEFAULT_COLOR, ToolsType } from '@utils/constants';
 import pen from '@assets/icons/pen-icon.svg';
 import paint from '@assets/icons/paint-icon.svg';
@@ -45,7 +44,7 @@ function usePalette({
     useEffect(() => {
         // 도구 초기화
         onChangeTool(ToolsType.PEN);
-        onClickColor(PEN_DEFAULT_COLOR);
+        onClickColor({ color: PEN_DEFAULT_COLOR });
         onClickLineWidth(1);
         onClickPen(PEN_DEFAULT_COLOR);
     }, []);
@@ -80,7 +79,14 @@ function usePalette({
         onLineWidthChange(index);
     };
 
-    const onClickColor = (color: string) => {
+    const onClickColor = ({
+        color,
+        isFromPicker = false,
+    }: {
+        color: string;
+        isFromPicker?: boolean;
+    }) => {
+        if (!isFromPicker) playSoundEffect(selectedSound);
         setSelectedColor(color);
         if (selectedTool === ToolsType.ERASER) setSelectedTool(ToolsType.PEN);
         onColorChange(color);

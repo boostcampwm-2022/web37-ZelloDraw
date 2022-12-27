@@ -68,7 +68,7 @@ function DrawingTools({ restProps }: DrawingToolsType) {
                         colorName={colorName}
                         aria-label={`${colorName} 색상으로 변경`}
                         isSelected={colors[colorName] === selectedColor}
-                        onClick={() => onClickColor(colors[colorName])}
+                        onClick={() => onClickColor({ color: colors[colorName] })}
                     />
                 ))}
                 <HexColorPicker onClickPickerColor={onClickColor} selected={selectedColor} />
