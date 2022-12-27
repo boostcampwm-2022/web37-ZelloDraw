@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import toast, { Toaster } from 'react-hot-toast';
+import toast from 'react-hot-toast';
 import styled from 'styled-components';
 import { Center } from '@styles/styled';
 import { useRecoilValue } from 'recoil';
@@ -53,9 +53,9 @@ function ResultSketchbook({ isForShareResult }: { isForShareResult: boolean }) {
         void onCopy(gameResultShareUrl);
         toast('🖇 클립보드에 복사되었습니다.');
     };
+
     return (
         <>
-            <Toaster position='top-center' reverseOrder={false} toastOptions={{ duration: 1500 }} />
             <SketchbookCard
                 center={
                     <>

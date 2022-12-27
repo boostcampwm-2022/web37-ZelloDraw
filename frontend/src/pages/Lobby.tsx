@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import React, { useEffect } from 'react';
 import styled from 'styled-components';
 import { ScaledDiv, ScaledSection } from '@styles/styled';
 import SmallLogo from '@assets/zellodraw-logo.png';
@@ -11,6 +11,7 @@ import UserList from '@components/UserList';
 import CameraButton from '@components/CameraButton';
 import MicButton from '@components/MicButton';
 import SoundControlButton from '@components/SoundControlButton';
+import ToasterFromTop from '@components/ToasterFromTop';
 
 function Lobby() {
     const resetGameState = useResetGameState();
@@ -48,6 +49,7 @@ function Lobby() {
             <SoundControlButtonWrapper>
                 <SoundControlButton />
             </SoundControlButtonWrapper>
+            <ToasterFromTop />
         </>
     );
 }
