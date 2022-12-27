@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import { ScaledDiv, ScaledSection } from '@styles/styled';
+import { ScaledSection } from '@styles/styled';
 import { useRecoilValue } from 'recoil';
 import { userState, userStateType } from '@atoms/user';
 import Logo from '@assets/zellodraw-logo.png';
@@ -57,7 +57,7 @@ const LogoWrapper = styled.div`
     cursor: pointer;
 `;
 
-const BottomWrapper = styled(ScaledDiv)`
+const BottomWrapper = styled.div`
     position: absolute;
     bottom: 18px;
     left: 24px;

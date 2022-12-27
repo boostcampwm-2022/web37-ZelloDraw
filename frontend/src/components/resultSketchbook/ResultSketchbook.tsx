@@ -1,11 +1,11 @@
 import { useEffect } from 'react';
-import toast, { Toaster } from 'react-hot-toast';
+import toast from 'react-hot-toast';
 import styled from 'styled-components';
 import { Center } from '@styles/styled';
 import { useRecoilValue } from 'recoil';
 import { canOneMoreGameState, gameResultIdState, isStartedState } from '@atoms/result';
 import { lobbyIdState } from '@atoms/game';
-import { ReactComponent as ExportIcon } from '@assets/icons/export-icon.svg';
+import { ReactComponent as ShareIcon } from '@assets/icons/share-icon.svg';
 import resultInSound from '@assets/sounds/result-in.wav';
 import { networkServiceInstance as NetworkService } from '@services/socketService';
 import useMovePage from '@hooks/useMovePage';
@@ -53,9 +53,9 @@ function ResultSketchbook({ isForShareResult }: { isForShareResult: boolean }) {
         void onCopy(gameResultShareUrl);
         toast('🖇 클립보드에 복사되었습니다.');
     };
+
     return (
         <>
-            <Toaster position='top-center' reverseOrder={false} toastOptions={{ duration: 1500 }} />
             <SketchbookCard
                 center={
                     <>
@@ -85,7 +85,7 @@ function ResultSketchbook({ isForShareResult }: { isForShareResult: boolean }) {
                                     onClick={copyGameResultIdOnClipboard}
                                     aria-label={'게임 결과 페이지 링크 복사'}
                                 >
-                                    <ExportIcon />
+                                    <ShareIcon />
                                 </button>
                             )}
                             <OneMoreGameButton
@@ -112,7 +112,7 @@ const OutsideOfCard = styled(Center)`
 
     svg {
         margin: 0 28px;
-        transform: scale(1.3) translateY(2px);
+        transform: scale(1.3) translateY(5px);
         cursor: pointer;
     }
 

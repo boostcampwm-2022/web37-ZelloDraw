@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 import useCopyClipBoard from '@hooks/useCopyClipboard';
-import toast, { Toaster } from 'react-hot-toast';
+import toast from 'react-hot-toast';
 import { useRecoilValue } from 'recoil';
 import { lobbyIdState } from '@atoms/game';
 
@@ -20,7 +20,6 @@ function InviteButton() {
             <InviteBtn onClick={onClickInviteBtn}>
                 INVITE<div>초대하기</div>
             </InviteBtn>
-            <Toaster position='top-center' reverseOrder={false} toastOptions={{ duration: 1500 }} />
         </>
     );
 }

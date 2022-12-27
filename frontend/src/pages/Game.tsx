@@ -1,8 +1,9 @@
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
-import { ScaledDiv, ScaledSection } from '@styles/styled';
+import { ScaledSection } from '@styles/styled';
 import { useRecoilValue } from 'recoil';
 import { resetModalOpenState } from '@atoms/game';
+import { AnimatePresence } from 'framer-motion';
 import GameUsers from '@components/GameUsers';
 import MicButton from '@components/MicButton';
 import CameraButton from '@components/CameraButton';
@@ -11,12 +12,12 @@ import GameSketchbook from '@components/GameSketchbook';
 import ResultSketchbook from '@components/resultSketchbook/ResultSketchbook';
 import useBeforeReload from '@hooks/useBeforeReload';
 import CountDown from '@components/CountDown';
-import { AnimatePresence } from 'framer-motion';
 import ResetModal from '@components/ResetModal';
 import SoundControlButton from '@components/SoundControlButton';
 import countdownSound from '@assets/sounds/countdown.mp3';
 import useSoundEffect from '@hooks/useSoundEffect';
 import useGameSocket from '@hooks/socket/useGameSocket';
+import ToasterFromTop from '@components/ToasterFromTop';
 
 function Game() {
     const [isCompleteGame, setIsCompleteGame] = useState(false);
@@ -55,6 +56,7 @@ function Game() {
             <SoundControlButtonWrapper>
                 <SoundControlButton />
             </SoundControlButtonWrapper>
+            <ToasterFromTop />
         </>
     );
 }
@@ -70,7 +72,7 @@ const SketchbookSection = styled.div`
     margin-bottom: 140px;
 `;
 
-const CamAndMicWrapper = styled(ScaledDiv)`
+const CamAndMicWrapper = styled.div`
     display: flex;
     position: absolute;
     bottom: 24px;
@@ -81,14 +83,14 @@ const CamAndMicWrapper = styled(ScaledDiv)`
     }
 `;
 
-const LogoWrapper = styled(ScaledDiv)`
+const LogoWrapper = styled.div`
     justify-self: center;
     position: absolute;
     bottom: 40px;
     cursor: pointer;
 `;
 
-const SoundControlButtonWrapper = styled(ScaledDiv)`
+const SoundControlButtonWrapper = styled.div`
     position: absolute;
     bottom: 24px;
     right: 26px;

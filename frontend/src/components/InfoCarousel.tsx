@@ -20,39 +20,29 @@ function InfoCarousel({
 
     const contents: React.ReactNode[] = [
         <p>
-            즐거운 시간 보낼 준비가 되었나요?
-            <br />
-            처음이라면 옆으로 넘겨
-            <br />
+            즐거운 시간 보낼 준비가 되었나요?{'\n'}
+            처음이라면 옆으로 넘겨{'\n'}
             도움말을 읽어보세요.
         </p>,
         <p>
-            나만의 단어를 만들어봐요!
-            <br />
-            게임이 시작하면 다른 사람이 그릴
-            <br />
+            나만의 단어를 만들어봐요!{'\n'}
+            게임이 시작하면 다른 사람이 그릴{'\n'}
             단어를 써서 제출해요.
         </p>,
         <p>
-            그림을 그려봐요!
-            <br />
-            다른 유저가 제출한 독특한 단어를
-            <br />
+            그림을 그려봐요!{'\n'}
+            다른 유저가 제출한 독특한 단어를{'\n'}
             그림으로 묘사해요.
         </p>,
         <p>
-            무슨 그림인가요?
-            <br />
-            다른 유저가 무엇을 그렸는지
-            <br />
+            무슨 그림인가요?{'\n'}
+            다른 유저가 무엇을 그렸는지{'\n'}
             맞추어봐요.
         </p>,
 
         <p>
-            나만의 단어가 어떻게 변했을까요?
-            <br />
-            단어가 여러 유저를 거쳐
-            <br />
+            나만의 단어가 어떻게 변했을까요?{'\n'}
+            단어가 여러 유저를 거쳐{'\n'}
             어떻게 바뀌었는지 다같이 봐요.
         </p>,
     ];
@@ -125,6 +115,22 @@ const SlideInner = styled(motion.div)`
     position: absolute;
     top: 0;
     left: 0;
+    overflow-y: auto;
+    white-space: pre-line;
+
+    &::-webkit-scrollbar {
+        width: 4px;
+    }
+    &::-webkit-scrollbar-thumb {
+        height: 40%;
+        background: ${({ theme }) => theme.color.white};
+        border-radius: 16px;
+    }
+    &::-webkit-scrollbar-track {
+        background: ${({ theme }) => theme.color.blackT1};
+        border-radius: 16px;
+    }
+
     > p {
         font-weight: 400;
     }
