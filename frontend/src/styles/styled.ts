@@ -27,12 +27,6 @@ export const ScaledSection = styled.section`
     transform: scale(${({ theme }) => theme.layout.sectionScale});
 `;
 
-export const ScaledDiv = styled.div`
-    transform: ${({ theme }) =>
-        // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
-        theme.layout.sectionScale < 1 ? `scale(${theme.layout.sectionScale})` : 'scale(1)'};
-`;
-
 export const VideoProperty = styled.video`
     width: 100%;
     height: 100%;

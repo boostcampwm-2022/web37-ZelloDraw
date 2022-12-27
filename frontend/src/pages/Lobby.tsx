@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import styled from 'styled-components';
-import { ScaledDiv, ScaledSection } from '@styles/styled';
+import { ScaledSection } from '@styles/styled';
 import SmallLogo from '@assets/zellodraw-logo.png';
 import useLobbySocket from '@hooks/socket/useLobbySocket';
 import useBeforeReload from '@hooks/useBeforeReload';
@@ -58,7 +58,7 @@ export default Lobby;
 
 const LobbyContainer = styled(ScaledSection)``;
 
-const LogoWrapper = styled(ScaledDiv)`
+const LogoWrapper = styled.div`
     position: absolute;
     top: 12px;
     left: 12px;
@@ -82,7 +82,7 @@ const ButtonWrapper = styled.div`
     margin-left: -590px;
 `;
 
-const SoundControlButtonWrapper = styled(ScaledDiv)`
+const SoundControlButtonWrapper = styled.div`
     position: absolute;
     bottom: 24px;
     right: 26px;

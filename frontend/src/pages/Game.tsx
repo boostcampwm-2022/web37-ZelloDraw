@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
-import { ScaledDiv, ScaledSection } from '@styles/styled';
+import { ScaledSection } from '@styles/styled';
 import { useRecoilValue } from 'recoil';
 import { resetModalOpenState } from '@atoms/game';
 import { AnimatePresence } from 'framer-motion';
@@ -72,7 +72,7 @@ const SketchbookSection = styled.div`
     margin-bottom: 140px;
 `;
 
-const CamAndMicWrapper = styled(ScaledDiv)`
+const CamAndMicWrapper = styled.div`
     display: flex;
     position: absolute;
     bottom: 24px;
@@ -83,14 +83,14 @@ const CamAndMicWrapper = styled(ScaledDiv)`
     }
 `;
 
-const LogoWrapper = styled(ScaledDiv)`
+const LogoWrapper = styled.div`
     justify-self: center;
     position: absolute;
     bottom: 40px;
     cursor: pointer;
 `;
 
-const SoundControlButtonWrapper = styled(ScaledDiv)`
+const SoundControlButtonWrapper = styled.div`
     position: absolute;
     bottom: 24px;
     right: 26px;

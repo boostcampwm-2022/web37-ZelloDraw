@@ -1,7 +1,7 @@
 import ResultSketchbook from '@components/resultSketchbook/ResultSketchbook';
 import SmallLogo from '@assets/zellodraw-logo.png';
 import styled from 'styled-components';
-import { ScaledDiv, ScaledSection } from '@styles/styled';
+import { ScaledSection } from '@styles/styled';
 import { useEffect } from 'react';
 import { queryAndSaveGameResult } from '@axios/sharedResult';
 import { useRecoilState, useSetRecoilState } from 'recoil';
@@ -56,7 +56,7 @@ const SketchbookSection = styled.div`
     margin-bottom: 140px;
 `;
 
-const LogoWrapper = styled(ScaledDiv)`
+const LogoWrapper = styled.div`
     justify-self: center;
     position: absolute;
     bottom: 40px;

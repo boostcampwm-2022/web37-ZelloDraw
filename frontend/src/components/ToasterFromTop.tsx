@@ -1,6 +1,5 @@
 import { Toaster } from 'react-hot-toast';
 import styled from 'styled-components';
-import { ScaledDiv } from '@styles/styled';
 
 function ToasterFromTop() {
     return (
@@ -12,7 +11,7 @@ function ToasterFromTop() {
 
 export default ToasterFromTop;
 
-const ToasterWrapper = styled(ScaledDiv)`
+const ToasterWrapper = styled.div`
     position: absolute;
     top: 0;
     width: 100%;

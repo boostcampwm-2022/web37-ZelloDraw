@@ -77,7 +77,7 @@ export const ZelloTheme = {
     layout: {
         maxWidth: `${MAX_WIDTH}px`,
         maxHeight: `${MAX_HEIGHT}px`,
-        sectionScale: SCALE,
+        sectionScale: SCALE < 0.75 ? 0.75 : SCALE,
         sketchBook: `
           width: 750px;
           height: 472px;
