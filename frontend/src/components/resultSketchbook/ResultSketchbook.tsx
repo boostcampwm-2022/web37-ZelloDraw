@@ -5,7 +5,7 @@ import { Center } from '@styles/styled';
 import { useRecoilValue } from 'recoil';
 import { canOneMoreGameState, gameResultIdState, isStartedState } from '@atoms/result';
 import { lobbyIdState } from '@atoms/game';
-import { ReactComponent as ExportIcon } from '@assets/icons/export-icon.svg';
+import { ReactComponent as ShareIcon } from '@assets/icons/share-icon.svg';
 import resultInSound from '@assets/sounds/result-in.wav';
 import { networkServiceInstance as NetworkService } from '@services/socketService';
 import useMovePage from '@hooks/useMovePage';
@@ -85,7 +85,7 @@ function ResultSketchbook({ isForShareResult }: { isForShareResult: boolean }) {
                                     onClick={copyGameResultIdOnClipboard}
                                     aria-label={'게임 결과 페이지 링크 복사'}
                                 >
-                                    <ExportIcon />
+                                    <ShareIcon />
                                 </button>
                             )}
                             <OneMoreGameButton
@@ -112,7 +112,7 @@ const OutsideOfCard = styled(Center)`
 
     svg {
         margin: 0 28px;
-        transform: scale(1.3) translateY(2px);
+        transform: scale(1.3) translateY(5px);
         cursor: pointer;
     }
 
