@@ -1,9 +1,18 @@
-import React from 'react';
 import styled from 'styled-components';
 
-function PrimaryButton({ topText, bottomText }: { topText: string; bottomText: string }) {
+interface PrimaryButtonProps {
+    topText: string;
+    bottomText: string;
+    allowed?: boolean;
+}
+
+function PrimaryButton({ topText, bottomText, allowed }: PrimaryButtonProps) {
     return (
-        <PrimaryBtn isSubmitBtn={topText === 'SUBMIT'} isEditBtn={topText === 'EDIT'}>
+        <PrimaryBtn
+            isSubmitBtn={topText === 'SUBMIT'}
+            isEditBtn={topText === 'EDIT'}
+            allowed={allowed ?? true}
+        >
             {topText}
             <div>{bottomText}</div>
         </PrimaryBtn>
@@ -12,9 +21,13 @@ function PrimaryButton({ topText, bottomText }: { topText: string; bottomText: s
 
 export default PrimaryButton;
 
-const PrimaryBtn = styled.button<{ isSubmitBtn: boolean; isEditBtn: boolean }>`
+const PrimaryBtn = styled.button<{
+    isSubmitBtn: boolean;
+    isEditBtn: boolean;
+    allowed: boolean | undefined;
+}>`
     all: unset;
-    cursor: pointer;
+    cursor: ${(props) => (props.allowed ? 'pointer' : 'not-allowed')};
     background: ${(props) =>
         props.isSubmitBtn
             ? props.theme.gradation.yellowGreen

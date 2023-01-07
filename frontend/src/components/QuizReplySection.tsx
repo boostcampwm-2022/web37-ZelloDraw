@@ -1,4 +1,4 @@
-import { useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import styled from 'styled-components';
 import { Center } from '@styles/styled';
 import { useRecoilState, useRecoilValue } from 'recoil';
@@ -13,6 +13,7 @@ import PrimaryButton from '@components/PrimaryButton';
 import useZeroRound from '@hooks/useZeroRound';
 import { debounce } from 'lodash';
 import { SubmitQuizReplyRequest } from '@backend/core/game.dto';
+import { EMPTY_CANVAS_IMG } from '@utils/constants';
 
 function QuizReplySection({
     emitSubmitQuizReply,
@@ -21,6 +22,7 @@ function QuizReplySection({
 }) {
     const isDraw = useRecoilValue(isQuizTypeDrawState);
     const { curRound } = useRecoilValue(roundNumberState);
+    const [submitAllowed, setSubmitAllowed] = useState(false);
     const [userReply, setUserReply] = useRecoilState(userReplyState);
     const [quizSubmitted, setQuizSubmitted] = useRecoilState(quizSubmitState);
     const { placeholder, sendRandomWordReplyToServer } = useZeroRound(emitSubmitQuizReply);
@@ -28,6 +30,7 @@ function QuizReplySection({
 
     useEffect(() => {
         // 라운드가 새로 시작하면 초기화한다.
+        setSubmitAllowed(false);
         setQuizSubmitted(false);
         setUserReply('');
         setIsRoundTimeout(false);
@@ -40,6 +43,10 @@ function QuizReplySection({
     }, [isRoundTimeout]);
 
     function submitBtnHandler() {
+        if (curRound !== 0 && (userReply === '' || userReply === EMPTY_CANVAS_IMG)) {
+            setSubmitAllowed(false);
+            return;
+        }
         setQuizSubmitted(!quizSubmitted);
         // 변경하기 버튼을 누른 경우에는 return.
         if (quizSubmitted) return;
@@ -72,6 +79,11 @@ function QuizReplySection({
         }
     }
 
+    useEffect(() => {
+        if (!submitAllowed && curRound !== 0 && userReply !== '' && userReply !== EMPTY_CANVAS_IMG)
+            setSubmitAllowed(true);
+    }, [userReply]);
+
     return (
         <Container>
             {!isDraw ? (
@@ -95,9 +107,17 @@ function QuizReplySection({
                 aria-label={quizSubmitted ? '답 변경하기' : '답 제출하기'}
             >
                 {quizSubmitted ? (
-                    <PrimaryButton topText={'EDIT'} bottomText={'변경하기'} />
+                    <PrimaryButton
+                        topText={'EDIT'}
+                        bottomText={'변경하기'}
+                        allowed={curRound === 0 || submitAllowed}
+                    />
                 ) : (
-                    <PrimaryButton topText={'SUBMIT'} bottomText={'제출하기'} />
+                    <PrimaryButton
+                        topText={'SUBMIT'}
+                        bottomText={'제출하기'}
+                        allowed={curRound === 0 || submitAllowed}
+                    />
                 )}
             </ButtonWrapper>
         </Container>
