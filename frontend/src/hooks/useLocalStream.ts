@@ -53,7 +53,7 @@ function useLocalStream() {
         const isCamAccessible = camPermission && camPermission.state !== 'denied';
         userCamPermission.current = isCamAccessible;
         camPermission.onchange = (e: any) => {
-            if (e.target.state === 'granted') location.reload();
+            location.reload();
         };
     };
 
@@ -63,7 +63,7 @@ function useLocalStream() {
         const isMicAccessible = micPermission && micPermission.state !== 'denied';
         userMicPermission.current = isMicAccessible;
         micPermission.onchange = (e: any) => {
-            if (e.target.state === 'granted') location.reload();
+            location.reload();
         };
     };
 
