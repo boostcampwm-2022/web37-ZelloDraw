@@ -3,8 +3,8 @@ import styled from 'styled-components';
 import Card from '@components/Card';
 import PrimaryButton from '@components/PrimaryButton';
 import InfoCarousel from '@components/InfoCarousel';
-import { userState } from '@atoms/user';
-import { useRecoilState, useSetRecoilState } from 'recoil';
+import { userState, userStreamRefState } from '@atoms/user';
+import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
 import { lobbyIdState } from '@atoms/game';
 import { getParam } from '@utils/common';
 import { AnimatePresence, motion } from 'framer-motion';
@@ -15,6 +15,7 @@ function InfoCard({ onHandleEnterLobby }: { onHandleEnterLobby: () => void }) {
     const [current, setCurrent] = useState<number>(0);
     const [user, setUser] = useRecoilState(userState);
     const setLobbyId = useSetRecoilState(lobbyIdState);
+    const selfStreamRef = useRecoilValue(userStreamRefState);
 
     useEffect(() => {
         if (user.isHost) return;
@@ -53,9 +54,17 @@ function InfoCard({ onHandleEnterLobby }: { onHandleEnterLobby: () => void }) {
                     aria-label={user.isHost ? '방 만들기' : '입장하기'}
                 >
                     {user.isHost ? (
-                        <PrimaryButton topText='NEW ROOM' bottomText='방만들기' />
+                        <PrimaryButton
+                            topText='NEW ROOM'
+                            bottomText='방만들기'
+                            allowed={selfStreamRef !== undefined}
+                        />
                     ) : (
-                        <PrimaryButton topText='ENTER ROOM' bottomText='입장하기' />
+                        <PrimaryButton
+                            topText='ENTER ROOM'
+                            bottomText='입장하기'
+                            allowed={selfStreamRef !== undefined}
+                        />
                     )}
                 </ButtonWrapper>
             </CardInner>
