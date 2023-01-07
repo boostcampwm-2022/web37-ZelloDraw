@@ -5,6 +5,7 @@ import { currentPageIdxState, currentSketchbookState, pageDirectionState } from 
 import useCheckGuidePage from '@hooks/useCheckGuidePage';
 import { motion, AnimatePresence } from 'framer-motion';
 import { flipVariants } from '@utils/framerMotion';
+import { EMPTY_CANVAS_IMG } from '@utils/constants';
 
 function QuizResultContent() {
     const currentSketchbook = useRecoilValue(currentSketchbookState);
@@ -26,13 +27,16 @@ function QuizResultContent() {
                         transition={{ duration: 0.4 }}
                     >
                         {currentSketchbook.type === 'DRAW' ? (
-                            currentSketchbook.content !== undefined ? (
+                            currentSketchbook.content !== undefined &&
+                            currentSketchbook.content !== EMPTY_CANVAS_IMG ? (
                                 <img src={currentSketchbook.content} alt={'quiz result content'} />
                             ) : (
-                                <div>{'비어있어요 ;('}</div>
+                                <span>{'그림이 비어있어요.'}</span>
                             )
-                        ) : (
+                        ) : currentSketchbook.content ? (
                             <div>{currentSketchbook.content}</div>
+                        ) : (
+                            <span>답안이 비어있어요.</span>
                         )}
                     </QuizResult>
                 </AnimatePresence>
@@ -63,5 +67,10 @@ const QuizResult = styled(motion(Center))`
         font-size: ${({ theme }) => theme.typo.h1};
         letter-spacing: 0.13rem;
         border-radius: 28px;
+    }
+
+    > span {
+        color: ${({ theme }) => theme.color.gray1};
+        font-size: ${({ theme }) => theme.typo.h3};
     }
 `;
