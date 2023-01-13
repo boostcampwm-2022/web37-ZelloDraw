@@ -43,7 +43,11 @@ function QuizReplySection({
     }, [isRoundTimeout]);
 
     function submitBtnHandler() {
-        if (curRound !== 0 && (userReply === '' || userReply === EMPTY_CANVAS_IMG)) {
+        if (
+            !isRoundTimeout &&
+            curRound !== 0 &&
+            (userReply === '' || userReply === EMPTY_CANVAS_IMG)
+        ) {
             setSubmitAllowed(false);
             return;
         }
