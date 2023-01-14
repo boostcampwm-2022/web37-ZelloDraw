@@ -6,8 +6,9 @@ import {
     OnGatewayDisconnect,
     SubscribeMessage,
     WebSocketGateway,
+    WebSocketServer,
 } from '@nestjs/websockets';
-import { Socket } from 'socket.io';
+import { Server, Socket } from 'socket.io';
 import { LobbyService } from './lobby.service';
 import { UseFilters, UsePipes, ValidationPipe } from '@nestjs/common';
 import {
@@ -38,6 +39,9 @@ import { User } from './user.model';
 @UseFilters(new SocketExceptionFilter())
 @WebSocketGateway(8180, { namespace: 'core' })
 export class CoreGateway implements OnGatewayConnection, OnGatewayDisconnect {
+    @WebSocketServer()
+    server: Server;
+
     constructor(
         private readonly lobbyService: LobbyService,
         private readonly gameService: GameService,
@@ -93,7 +97,7 @@ export class CoreGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
             const users: User[] = await this.lobbyService.joinLobby(user, lobby.id);
             await client.join(body.lobbyId);
-            this.emitJoinLobby(client, lobby.id, {
+            this.emitJoinLobby(lobby.id, {
                 userName: user.name,
                 sid: client.id,
                 audio: user.audio,
@@ -119,7 +123,7 @@ export class CoreGateway implements OnGatewayConnection, OnGatewayDisconnect {
         const user = await this.userService.getUser(client.id);
         if (user.lobbyId === undefined) return;
 
-        await this.handleHostLeave(client, user);
+        await this.handleHostLeave(user);
         await this.lobbyService.leaveLobby(user, user.lobbyId);
         const payload = {
             userName: user.name,
@@ -134,13 +138,13 @@ export class CoreGateway implements OnGatewayConnection, OnGatewayDisconnect {
         const user = await this.userService.getUser(client.id);
         if (user.lobbyId === undefined) return;
 
-        await this.handleHostLeave(client, user);
+        await this.handleHostLeave(user);
         await this.gameService.leaveWhenPlayingGame(user, user.lobbyId);
-        this.emitLeaveGame(client, user);
+        this.emitLeaveGame(user.lobbyId, user);
         await client.leave(user.lobbyId);
     }
 
-    async handleHostLeave(client: Socket, user: User) {
+    async handleHostLeave(user: User) {
         const isGameHost = await this.gameService.isHost(user.lobbyId, user);
         if (!isGameHost) return;
         const numOfUsersInLobby = await this.lobbyService.getNumOfUsers(user.lobbyId);
@@ -152,7 +156,7 @@ export class CoreGateway implements OnGatewayConnection, OnGatewayDisconnect {
             userName: hostUser.name,
             sid: hostUser.getId(),
         };
-        client.to(user.lobbyId).emit('succeed-host', payload);
+        this.server.to(user.lobbyId).emit('succeed-host', payload);
     }
 
     @SubscribeMessage('start-game')
@@ -163,8 +167,8 @@ export class CoreGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
         await this.gameService.startGame(lobbyId);
 
-        this.emitStartGame(client, lobbyId);
-        await this.emitStartRound(client, lobbyId);
+        this.emitStartGame(lobbyId);
+        await this.emitStartRound(lobbyId);
     }
 
     @SubscribeMessage('submit-quiz-reply')
@@ -177,25 +181,25 @@ export class CoreGateway implements OnGatewayConnection, OnGatewayDisconnect {
         await this.gameService.submitQuizReply(user.lobbyId, user, request.quizReply);
         const repliesCount = await this.gameService.getSubmittedQuizRepliesCount(user.lobbyId);
         if (await this.gameService.isAllUserSubmittedQuizReply(user.lobbyId)) {
-            await this.proceedRound(user, client);
+            await this.proceedRound(user);
         } else {
             this.broadCastQuizReplySubmitted(repliesCount, client, user);
         }
     }
 
-    private broadCastQuizReplySubmitted(repliesCount: number, client: Socket, user: User) {
+    private broadCastQuizReplySubmitted(repliesCount: number, user: User) {
         const payload = new SubmitQuizReplyEmitRequest(repliesCount);
-        this.emitSubmitQuizReply(client, user.lobbyId, payload);
+        this.emitSubmitQuizReply(user.lobbyId, payload);
     }
 
-    private async proceedRound(user: User, client: Socket) {
+    private async proceedRound(user: User) {
         if (await this.gameService.isLastRound(user.lobbyId)) {
             const game = await this.gameService.getGame(user.lobbyId);
             const resultShareId = await this.gameResultService.create(game);
-            await this.emitCompleteGame(client, user.lobbyId, resultShareId);
+            await this.emitCompleteGame(user.lobbyId, resultShareId);
         } else {
             await this.gameService.proceedRound(user.lobbyId);
-            await this.emitStartRound(client, user.lobbyId);
+            await this.emitStartRound(user.lobbyId);
         }
     }
 
@@ -243,7 +247,7 @@ export class CoreGateway implements OnGatewayConnection, OnGatewayDisconnect {
             payload.bookIdx,
         );
         await this.gameService.watchQuizReplyChain(user.lobbyId, payload.bookIdx);
-        this.emitWatchResultSketchbook(client, payload.bookIdx, isWatched);
+        this.emitWatchResultSketchbook(user.lobbyId, payload.bookIdx, isWatched);
     }
 
     @SubscribeMessage('back-to-lobby')
@@ -251,27 +255,27 @@ export class CoreGateway implements OnGatewayConnection, OnGatewayDisconnect {
         const user = await this.userService.getUser(client.id);
         await this.gameService.quitGame(user.lobbyId);
 
-        this.emitBackToLobby(client);
+        this.emitBackToLobby(user.lobbyId);
     }
 
-    private emitWatchResultSketchbook(client: Socket, bookIndex: number, isWatched: boolean) {
+    private emitWatchResultSketchbook(lobbyId: string, bookIndex: number, isWatched: boolean) {
         const payload = new WatchResultSketchbookEmitRequest(bookIndex, isWatched);
-        client.nsp.emit('watch-result-sketchbook', payload);
+        this.server.to(lobbyId).emit('watch-result-sketchbook', payload);
     }
 
-    private emitJoinLobby(client: Socket, lobbyId: string, payload: JoinLobbyReEmitRequest) {
-        client.to(lobbyId).emit('join-lobby', payload);
+    private emitJoinLobby(lobbyId: string, payload: JoinLobbyReEmitRequest) {
+        this.server.to(lobbyId).emit('join-lobby', payload);
     }
 
-    private emitLeaveLobby(client: Socket, lobbyId: string, payload: JoinLobbyReEmitRequest[]) {
-        client.broadcast.to(lobbyId).emit('leave-lobby', payload);
+    private emitLeaveLobby(lobbyId: string, payload: JoinLobbyReEmitRequest[]) {
+        this.server.to(lobbyId).emit('leave-lobby', payload);
     }
 
-    private emitStartGame(client: Socket, lobbyId: string) {
-        client.nsp.to(lobbyId).emit('start-game');
+    private emitStartGame(lobbyId: string) {
+        this.server.to(lobbyId).emit('start-game');
     }
 
-    private async emitStartRound(client: Socket, lobbyId: string) {
+    private async emitStartRound(lobbyId: string) {
         const game = await this.gameService.getGame(lobbyId);
         for (const user of game.getUsers()) {
             const quizReply = (
@@ -285,12 +289,12 @@ export class CoreGateway implements OnGatewayConnection, OnGatewayDisconnect {
                 game.maxRound,
                 game.roundLimitTime,
             );
-            client.nsp.to(user.socketId).emit('start-round', payload);
+            this.server.to(user.socketId).emit('start-round', payload);
         }
-        await this.emitRoundTimeout(client, lobbyId);
+        await this.emitRoundTimeout(lobbyId);
     }
 
-    private async emitRoundTimeout(client: Socket, lobbyId: string) {
+    private async emitRoundTimeout(lobbyId: string) {
         const game = await this.gameService.getGame(lobbyId);
         const roundWhenTimerStart = game.getCurRound();
         // eslint-disable-next-line @typescript-eslint/no-misused-promises
@@ -300,7 +304,7 @@ export class CoreGateway implements OnGatewayConnection, OnGatewayDisconnect {
                 (await this.gameService.getNotSubmittedUsers(lobbyId)).forEach((user, index) => {
                     // TODO: 동시성 이슈 해결하여 timeout 걷어내기
                     setTimeout(() => {
-                        client.nsp.to(user.socketId).emit('round-timeout');
+                        this.server.to(user.socketId).emit('round-timeout');
                     }, index * 100);
                 });
             } catch (e) {
@@ -309,15 +313,11 @@ export class CoreGateway implements OnGatewayConnection, OnGatewayDisconnect {
         }, game.getRoundLimitTime() * 1000);
     }
 
-    private emitSubmitQuizReply(
-        client: Socket,
-        lobbyId: string,
-        payload: SubmitQuizReplyEmitRequest,
-    ) {
-        client.nsp.to(lobbyId).emit('submit-quiz-reply', payload);
+    private emitSubmitQuizReply(lobbyId: string, payload: SubmitQuizReplyEmitRequest) {
+        this.server.to(lobbyId).emit('submit-quiz-reply', payload);
     }
 
-    private async emitCompleteGame(client: Socket, lobbyId: string, gameResultId: string) {
+    private async emitCompleteGame(lobbyId: string, gameResultId: string) {
         const quizReplyChains: QuizReplyChain[] =
             await this.gameService.getQuizReplyChainsWhenGameEnd(lobbyId);
         const payload = new CompleteGameEmitRequest(
@@ -325,15 +325,16 @@ export class CoreGateway implements OnGatewayConnection, OnGatewayDisconnect {
             quizReplyChains.map((quizReplyChain) => quizReplyChain.quizReplyList),
         );
 
-        client.nsp.to(lobbyId).emit('complete-game', payload);
+        this.server.to(lobbyId).emit('complete-game', payload);
     }
 
-    private emitLeaveGame(client: Socket, user: User) {
-        const payload = new EmitLeaveGameRequest(user.name, client.id);
-        client.nsp.to(user.lobbyId).emit('leave-game', payload);
+    private emitLeaveGame(lobbyId: string, user: User) {
+        // TODO: EmitLeaveGameRequest 생성자 파라미터 순서 수정
+        const payload = new EmitLeaveGameRequest(user.name, user.socketId);
+        this.server.to(lobbyId).emit('leave-game', payload);
     }
 
-    private emitBackToLobby(client: Socket) {
-        client.nsp.emit('back-to-lobby');
+    private emitBackToLobby(lobbyId: string) {
+        this.server.to(lobbyId).emit('back-to-lobby');
     }
 }
