@@ -1,5 +1,6 @@
 import { CacheModule, Module } from '@nestjs/common';
 import { redisStore } from 'cache-manager-redis-store';
+import { BullModule } from '@nestjs/bull';
 
 @Module({
     imports: [
@@ -14,6 +15,12 @@ import { redisStore } from 'cache-manager-redis-store';
                 return {
                     store: () => store,
                 };
+            },
+        }),
+        BullModule.forRoot({
+            redis: {
+                host: 'localhost',
+                port: 6379,
             },
         }),
     ],
