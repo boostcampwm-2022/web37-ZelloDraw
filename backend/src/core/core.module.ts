@@ -24,6 +24,6 @@ import { TestService } from './test.service';
         GameLobbyRepository,
         UserRepository,
     ],
-    exports: [UserService, LobbyService],
+    exports: [UserService, LobbyService, GameService, CoreGateway],
 })
 export class CoreModule {}
