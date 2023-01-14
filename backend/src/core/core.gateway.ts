@@ -33,16 +33,20 @@ import {
 } from './game.dto';
 import { QuizReplyChain } from './quizReplyChain.model';
 import { User } from './user.model';
+import { InjectQueue, Processor } from '@nestjs/bull';
+import { Queue } from 'bull';
 
 // TODO: Validation Pipe 관련 내용 학습 + 소켓에서 에러 처리 어케할건지 학습 하고 적용하기
 // @UsePipes(new ValidationPipe())
 @UseFilters(new SocketExceptionFilter())
+@Processor('core')
 @WebSocketGateway(8180, { namespace: 'core' })
 export class CoreGateway implements OnGatewayConnection, OnGatewayDisconnect {
     @WebSocketServer()
     server: Server;
 
     constructor(
+        @InjectQueue('core') private readonly coreQueue: Queue,
         private readonly lobbyService: LobbyService,
         private readonly gameService: GameService,
         private readonly userService: UserService,
@@ -177,22 +181,18 @@ export class CoreGateway implements OnGatewayConnection, OnGatewayDisconnect {
         @MessageBody() request: SubmitQuizReplyRequest,
     ) {
         const user = await this.userService.getUser(client.id);
-        // TODO: 시간 초과 시 라운드 넘어가는 로직 추가 필요
-        await this.gameService.submitQuizReply(user.lobbyId, user, request.quizReply);
-        const repliesCount = await this.gameService.getSubmittedQuizRepliesCount(user.lobbyId);
-        if (await this.gameService.isAllUserSubmittedQuizReply(user.lobbyId)) {
-            await this.proceedRound(user);
-        } else {
-            this.broadCastQuizReplySubmitted(repliesCount, client, user);
-        }
+        await this.coreQueue.add('submit-quiz-reply', {
+            user,
+            request,
+        });
     }
 
-    private broadCastQuizReplySubmitted(repliesCount: number, user: User) {
+    broadCastQuizReplySubmitted(repliesCount: number, user: User) {
         const payload = new SubmitQuizReplyEmitRequest(repliesCount);
         this.emitSubmitQuizReply(user.lobbyId, payload);
     }
 
-    private async proceedRound(user: User) {
+    async proceedRound(user: User) {
         if (await this.gameService.isLastRound(user.lobbyId)) {
             const game = await this.gameService.getGame(user.lobbyId);
             const resultShareId = await this.gameResultService.create(game);
@@ -303,9 +303,9 @@ export class CoreGateway implements OnGatewayConnection, OnGatewayDisconnect {
                 if ((await this.gameService.getCurRound(lobbyId)) !== roundWhenTimerStart) return;
                 (await this.gameService.getNotSubmittedUsers(lobbyId)).forEach((user, index) => {
                     // TODO: 동시성 이슈 해결하여 timeout 걷어내기
-                    setTimeout(() => {
-                        this.server.to(user.socketId).emit('round-timeout');
-                    }, index * 100);
+                    // setTimeout(() => {
+                    this.server.to(user.socketId).emit('round-timeout');
+                    // }, index * 100);
                 });
             } catch (e) {
                 console.log('종료된 게임입니다.');

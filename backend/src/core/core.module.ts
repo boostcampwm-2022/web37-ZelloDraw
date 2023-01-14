@@ -6,9 +6,16 @@ import { GameService } from './game.service';
 import { GameLobbyRepository } from './gamelobby.repository';
 import { GameResultModule } from '../gameResult/gameResult.module';
 import { UserRepository } from './user.repository';
+import { BullModule } from '@nestjs/bull';
+import { TestService } from './test.service';
 
 @Module({
-    imports: [GameResultModule],
+    imports: [
+        GameResultModule,
+        BullModule.registerQueue({
+            name: 'core',
+        }),
+    ],
     providers: [
         CoreGateway,
         LobbyService,
