@@ -406,3 +406,6 @@ $RECYCLE.BIN/
 .idea
 
 # End of https://www.toptal.com/developers/gitignore/api/macos,react,webstorm,node,intellij,windows
+branch_structure.json
+temp_auto_push.bat
+temp_interactive_push.bat
